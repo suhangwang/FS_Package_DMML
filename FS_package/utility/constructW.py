@@ -8,9 +8,9 @@ def constructW(data, **kwargs):
     If kwargs is not none, construct the weight matrix according to parameters in kwargs
     Input
     ----------
-    data : {numpy array}, shape (n_samples, n_features)
+    data: {numpy array}, shape (n_samples, n_features)
         Input data, guaranteed to be a numpy array
-    kwargs : {dictionary}
+    kwargs: {dictionary}
         Parameters to construct different weight matrix W:
             trueLabel: {numpy array}, shape (n_samples, 1)
                 The parameter needed under the 'supervised' neighbor mode
@@ -45,7 +45,7 @@ def constructW(data, **kwargs):
                 W_ij = -1/k if x_j \in NH(x_i); W_ij = 1/(c-1)k if xj \in NM(x_i, y) (default relief = false)
     Returns
     -------
-    W : {array-like}, shape (n_samples, n_samples)
+    W: {array-like}, shape (n_samples, n_samples)
         Output weight matrix W, guaranteed to be a numpy array.
     """
 
@@ -178,6 +178,7 @@ def constructW(data, **kwargs):
                 classIdx = (y==label[i])
                 classIdxAll = (classIdx[:,np.newaxis] & classIdx[np.newaxis,:])
                 W[classIdxAll] = 1.0/np.sum(np.sum(classIdx))
+            return W
 
         # Construct the weight matrix W in a relief way, NH(x) or NM(x,y) denotes a set of k nearest
         # points to x with the same class of x, or a different class (the class y), respectively. W_ij = 1 if i = j;

@@ -8,12 +8,15 @@ from utility.unsupervised_evaluation import evaluation
 def kmeansInitialization(X, C):
     """
     This function uses kmeans to initialize the pseudo label
-    
-    Input:
-        X: N by d, data matrix, each row is an instrance, each column is a feature
-        C: scalar, number of clusters
+    Input
+    ----------
+        X: {numpy array}, shape (n_samples, n_features)
+            Input data, guaranteed to be a numpy array
+        C: {int}
+            number of clusters
     Output:
-        Y: N by C, pseudo label   
+        Y: {numpy array}, shape (n_samples, C)
+            pseudo label matrix
     """
     N, d = X.shape
     kmeans = sklearn.cluster.KMeans(n_clusters=C, init='k-means++', n_init=10, max_iter=300, 
@@ -49,15 +52,24 @@ def NDFS(X, **kwargs):
         s.t.    F >= 0
     
     Input:
-        X: N x d, data matrix, each row is an instrance, each column is a feature
-        F0: N x C, initialization of the pseudo label matirx F, if not provided
-        L: N x N, Laplacian matrix
-        alpha: scalar
-        beta: scalar
-        gamma: a very large number used to force F^T F = I
-        C: number of clusters
-        maxIter: maximal iteration
-        verbose: 1 if user want to print out the objective function value in each iteration, 0 if not
+        X: {numpy array}, shape (n_samples, n_features)
+            Input data, guaranteed to be a numpy array
+        F0: {numpy array}, shape (n_samples, n_classes)
+            initialization of the pseudo label matirx F, if not provided
+        L: {numpy array}, shape {n_samples, n_samples}
+            Laplacian matrix
+        alpha: {float}
+            Parameter alpha in objective function
+        beta: {float}
+            Parameter beta in objective function
+        gamma: {float}
+            a very large number used to force F^T F = I
+        C: {int}
+            number of clusters
+        maxIter: {int}
+            maximal iteration
+        verbose: {int} 1 or 0
+            1 if user want to print out the objective function value in each iteration, 0 if not
         
     Reference: 
         Li, Zechao, et al. "Unsupervised Feature Selection Using Nonnegative Spectral Analysis." AAAI. 2012.
@@ -131,7 +143,6 @@ def NDFS(X, **kwargs):
         if verbose:
             print('obj at iter ' + str(count) + ': ' + str(obj[count]) + '\n')
         count = count + 1
-    
     return W, obj
 
 def featureRanking(W):
@@ -144,27 +155,27 @@ def featureRanking(W):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('data/COIL20.mat')
-    Lable = mat['gnd']    # label
-    Lable = Lable[:,0]
+    mat = scipy.io.loadmat('../data/ORL.mat')
+    label = mat['gnd']    # label
+    label = label[:,0]
     X = mat['fea']    # data
     N,d = X.shape
-    
+    X = X.astype(float)
     # construct W
     #W = sklearn.metrics.pairwise.pairwise_kernels(X, metric='rbf')
-    kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 0.1}
+    kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 1}
     W = constructW(X,**kwargs)
     L = np.diag(W.sum(1)) - W
     
     # feature weight learning / feature selection
-    W, obj = NDFS(X, C=20, L=L, verbose=1, maxIter = 30)
-    IND = featureRanking(W)
+    W, obj = NDFS(X, C=40, L=L, verbose=1, maxIter = 30)
+    idx = featureRanking(W)
     
     # evalaution
-    numFea = 300
-    selectedFeatures = X[:,IND[0:numFea]]
+    numFea = 100
+    selectedFeatures = X[:,idx[0:numFea]]
     
-    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=20, Y=Lable)
+    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=40, Y=label)
     print ARI
     print NMI
     print ACC
