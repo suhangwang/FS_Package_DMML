@@ -170,9 +170,10 @@ def constructW(data, **kwargs):
         y = kwargs['trueLabel']
         label = np.unique(y)
         nLabel = np.unique(y).size
-
+        print kwargs
         # Construct the weight matrix W in a fisherScore way, W_ij = 1/n_l if yi = yj = l, otherwise W_ij = 0
         if kwargs['fisherScore'] == True:
+            print 'fisherScore:'
             W = np.zeros((nSamples, nSamples))
             for i in range(nLabel):
                 classIdx = (y==label[i])

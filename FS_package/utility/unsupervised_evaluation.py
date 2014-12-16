@@ -39,9 +39,14 @@ def bestMap(L1, L2):
 def evaluation(selectedFeatures, C, Y):
     """
     Calculate ACC and NMI of the selected features
-    Input:
-        C: number of clusters
-        Y: actual label
+    Input
+    ----------
+        selectedFeatures: {numpy array}, shape (n_samples, n_selectedFeatures}
+            data of the selectedFeatures
+        C: {int}
+            number of clusters
+        Y: {numpy array}, shape (n_samples, 1)
+            actual labels
     """
     kmeans = KMeans(n_clusters=C, init='k-means++', n_init=10, max_iter=300,
                             tol=0.0001, precompute_distances=True, verbose=0,

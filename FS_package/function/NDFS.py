@@ -2,8 +2,8 @@ import scipy.io
 import sklearn.cluster
 import numpy as np
 import sys
-from utility.constructW import constructW
-from utility.unsupervised_evaluation import evaluation
+from FS_package.utility.constructW import constructW
+from FS_package.utility.unsupervised_evaluation import evaluation
 
 def kmeansInitialization(X, C):
     """

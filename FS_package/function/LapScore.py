@@ -1,7 +1,7 @@
 import scipy.io
 import numpy as np
-from utility.constructW import constructW
-from utility.unsupervised_evaluation import evaluation
+from FS_package.utility.constructW import constructW
+from FS_package.utility.unsupervised_evaluation import evaluation
 
 def LapScore(X, **kwargs):
     """
@@ -47,7 +47,7 @@ def featureRanking(score):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/ORL.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
