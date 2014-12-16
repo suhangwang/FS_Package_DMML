@@ -72,7 +72,7 @@ def NDFS(X, **kwargs):
             1 if user want to print out the objective function value in each iteration, 0 if not
         
     Reference: 
-        Li, Zechao, et al. "Unsupervised Feature Selection Using Nonnegative Spectral Analysis." AAAI. 2012.
+        Li, Zechao, et al. "Unsupervised Feature Selection Using Nonnegative Spectral Analysis." AAAI. 2012. aaaaaaa
     """
     if 'gamma' not in kwargs:
         gamma = 10e8
