@@ -1,8 +1,8 @@
 import scipy.io
 import numpy as np
-from FS_package.utility.constructW import constructW
-from FS_package.utility.supervised_evaluation import evaluation_leaveOneLabel
-from FS_package.utility.supervised_evaluation import evaluation_split
+from utility.constructW import constructW
+from utility.supervised_evaluation import evaluation_leaveOneLabel
+from utility.supervised_evaluation import evaluation_split
 
 def FisherScore(X, W):
     """
@@ -32,10 +32,6 @@ def FisherScore(X, W):
     LPrime = np.sum(np.multiply(t2,X),0) - np.multiply(tmp,tmp)/np.sum(np.diag(D))
     DPrime[DPrime < 1e-12] = 10000
     score = np.multiply(LPrime,1/DPrime)
-    one = np.ones((N,d))
-    scoreReciprocal = np.true_divide(one,score)
-    
-    score = np.subtract(scoreReciprocal,one)
     score = np.transpose(score)
     return score
 
@@ -45,7 +41,7 @@ def featureRanking(score):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/USPS.mat')
+    mat = scipy.io.loadmat('../data/COIL20.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
@@ -62,7 +58,7 @@ def main():
     # evalaution
     numFea = 100
     selectedFeatures = X[:,idx[0:numFea]]
-    ACC = evaluation_split(selectedFeatures = X, Y=label)
+    ACC = evaluation_split(selectedFeatures = selectedFeatures, Y=label)
     print ACC
 
 if __name__=='__main__':
