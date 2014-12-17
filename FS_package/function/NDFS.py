@@ -134,7 +134,7 @@ def NDFS(X, **kwargs):
         # update F
         denominator = np.dot(M,F) + gamma*np.dot(np.dot(F,F.transpose()),F)
         temp = np.divide(gamma*F, denominator)
-        F = F*temp
+        F = F*np.array(temp)
         temp = np.diag(np.sqrt(np.diag(1 / (np.dot(F.transpose(), F) + 1e-16))))
         F = np.dot(F, temp)
         # calculate objective function
@@ -155,7 +155,7 @@ def featureRanking(W):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/USPS.mat')
+    mat = scipy.io.loadmat('data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
