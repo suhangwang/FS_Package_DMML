@@ -23,8 +23,8 @@ def evaluation_split(selectedFeatures,Y):
         neigh.fit(selectedFeatures[train],Y[train])
         yPredict = neigh.predict(selectedFeatures[test])
         acc = accuracy_score(Y[test], yPredict)
-        print acc
         correct = correct + acc
+        print acc
     return float(correct)/20
 
 def evaluation_leaveOneLabel(selectedFeatures,Y):
