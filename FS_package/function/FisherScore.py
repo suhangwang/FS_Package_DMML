@@ -4,6 +4,7 @@ from utility.constructW import constructW
 from utility.supervised_evaluation import evaluation_leaveOneLabel
 from utility.supervised_evaluation import evaluation_split
 
+
 def FisherScore(X, W):
     """
     This function implement the FisherScore function
