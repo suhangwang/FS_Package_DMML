@@ -1,5 +1,6 @@
 import scipy.io
 import numpy as np
+from scipy.sparse import *
 from utility.constructW import constructW
 from utility.unsupervised_evaluation import evaluation
 
@@ -27,19 +28,18 @@ def LapScore(X, **kwargs):
         W = constructW(X)
 
     W = kwargs['W']
-    D = np.sum(W, axis=1)
+    D = np.array(W.sum(axis=1))
     L = W
     tmp = np.dot(np.transpose(D), X)
-    D = np.diag(D)
+    D = diags(np.transpose(D),[0])
     Xt = np.transpose(X)
-    t1 = np.transpose(np.dot(Xt,D))
-    t2 = np.transpose(np.dot(Xt,L))
-    DPrime = np.sum(np.multiply(t1,X),0) - np.multiply(tmp,tmp)/np.sum(np.diag(D))
-    LPrime = np.sum(np.multiply(t2,X),0) - np.multiply(tmp,tmp)/np.sum(np.diag(D))
+    t1 = np.transpose(np.dot(Xt,D.todense()))
+    t2 = np.transpose(np.dot(Xt,L.todense()))
+    DPrime = np.sum(np.multiply(t1,X),0) - np.multiply(tmp,tmp)/D.sum()
+    LPrime = np.sum(np.multiply(t2,X),0) - np.multiply(tmp,tmp)/D.sum()
     DPrime[DPrime < 1e-12] = 10000
-    score = np.multiply(LPrime,1/DPrime)
-    score = np.transpose(score)
-    return score
+    score = np.array(np.multiply(LPrime,1/DPrime))[0,:]
+    return np.transpose(score)
 
 def featureRanking(score):
     ind = np.argsort(score,0)
@@ -47,7 +47,7 @@ def featureRanking(score):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/USPS.mat')
+    mat = scipy.io.loadmat('data/ORL.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
@@ -70,7 +70,7 @@ def main():
     # evaluation
     numFea = 100
     selectedFeatures = X[:,idx[0:numFea]]
-    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=10, Y=label)
+    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=40, Y=label)
     print ARI
     print NMI
     print ACC
