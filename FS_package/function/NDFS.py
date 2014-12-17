@@ -2,8 +2,8 @@ import scipy.io
 import sklearn.cluster
 import numpy as np
 import sys
-from FS_package.utility.constructW import constructW
-from FS_package.utility.unsupervised_evaluation import evaluation
+from utility.constructW import constructW
+from utility.unsupervised_evaluation import evaluation
 
 def kmeansInitialization(X, C):
     """
@@ -155,7 +155,7 @@ def featureRanking(W):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/ORL.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
@@ -175,7 +175,7 @@ def main():
     numFea = 100
     selectedFeatures = X[:,idx[0:numFea]]
     
-    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=40, Y=label)
+    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=10, Y=label)
     print ARI
     print NMI
     print ACC

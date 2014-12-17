@@ -1,7 +1,7 @@
 import scipy.io
 import numpy as np
-from FS_package.utility.constructW import constructW
-from FS_package.utility.unsupervised_evaluation import evaluation
+from utility.constructW import constructW
+from utility.unsupervised_evaluation import evaluation
 
 def LapScore(X, **kwargs):
     """
@@ -67,10 +67,10 @@ def main():
     score = LapScore(X, W = W)
     idx = featureRanking(score)
 
-    # evalaution
+    # evaluation
     numFea = 100
     selectedFeatures = X[:,idx[0:numFea]]
-    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=40, Y=label)
+    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selectedFeatures, C=10, Y=label)
     print ARI
     print NMI
     print ACC
