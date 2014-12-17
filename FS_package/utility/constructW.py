@@ -100,10 +100,10 @@ def constructW(data, **kwargs):
                 G[:,0] = np.tile(np.arange(nSamples),(k+1,1)).reshape(-1)
                 G[:,1] = np.ravel(idxNew, order = 'F')
                 G[:,2] = np.ravel(dumpNew, order = 'F')
-                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
+                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
                 W[W>0] = 1
-                W = np.maximum(W, np.transpose(W))
-                np.fill_diagonal(W,0)
+                W = W + np.transpose(W)
+                W.setdiag(0)
                 return W
             elif kwargs['metric'] == 'cosine':
                 # 1. Normalize the data first
@@ -120,10 +120,10 @@ def constructW(data, **kwargs):
                 G[:,0] = np.tile(np.arange(nSamples),(k+1,1)).reshape(-1)
                 G[:,1] = np.ravel(idxNew, order = 'F')
                 G[:,2] = np.ravel(dumpNew, order = 'F')
-                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
+                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
                 W[W>0] = 1
-                W = np.maximum(W, np.transpose(W))
-                np.fill_diagonal(W,0)
+                W = W + np.transpose(W)
+                W.setdiag(0)
                 return W
 
         elif kwargs['weightMode'] == 'heatKernel':
@@ -138,9 +138,9 @@ def constructW(data, **kwargs):
             G[:,0] = np.tile(np.arange(nSamples),(k+1,1)).reshape(-1)
             G[:,1] = np.ravel(idxNew, order = 'F')
             G[:,2] = np.ravel(dumpHeatKernel, order = 'F')
-            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W = np.maximum(W, np.transpose(W))
-            np.fill_diagonal(W,0)
+            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+            W = W + np.transpose(W)
+            W.setdiag(0)
             return W
 
         elif kwargs['weightMode'] == 'cosine':
@@ -158,9 +158,9 @@ def constructW(data, **kwargs):
             G[:,0] = np.tile(np.arange(nSamples),(k+1,1)).reshape(-1)
             G[:,1] = np.ravel(idxNew, order = 'F')
             G[:,2] = np.ravel(dumpNew, order = 'F')
-            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W = np.maximum(W, np.transpose(W))
-            np.fill_diagonal(W,0)
+            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+            W = W + np.transpose(W)
+            W.setdiag(0)
             return W
 
     # Choose supervised neighborMode
@@ -170,11 +170,11 @@ def constructW(data, **kwargs):
         y = kwargs['trueLabel']
         label = np.unique(y)
         nLabel = np.unique(y).size
-        print kwargs
         # Construct the weight matrix W in a fisherScore way, W_ij = 1/n_l if yi = yj = l, otherwise W_ij = 0
         if kwargs['fisherScore'] == True:
-            print 'fisherScore:'
-            W = np.zeros((nSamples, nSamples))
+            print 'fisher'
+            #W = np.zeros((nSamples, nSamples))
+            W = lil_matrix((nSamples,nSamples))
             for i in range(nLabel):
                 classIdx = (y==label[i])
                 classIdxAll = (classIdx[:,np.newaxis] & classIdx[np.newaxis,:])
@@ -242,9 +242,9 @@ def constructW(data, **kwargs):
                     G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx[idxNew[:]], order = 'F')
                     G[idNow:nSmpClass+idNow, 2] = 1
                     idNow = idNow + nSmpClass
-                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-                W = np.maximum(W, np.transpose(W))
-                np.fill_diagonal(W,0)
+                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+                W = W + np.transpose(W)
+                W.setdiag(0)
                 return W
             if kwargs['metric'] == 'cosine':
                 # 1. Normalize the data first
@@ -266,9 +266,9 @@ def constructW(data, **kwargs):
                     G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx[idxNew[:]], order = 'F')
                     G[idNow:nSmpClass+idNow, 2] = 1
                     idNow = idNow + nSmpClass
-                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-                W = np.maximum(W, np.transpose(W))
-                np.fill_diagonal(W,0)
+                W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+                W = W + np.transpose(W)
+                W.setdiag(0)
                 return W
 
         elif kwargs['weightMode'] == 'heatKernel':
@@ -288,9 +288,9 @@ def constructW(data, **kwargs):
                 G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx[idxNew[:]], order = 'F')
                 G[idNow:nSmpClass+idNow, 2] = np.ravel(dumpHeatKernel, order = 'F')
                 idNow = idNow + nSmpClass
-            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W = np.maximum(W, np.transpose(W))
-            np.fill_diagonal(W,0)
+            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+            W = W + np.transpose(W)
+            W.setdiag(0)
             return W
 
         elif kwargs['weightMode'] == 'cosine':
@@ -313,7 +313,7 @@ def constructW(data, **kwargs):
                 G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx[idxNew[:]], order = 'F')
                 G[idNow:nSmpClass+idNow, 2] = np.ravel(dumpNew, order = 'F')
                 idNow = idNow + nSmpClass
-            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W = np.maximum(W, np.transpose(W))
-            np.fill_diagonal(W,0)
+            W = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples))
+            W = W + np.transpose(W)
+            W.setdiag(0)
             return W
