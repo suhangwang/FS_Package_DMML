@@ -2,46 +2,10 @@ __author__ = 'kewei'
 
 import scipy.io
 import numpy as np
-import sklearn.preprocessing
-import entropy_estimators as ee
-import IGFS
+import utility.entropy_estimators as ee
+import utility.information_gain as ig
+import utility.conditional_entropy as ce
 from utility.supervised_evaluation import evaluation_leaveOneLabel
-
-
-def data_discretization(X, num):
-    """
-    This function implement the data discretization function
-
-    Input
-    ----------
-    :param X
-    :param num
-    X: {numpy array}, shape (n_samples, n_features)
-        Input data with shape[n_sample,n_features]
-    num: Number of samples to generate.Default is 5.
-
-    Output
-    ----------
-    X_digitized: {numpy array}, shape (n_samples, gini_index)
-        output data with shape[n_sample,n_feature] where the features value have been digitized to the range [1,num]
-    ----------
-    """
-    # normalize each feature to the [0,1] range
-    min_max_scaler = sklearn.preprocessing.MinMaxScaler()
-    X_normalized = min_max_scaler.fit_transform(X)
-
-    #initialize X_digitized
-    n_samples, n_features = X.shape
-    X_digitized = (n_samples, n_features)
-    X_digitized = np.zeros(X_digitized)
-
-    #digitize data
-    bins = np.linspace(0, 1, num)
-    for i in range(n_features):
-        X_digitized[:, i] = np.digitize(X_normalized[:, i], bins)
-
-    return X_digitized
-
 
 def lcsi(X, y, **kwargs):
     """
@@ -458,7 +422,7 @@ def disr(X, y, **kwargs):
                 f = X[:, i]
                 if len(F) == 0:
                     # if F is empty, calculate information gain for feature i, we define it as t
-                    t = IGFS.information_gain(f, y)
+                    t = ig.information_gain(f, y)
                 else:
                     # t = sum(I(fk,j;y)|H(fk,j,y)),fj is defined as all feature in F
                     # initialize t
@@ -470,7 +434,7 @@ def disr(X, y, **kwargs):
                             t1 = ee.midd(fj, y) + ee.cmidd(f, y, fj)
                             # t2 = H(f fj y)=H(f) + H(fj|f) + H(y|f,fj)
                             # H(y|f,fj) = H(y|fj)-I(y;f|fj)
-                            t2 = ee.entropyd(f) + IGFS.conditional_entropy(fj, f) + (IGFS.conditional_entropy(y, fj) - ee.cmidd(y, f, fj))
+                            t2 = ee.entropyd(f) + ce.conditional_entropy(fj, f) + (ce.conditional_entropy(y, fj) - ee.cmidd(y, f, fj))
                             t += np.true_divide(t1, t2)
                 # store the biggest j_disr and its idx
                 if t > j_disr:
@@ -489,7 +453,7 @@ def main():
     X = X.astype(float)
 
     # rank feature
-    F = jmi(X, y)
+    F = disr(X, y)
 
     # evaluation
     numFea = 15
