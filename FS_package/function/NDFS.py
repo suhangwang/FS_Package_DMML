@@ -155,7 +155,7 @@ def featureRanking(W):
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('data/USPS.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:,0]
     X = mat['fea']    # data
@@ -165,10 +165,11 @@ def main():
     #W = sklearn.metrics.pairwise.pairwise_kernels(X, metric='rbf')
     kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 1}
     W = constructW(X,**kwargs)
+    W = W.toarray()
     L = np.diag(W.sum(1)) - W
     
     # feature weight learning / feature selection
-    W, obj = NDFS(X, C=40, L=L, verbose=1, maxIter = 30)
+    W, obj = NDFS(X, C=10, L=L, verbose=1, maxIter = 30)
     idx = featureRanking(W)
     
     # evalaution
