@@ -4,7 +4,7 @@
 #Or go to http://www.isi.edu/~gregv/npeet.html
 
 import scipy.spatial as ss
-from scipy.special import digamma,gamma
+from scipy.special import digamma, gamma
 from math import log,pi
 import numpy.random as nr
 import numpy as np

@@ -1,11 +1,9 @@
-import numpy as np
-import random
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn import cross_validation
 
 
-def evaluation_split(selectedFeatures,Y):
+def evaluation_split(selected_features, y):
     """
     Calculate ACC of the selected features using 50-50 training-test split
     Input
@@ -14,20 +12,29 @@ def evaluation_split(selectedFeatures,Y):
             data of the selectedFeatures
         Y: {numpy array}, shape (n_samples, 1)
             actual labels
+    Output
+    ----------
+        classification accuracy: {float}
     """
-    N,d = selectedFeatures.shape
-    ss = cross_validation.ShuffleSplit(N,n_iter = 20, test_size = 0.5)
+    n_samples, n_features = selected_features.shape
+
+    # repeat 20 times, 50% for training and the rest 50% for testing (default)
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=20, test_size=0.5)
+
+    # 1-nearest neighbor (default)
     neigh = KNeighborsClassifier(n_neighbors=1)
+
     correct = 0
     for train, test in ss:
-        neigh.fit(selectedFeatures[train],Y[train])
-        yPredict = neigh.predict(selectedFeatures[test])
-        acc = accuracy_score(Y[test], yPredict)
+        neigh.fit(selected_features[train], y[train])
+        y_predict = neigh.predict(selected_features[test])
+        acc = accuracy_score(y[test], y_predict)
         correct = correct + acc
-        print acc
+
     return float(correct)/20
 
-def evaluation_leaveOneLabel(selectedFeatures,Y):
+
+def evaluation_leave_one(selected_features, y):
     """
     Calculate ACC of the selected features using leave-one-out cross validation
     Input
@@ -36,15 +43,22 @@ def evaluation_leaveOneLabel(selectedFeatures,Y):
             data of the selectedFeatures
         Y: {numpy array}, shape (n_samples, 1)
             actual labels
+    Output
+    ----------
+        classification accuracy: {float}
     """
-    N,d = selectedFeatures.shape
-    loo = cross_validation.LeaveOneOut(N)
+    n_samples, n_features = selected_features.shape
+    lo = cross_validation.LeaveOneOut(n_samples)
+
+    # 1-nearest neighbor (default)
     neigh = KNeighborsClassifier(n_neighbors=1)
+
     correct = 0
-    for train, test in loo:
-        neigh.fit(selectedFeatures[train],Y[train])
-        yPredict = neigh.predict(selectedFeatures[test])
-        acc = accuracy_score(Y[test], yPredict)
+    for train, test in lo:
+        neigh.fit(selected_features[train], y[train])
+        y_predict = neigh.predict(selected_features[test])
+        acc = accuracy_score(y[test], y_predict)
         correct = correct + acc
-    return float(correct)/N
+
+    return float(correct)/n_samples
 

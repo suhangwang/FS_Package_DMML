@@ -3,7 +3,6 @@ import scipy.io
 import numpy as np
 import utility.entropy_estimators as ee
 import utility.information_gain as ig
-from utility.supervised_evaluation import evaluation_leaveOneLabel
 
 def featureRanking(F):
     """
@@ -22,6 +21,7 @@ def featureRanking(F):
     """
     idx = np.argsort(F)
     return idx[::-1]
+
 
 def igfs(X, y):
     """
@@ -49,6 +49,7 @@ def igfs(X, y):
         f = X[:, i]
         F[i] = ig.information_gain(f, y)
     return F
+
 
 def main():
     # load matlab data
