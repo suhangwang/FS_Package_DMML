@@ -19,7 +19,8 @@ def data_discretization(X, n_bins):
         X_digitized: {numpy array}, shape (n_samples, n_features)
             Output data, where features are digitized to n_bins
     """
-    # normalize each feature to the [0,1] range
+
+    # normalize each feature
     min_max_scaler = sklearn.preprocessing.MinMaxScaler()
     X_normalized = min_max_scaler.fit_transform(X)
 
