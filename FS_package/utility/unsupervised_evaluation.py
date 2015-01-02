@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 
 def best_map(l1, l2):
     """
-    Permute labels of L2 to match L1 as good as possible
+    Permute labels of L2 to match L1 as much as possible
     """
     if len(l1) != len(l2):
         print >>sys.stderr, "L1.shape must == L2.shape"
