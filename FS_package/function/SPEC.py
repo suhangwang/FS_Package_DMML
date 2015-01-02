@@ -19,7 +19,7 @@ def SPEC(X, **kwargs):
                 style == -1, the first feature ranking function, use all eigenvalues
                 style == 0, the second feature ranking function, use all except the 1st eigenvalue
                 style >= 2, the third feature ranking function, use the first k except 1st eigenvalue
-            W: {sparse matrix}, shape (n_samples, n_samples_
+            W: {sparse matrix}, shape (n_samples, n_samples}
                 affinity matrix
     Output
     ----------
