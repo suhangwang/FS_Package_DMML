@@ -73,7 +73,7 @@ def main():
     kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W(X, **kwargs)
 
-    # feature weight learning / feature selection
+    # feature selection
     score = lap_score(X, W=W)
     idx = feature_ranking(score)
 
