@@ -42,14 +42,15 @@ def feature_ranking(score):
 def main():
     # load data
     mat = scipy.io.loadmat('../data/ORL.mat')
-    label = mat['gnd']    # label
+    label = mat['gnd']
     label = label[:, 0]
-    X = mat['fea']    # data
+    X = mat['fea']
     X = X.astype(float)
 
-    # feature weight learning / feature selection
+    # feature selection
     score = reliefF(X, label)
     idx = feature_ranking(score)
+
     # evaluation
     n_features = 100
     selected_features = X[:, idx[0:n_features]]
