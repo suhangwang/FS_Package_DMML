@@ -234,7 +234,6 @@ def construct_W(X, **kwargs):
                         id_now += n_smp_class
             W2 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             W = W1 + W2
-            print 'reliefF'
             return W
 
 
