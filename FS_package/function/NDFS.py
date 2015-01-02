@@ -161,40 +161,20 @@ def feature_ranking(W):
 
 
 def main():
-<<<<<<< Updated upstream
-    # load matlab data
-    mat = scipy.io.loadmat('../data/USPS.mat')
-=======
     # load data
     mat = scipy.io.loadmat('../data/COIL20.mat')
->>>>>>> Stashed changes
     label = mat['gnd']    # label
     label = label[:, 0]
     X = mat['fea']    # data
     X = X.astype(float)
 
-    # construct W
-<<<<<<< Updated upstream
-    #W = sklearn.metrics.pairwise.pairwise_kernels(X, metric='rbf')
-    kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 1}
-    W = constructW(X,**kwargs)
-    W = W.toarray()
-    L = np.diag(W.sum(1)) - W
-    
-    # feature weight learning / feature selection
-    W, obj = NDFS(X, C=10, L=L, verbose=1, maxIter = 30)
-    idx = featureRanking(W)
-=======
     kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W(X, **kwargs)
-    print type(W)
-    print W.shape
     L = np.diag(W.sum(1)) - W
-    
+
     # feature weight learning / feature selection
     W, obj = NDFS(X, n_clusters=40, L=L, verbose=1, max_iter=30)
     idx = feature_ranking(W)
->>>>>>> Stashed changes
     
     # evaluation
     num_features = 100

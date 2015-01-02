@@ -64,7 +64,7 @@ def feature_ranking(score):
 
 def main():
     # load data
-    mat = scipy.io.loadmat('../data/ORL.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:, 0]
     X = mat['fea']    # data
@@ -81,7 +81,7 @@ def main():
     # evaluation
     num_fea = 100
     selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = evaluation(selected_features = selected_features, n_clusters=40, y=label)
+    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=40, y=label)
     print ari
     print nmi
     print acc

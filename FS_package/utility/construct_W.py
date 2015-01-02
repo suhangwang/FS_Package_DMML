@@ -41,11 +41,11 @@ def construct_W(X, **kwargs):
                 Indicates whether to build the affinity matrix in a fisher_score way, in which W_ij = 1/n_l
                 if yi = yj = l;
                 otherwise W_ij = 0 (default fisher_score = false)
-            relief: {boolean}
-                Indicates whether to build the affinity matrix in a relief way, NH(x) or NM(x,y) denotes a set of
+            reliefF: {boolean}
+                Indicates whether to build the affinity matrix in a reliefF way, NH(x) or NM(x,y) denotes a set of
                 k nearest points to x with the same class of x, or a different class (the class y), respectively.
                 W_ij = 1 if i = j; W_ij = -1/k if x_j \in NH(x_i); W_ij = 1/(c-1)k if xj \in NM(x_i, y)
-                (default relief = false)
+                (default reliefF = false)
     Output
     -------
     W: {sparse matrix}, shape (n_samples, n_samples)
@@ -79,11 +79,11 @@ def construct_W(X, **kwargs):
         if kwargs['metric'] != 'cosine':
             kwargs['metric'] = 'cosine'
 
-    # default fisher_score and relief mode are 'false'
+    # default fisher_score and reliefF mode are 'false'
     if 'fisher_score' not in kwargs.keys():
         kwargs['fisher_score'] = False
-    if 'relief' not in kwargs.keys():
-        kwargs['relief'] = False
+    if 'reliefF' not in kwargs.keys():
+        kwargs['reliefF'] = False
 
     n_samples, n_features = np.shape(X)
 
@@ -193,51 +193,51 @@ def construct_W(X, **kwargs):
                 W[class_idx_all] = 1.0/np.sum(np.sum(class_idx))
             return W
 
-        # Construct the weight matrix W in a relief way, NH(x) or NM(x,y) denotes a set of k nearest
+        # Construct the weight matrix W in a reliefF way, NH(x) or NM(x,y) denotes a set of k nearest
         # points to x with the same class of x, or a different class (the class y), respectively. W_ij = 1 if i = j;
         # W_ij = -1/k if x_j \in NH(x_i); W_ij = 1/(c-1)k if xj \in NM(x_i, y)
-        if kwargs['relief'] == True:
+        if kwargs['reliefF'] is True:
             # when xj in NH(xi)
-            G = np.zeros((nSamples*(k+1), 3))
-            idNow = 0
-            for i in range(nLabel):
-                classIdx = np.column_stack(np.where(y==label[i]))[:,0]
-                D = pairwise_distances(data[classIdx,:])
-                dump = np.sort(D, axis = 1)
-                idx = np.argsort(D, axis = 1)
-                idxNew = idx[:,0:k+1]
-                nSmpClass = len(classIdx)*(k+1)
-                G[idNow:nSmpClass+idNow, 0] = np.tile(classIdx,(k+1,1)).reshape(-1)
-                G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx[idxNew[:]], order = 'F')
-                G[idNow:nSmpClass+idNow, 2] = -1.0/k
-                idNow = idNow + nSmpClass
-            W1 = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W1 = np.minimum(W1, np.transpose(W1))
+            G = np.zeros((n_samples*(k+1), 3))
+            id_now = 0
+            for i in range(n_classes):
+                class_idx = np.column_stack(np.where(y == label[i]))[:, 0]
+                D = pairwise_distances(X[class_idx, :])
+                idx = np.argsort(D, axis=1)
+                idx_new = idx[:, 0:k+1]
+                n_smp_class = len(class_idx)*(k+1)
+                G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx, (k+1, 1)).reshape(-1)
+                G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
+                G[id_now:n_smp_class+id_now, 2] = -1.0/k
+                id_now += n_smp_class
+            W1 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             # when i = j
-            for i in range(nSamples):
-                W1[i,i] = 1
-            # when xj in NM(xi,y)
-            G = np.zeros((nSamples*(k), 3))
-            idNow = 0
-            for i in range(nLabel):
-                classIdx1 = np.column_stack(np.where(y==label[i]))[:,0]
-                classIdx2 = np.column_stack(np.where(y!=label[i]))[:,0]
-                X1 = data[classIdx1,:]
-                X2 = data[classIdx2,:]
-                D = pairwise_distances(X1,X2)
-                dump = np.sort(D, axis = 1)
-                idx = np.argsort(D, axis = 1)
-                idxNew = idx[:,0:k]
-                nSmpClass = len(classIdx)*k
-                G[idNow:nSmpClass+idNow, 0] = np.tile(classIdx1,(k,1)).reshape(-1)
-                G[idNow:nSmpClass+idNow, 1] = np.ravel(classIdx2[idxNew[:]], order = 'F')
-                G[idNow:nSmpClass+idNow, 2] = 1.0/((nLabel-1)*k)
-                idNow = idNow + nSmpClass
-            W2 = csc_matrix((G[:,2],(G[:,0],G[:,1])), shape = (nSamples, nSamples)).toarray()
-            W2 = np.maximum(W2, np.transpose(W2))
+            for i in range(n_samples):
+                W1[i, i] = 1
+            # when xj in NM(Xi, y)
+            G = np.zeros((n_samples*k*(n_classes - 1), 3))
+            id_now = 0
+            for i in range(n_classes):
+                class_idx1 = np.column_stack(np.where(y == label[i]))[:, 0]
+                X1 = X[class_idx1, :]
+                for j in range(n_classes):
+                    if label[j] != label[i]:
+                        class_idx2 = np.column_stack(np.where(y == label[j]))[:, 0]
+                        X2 = X[class_idx2, :]
+                        D = pairwise_distances(X1, X2)
+                        idx = np.argsort(D, axis=1)
+                        idx_new = idx[:, 0:k]
+                        n_smp_class = len(class_idx1)*k
+                        G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx1, (k, 1)).reshape(-1)
+                        G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx2[idx_new[:]], order='F')
+                        G[id_now:n_smp_class+id_now, 2] = 1.0/((n_classes-1)*k)
+                        id_now += n_smp_class
+            W2 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             W = W1 + W2
-            print 'test'
+            print 'reliefF'
             return W
+
+
 
         if kwargs['weight_mode'] == 'binary':
             if kwargs['metric'] == 'euclidean':

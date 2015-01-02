@@ -11,7 +11,7 @@ def evaluation_split(selected_features, y):
         selectedFeatures: {numpy array}, shape (n_samples, n_selectedFeatures}
             data of the selectedFeatures
         Y: {numpy array}, shape (n_samples, 1)
-            actual labels
+            true labels, guaranteed to be a numpy array
     Output
     ----------
         classification accuracy: {float}
