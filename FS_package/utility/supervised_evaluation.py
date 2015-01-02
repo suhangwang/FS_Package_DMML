@@ -16,6 +16,7 @@ def evaluation_split(selected_features, y):
     ----------
         classification accuracy: {float}
     """
+    
     n_samples, n_features = selected_features.shape
 
     # repeat 20 times, 50% for training and the rest 50% for testing (default)
@@ -47,6 +48,7 @@ def evaluation_leave_one(selected_features, y):
     ----------
         classification accuracy: {float}
     """
+
     n_samples, n_features = selected_features.shape
     lo = cross_validation.LeaveOneOut(n_samples)
 
