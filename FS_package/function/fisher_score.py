@@ -2,10 +2,10 @@ import scipy.io
 import numpy as np
 from scipy.sparse import *
 from utility.construct_W import construct_W
-from utility.supervised_evaluation import evaluation_split
+from utility.supervised_evaluation import *
 
 
-def fisher_score(X, W):
+def fisher_score(X, y):
     """
     This function implement the FisherScore function
     1. Construct the weight matrix W in fisherScore way
@@ -17,13 +17,17 @@ def fisher_score(X, W):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             Input data, guaranteed to be a numpy array
-        W: {numpy array}, shape (n_samples, n_samples)
-        Input weight matrix
+        y: {numpy array}, shape (n_samples, 1)
+            True labels
     Output
     ----------
         score: {numpy array}, shape (n_features, 1)
             fisher_score for each feature
     """
+    # Construct weight matrix W in a fisherScore way
+    kwargs = {"neighbor_mode": "supervised", "fisher_score": True, 'y': y}
+    W = construct_W(X, **kwargs)
+
     # build the diagonal D matrix from affinity matrix W
     D = np.array(W.sum(axis=1))
     L = W
@@ -56,18 +60,14 @@ def feature_ranking(score):
 
 def main():
     # load data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     label = mat['gnd']    # label
     label = label[:, 0]
     X = mat['fea']    # data
     X = X.astype(float)
 
-    # Construct weight matrix W in a fisherScore way
-    kwargs = {"neighbor_mode": "supervised", "fisher_score": True, 'y': label}
-    W = construct_W(X, **kwargs)
-
     # feature weight learning / feature selection
-    score = fisher_score(X, W)
+    score = fisher_score(X, label)
     idx = feature_ranking(score)
 
     # evaluation
