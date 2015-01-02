@@ -20,6 +20,7 @@ def information_gain(f1, f2):
     '''
     entropy_estimators.entropyd(x) is used to estimate the discrete entropy given a list of samples of discrete variable x
     '''
+
     # IG(f1,f2) = H(f1)-H(f1|f2)
     ig = ee.entropyd(f1) - ce.conditional_entropy(f1, f2)
     return ig
