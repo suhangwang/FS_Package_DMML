@@ -4,7 +4,7 @@ import scipy.io
 import numpy as np
 from scipy.sparse.linalg import eigs
 from sklearn import linear_model
-from utility.constructW import construct_W
+from utility.construct_W import construct_W
 from utility.unsupervised_evaluation import evaluation
 
 def mcfs(X, **kwargs):
