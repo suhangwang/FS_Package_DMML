@@ -83,7 +83,7 @@ def main():
 
     X = X.astype(float)
 
-    # feature weight learning / feature selection
+    # feature selection
     W = gini_index(X, y)
     print W
     idx = feature_ranking(W)
