@@ -4,7 +4,7 @@ import scipy.io
 import numpy as np
 from scipy.sparse.linalg import eigs
 from sklearn import linear_model
-from utility.constructW import constructW
+from utility.constructW import construct_W
 from utility.unsupervised_evaluation import evaluation
 
 def mcfs(X, **kwargs):
@@ -85,7 +85,7 @@ def main():
     X = X.astype(float)
     #construct W
     kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 0.1}
-    W = constructW(X, **kwargs)
+    W = construct_W(X, **kwargs)
 
     # mcfs feature selection
     numFea = 200
