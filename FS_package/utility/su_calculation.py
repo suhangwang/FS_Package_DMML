@@ -20,6 +20,7 @@ def su_calculation(f1, f2):
     '''
     entropy_estimators.entropyd(x) is used to estimate the discrete entropy given a list of samples of discrete variable x
     '''
+
     # calculate information gain of f1 and f2, t1 = IG(f1,f2)
     t1 = ig.information_gain(f1, f2)
     # calculate entropy of f1, t2 = H(f1)
