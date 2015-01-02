@@ -107,7 +107,7 @@ def NDFS(X, **kwargs):
         if 'n_clusters' not in kwargs:
             print >>sys.stderr, "either F0 or C should be provided"
         else:
-            # initialize the F
+            # initialize F
             F = kmeans_initialization(X, kwargs['n_clusters'])
             n_clusters = kwargs['n_clusters']
     else:
