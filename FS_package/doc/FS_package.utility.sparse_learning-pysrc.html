@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>FS_package.utility.sparse_learning</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="FS_package-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="FS_package-module.html">Package&nbsp;FS_package</a> ::
+        <a href="FS_package.utility-module.html">Package&nbsp;utility</a> ::
+        Module&nbsp;sparse_learning
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="FS_package.utility.sparse_learning-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="FS_package.utility.sparse_learning-module.html">Module FS_package.utility.sparse_learning</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-name">__author__</tt> <tt class="py-op">=</tt> <tt class="py-docstring">'swang187'</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="feature_ranking"></a><div id="feature_ranking-def"><a name="L6"></a><tt class="py-lineno"> 6</tt> <a class="py-toggle" href="#" id="feature_ranking-toggle" onclick="return toggle('feature_ranking');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="FS_package.utility.sparse_learning-module.html#feature_ranking">feature_ranking</a><tt class="py-op">(</tt><tt class="py-param">W</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="feature_ranking-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="feature_ranking-expanded"><a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-docstring">    This function rank features according to the feature weights matrix W</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring">    ------------------</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">    Input:</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">        W: {numpy array}, shape (n_features, n_clusters)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">            feature weights matrix, guaranteed to be a numpy array</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">    ------------------</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    Output:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">        ind: {numpy array}, shape {n_features,}</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">            feature index ranked in descending order of feature importance</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">    <tt class="py-name">T</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">W</tt><tt class="py-op">*</tt><tt class="py-name">W</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">    <tt class="py-name">ind</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">argsort</tt><tt class="py-op">(</tt><tt class="py-name">T</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">ind</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">:</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="generate_diagonal_matrix"></a><div id="generate_diagonal_matrix-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="generate_diagonal_matrix-toggle" onclick="return toggle('generate_diagonal_matrix');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="FS_package.utility.sparse_learning-module.html#generate_diagonal_matrix">generate_diagonal_matrix</a><tt class="py-op">(</tt><tt class="py-param">U</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="generate_diagonal_matrix-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="generate_diagonal_matrix-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">    This function generate a diagonal matrix D from an input matrix U as D_ii = 1 / 2 / ||U[i,:]||</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">    ----------------</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">    Input:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">        U: {numpy array}, shape (n, k)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">    Output:</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-docstring">        D: {numpy array}, shape (n, n)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">    <tt class="py-name">temp</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">sqrt</tt><tt class="py-op">(</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">multiply</tt><tt class="py-op">(</tt><tt class="py-name">U</tt><tt class="py-op">,</tt> <tt class="py-name">U</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-name">temp</tt><tt class="py-op">[</tt><tt class="py-name">temp</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">1e-16</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">1e-16</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">    <tt class="py-name">temp</tt> <tt class="py-op">=</tt> <tt class="py-number">0.5</tt> <tt class="py-op">/</tt> <tt class="py-name">temp</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">    <tt class="py-name">D</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">diag</tt><tt class="py-op">(</tt><tt class="py-name">temp</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">D</tt> </tt>
+</div><a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="calculate_l21_norm"></a><div id="calculate_l21_norm-def"><a name="L38"></a><tt class="py-lineno">38</tt> <a class="py-toggle" href="#" id="calculate_l21_norm-toggle" onclick="return toggle('calculate_l21_norm');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="FS_package.utility.sparse_learning-module.html#calculate_l21_norm">calculate_l21_norm</a><tt class="py-op">(</tt><tt class="py-param">X</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="calculate_l21_norm-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="calculate_l21_norm-expanded"><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"><tt class="py-docstring">    This function calculate the l21 norm of a matrix X, i.e., \sum ||X[i,:]||_2</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"><tt class="py-docstring">    ------------</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"><tt class="py-docstring">    Input:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"><tt class="py-docstring">        X: {numpy array}, shape (n, k)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"><tt class="py-docstring">    ------------</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"><tt class="py-docstring">    Output:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"><tt class="py-docstring">        l21_norm: scalar</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"><tt class="py-docstring">    ------------</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-op">(</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">sqrt</tt><tt class="py-op">(</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">multiply</tt><tt class="py-op">(</tt><tt class="py-name">X</tt><tt class="py-op">,</tt> <tt class="py-name">X</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt>
+<a name="construct_label_matrix"></a><div id="construct_label_matrix-def"><a name="L52"></a><tt class="py-lineno">52</tt> <a class="py-toggle" href="#" id="construct_label_matrix-toggle" onclick="return toggle('construct_label_matrix');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="FS_package.utility.sparse_learning-module.html#construct_label_matrix">construct_label_matrix</a><tt class="py-op">(</tt><tt class="py-param">label</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="construct_label_matrix-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="construct_label_matrix-expanded"><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"><tt class="py-docstring">    This function convert a 1d numpy array to a 2d array</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring">    -------------</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-docstring">    Input:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-docstring">        label: {numpy array}, shape(n_sample,)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt class="py-docstring">    ------------</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"><tt class="py-docstring">    Output:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"><tt class="py-docstring">        label_matrix: {numpy array}, shape(n_sample, n_class)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">    <tt class="py-name">n_samples</tt> <tt class="py-op">=</tt> <tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">    <tt class="py-name">unique_label</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">unique</tt><tt class="py-op">(</tt><tt class="py-name">label</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">    <tt class="py-name">n_classes</tt> <tt class="py-op">=</tt> <tt class="py-name">unique_label</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">    <tt class="py-name">label_matrix</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">n_samples</tt><tt class="py-op">,</tt> <tt class="py-name">n_classes</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">n_classes</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-name">label_matrix</tt><tt class="py-op">[</tt><tt class="py-name">label</tt> <tt class="py-op">==</tt> <tt class="py-name">unique_label</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">i</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">label_matrix</tt><tt class="py-op">.</tt><tt class="py-name">astype</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="FS_package-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Jan 03 19:21:24 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
