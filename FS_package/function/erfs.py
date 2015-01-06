@@ -77,7 +77,7 @@ def erfs(X, Y, **kwargs):
 
 def main():
     # load MATLAB data
-    mat = scipy.io.loadmat('../data/LUNG.mat')
+    mat = scipy.io.loadmat('../data/ALLAML.mat')
     label = mat['L']    # label
     label = label[:, 0]
     X = mat['M']    # data
