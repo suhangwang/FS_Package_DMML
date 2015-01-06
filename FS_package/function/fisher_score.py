@@ -15,11 +15,11 @@ def feature_select(X, y):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             Input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, 1)
+        y: {numpy array}, shape (n_samples, )
             True labels
     Output
     ----------
-        score: {numpy array}, shape (n_features, 1)
+        score: {numpy array}, shape (n_features, )
             fisher_score for each feature
     """
     # Construct weight matrix W in a fisherScore way
