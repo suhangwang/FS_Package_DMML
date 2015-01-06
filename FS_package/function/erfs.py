@@ -4,9 +4,8 @@ import scipy.io
 import numpy as np
 import scipy.linalg as LA
 import utility.sparse_learning as SL
-from utility.supervised_evaluation import evaluation_split
+from sklearn import svm
 from sklearn import cross_validation
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
 
@@ -70,7 +69,6 @@ def erfs(X, Y, **kwargs):
             obj = calculate_obj(X, Y, U[0:n_feature, :], gamma)
             print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
 
-
     # the first d rows of U are the feature weights
     feature_weights = U[0:n_feature, :]
     ind = SL.feature_ranking(feature_weights)
@@ -79,10 +77,10 @@ def erfs(X, Y, **kwargs):
 
 def main():
     # load MATLAB data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
-    label = mat['gnd']    # label
-    label = label[:,0]
-    X = mat['fea']    # data
+    mat = scipy.io.loadmat('../data/LUNG.mat')
+    label = mat['L']    # label
+    label = label[:, 0]
+    X = mat['M']    # data
     n_sample, n_feature = X.shape
     X = X.astype(float)
     Y = SL.construct_label_matrix(label)
@@ -90,17 +88,22 @@ def main():
     #idx = erfs(X=X, Y=Y, gamma=0.1, max_iter=50, verbose=True)
 
     # evalaution
-    num_fea = 100
-    ss = cross_validation.ShuffleSplit(n_sample, n_iter=1, test_size=0.5)
-    neigh = KNeighborsClassifier(n_neighbors=1)
+    num_fea = 20
+    ss = cross_validation.ShuffleSplit(n_sample, n_iter=5, test_size=0.2)
+    clf = svm.LinearSVC()
+    mean_acc = 0
     for train, test in ss:
         idx = erfs(X=X[train, :], Y=Y[train, :], gamma=0.1, max_iter=50, verbose=True)
         selected_features = X[:, idx[0:num_fea]]
-        neigh.fit(selected_features[train, :], label[train])
-        yPredict = neigh.predict(selected_features[test, :])
-        acc = accuracy_score(label[test], yPredict)
+        clf.fit(selected_features[train, :], label[train])
+        y_predict = clf.predict(selected_features[test, :])
+        acc = accuracy_score(label[test], y_predict)
         print acc
+        mean_acc = mean_acc + acc
+    mean_acc = mean_acc / 5
+    print mean_acc
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
 
