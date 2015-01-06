@@ -49,19 +49,13 @@ def mcfs(X, **kwargs):
     # eigen-vectors with respect to the smallest eigenvalues
     W = W.toarray()
     W = (W + W.T) / 2
-    #D = np.diag(W.sum(1))
     W_norm = np.diag(np.sqrt(1 / W.sum(1)))
     W = np.dot(W_norm, np.dot(W, W_norm))
     WT = W.T
     W[W < WT] = WT[W < WT]
-    #L = np.eye(W.shape[0]) - W
-    #eigen_value, Y = eigs(A=W, k=n_clusters, which='LM')
     eigen_value, ul = scipy.linalg.eigh(a=W)
     Y = np.dot(W_norm, ul[:, -1*n_clusters-1:-1])
-    # TODO, whcih one is better, how to deal with complex number
-    #eigen_value, ul, ur = scipy.linalg.eig(a=L, b=D, left=True)
-    #ind = np.argsort(eigen_value.real, 0)
-    #Y = ul[:, ind[0:n_clusters]]
+
 
     # solve K L1-regularized regression problem using LARs algorithm with
     # the cardinality constraint set to d
@@ -98,10 +92,10 @@ def main():
     selected_features = mcfs(X=X, W=W, n_clusters=20, d=num_fea)
 
     # evaluation
-    ARI, NMI, ACC = evaluation(selected_features=selected_features, n_clusters=20, y=label)
-    print ARI
-    print NMI
-    print ACC
+    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=20, y=label)
+    print ari
+    print nmi
+    print acc
 
 if __name__ == '__main__':
     main()
