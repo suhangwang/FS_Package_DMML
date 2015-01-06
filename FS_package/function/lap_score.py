@@ -1,11 +1,9 @@
-import scipy.io
 import numpy as np
 from scipy.sparse import *
-from utility.construct_W import construct_W
-from utility.unsupervised_evaluation import evaluation
+from ..utility.construct_W import construct_W
 
 
-def lap_score(X, **kwargs):
+def feature_select(X, **kwargs):
     """
     This function implement the LapScore function
     1. Construct the weight matrix W if it is not specified
@@ -59,31 +57,3 @@ def feature_ranking(score):
     """
     ind = np.argsort(score, 0)
     return ind[::-1]
-
-
-def main():
-    # load data
-    mat = scipy.io.loadmat('../data/USPS.mat')
-    label = mat['gnd']    # label
-    label = label[:, 0]
-    X = mat['fea']    # data
-    X = X.astype(float)
-
-    # construct the affinity matrix
-    kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
-    W = construct_W(X, **kwargs)
-
-    # feature selection
-    score = lap_score(X, W=W)
-    idx = feature_ranking(score)
-
-    # evaluation
-    num_fea = 100
-    selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=40, y=label)
-    print ari
-    print nmi
-    print acc
-
-if __name__ == '__main__':
-    main()
