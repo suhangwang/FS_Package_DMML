@@ -25,6 +25,7 @@ def feature_select(X, **kwargs):
     Reference:
         He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS. 2005.
     """
+
     # if 'W' is not specified, use the default W
     if 'W' not in kwargs.keys():
         W = construct_W(X)
