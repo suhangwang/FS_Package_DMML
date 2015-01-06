@@ -7,7 +7,7 @@ def select_train_split(n_samples, train_size, n_iters):
     Input
     ----------
     n_samples: {int}
-        number of samples in the dataset X
+        number of samples in dataset X
     n_iter : {int}
         parameter for the function cross_validation.ShuffleSplit
     test_size : {int}
@@ -24,11 +24,11 @@ def select_train_split(n_samples, train_size, n_iters):
 
 def select_train_leave_one_out(n_samples):
     """
-    This function implements the function to select one sample for testing
+    This function implements the leave out out method data splitting
     Input
     ----------
     n_samples: {int}
-        number of samples in the dataset X
+        number of samples in dataset X
     Output
     ----------
     result after splitting the input data
