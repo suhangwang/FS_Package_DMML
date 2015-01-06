@@ -1,8 +1,7 @@
 import scipy.io
 import numpy as np
 from scipy.sparse import *
-from utility.construct_W import construct_W
-from utility.supervised_evaluation import *
+from utility import construct_W
 
 
 def fisher_score(X, y):
@@ -65,15 +64,15 @@ def main():
     label = label[:, 0]
     X = mat['fea']    # data
     X = X.astype(float)
-
+    print X.shape
     # feature weight learning / feature selection
-    score = fisher_score(X, label)
+    score = fisher_score(X[0:4000], label[0:4000])
     idx = feature_ranking(score)
 
     # evaluation
     n_features = 100
     selected_features = X[:, idx[0:n_features]]
-    acc = evaluation_split(selected_features=selected_features, y=label)
+    #acc = evaluation_split(selected_features=selected_features, y=label)
     print acc
 
 if __name__ == '__main__':
