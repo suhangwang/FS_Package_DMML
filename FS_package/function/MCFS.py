@@ -49,13 +49,19 @@ def mcfs(X, **kwargs):
     # eigen-vectors with respect to the smallest eigenvalues
     W = W.toarray()
     W = (W + W.T) / 2
-    D = np.diag(W.sum(1))
-    L = D - W
-    #eigen_value, Y = eigs(A=L, M=D, k=n_clusters, which='SM')
+    #D = np.diag(W.sum(1))
+    W_norm = np.diag(np.sqrt(1 / W.sum(1)))
+    W = np.dot(W_norm, np.dot(W, W_norm))
+    WT = W.T
+    W[W < WT] = WT[W < WT]
+    #L = np.eye(W.shape[0]) - W
+    #eigen_value, Y = eigs(A=W, k=n_clusters, which='LM')
+    eigen_value, ul = scipy.linalg.eigh(a=W)
+    Y = np.dot(W_norm, ul[:, -1*n_clusters-1:-1])
     # TODO, whcih one is better, how to deal with complex number
-    eigen_value, ul, ur = scipy.linalg.eig(a=L, b=D, left=True)
-    ind = np.argsort(eigen_value.real, 0)
-    Y = ul[:, ind[0:n_clusters]]
+    #eigen_value, ul, ur = scipy.linalg.eig(a=L, b=D, left=True)
+    #ind = np.argsort(eigen_value.real, 0)
+    #Y = ul[:, ind[0:n_clusters]]
 
     # solve K L1-regularized regression problem using LARs algorithm with
     # the cardinality constraint set to d
@@ -63,8 +69,8 @@ def mcfs(X, **kwargs):
     coefficients = np.zeros((n_feature, n_clusters))
     for i in range(n_clusters):
         clf = linear_model.Lars(n_nonzero_coefs=d)
-        clf.fit(X, Y[:,i].real)
-        coefficients[:,i] = clf.coef_
+        clf.fit(X, Y[:, i])
+        coefficients[:, i] = clf.coef_
 
     # compute the MCFS score for each feature
     mcfs_score = coefficients.max(1)
@@ -72,30 +78,30 @@ def mcfs(X, **kwargs):
     ind = np.argsort(mcfs_score, 0)
     ind = ind[::-1]
 
-    return X[:,ind[0:d]]
+    return X[:, ind[0:d]]
 
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('data/COIL20.mat')
+    mat = scipy.io.loadmat('../data/COIL20.mat')
     label = mat['gnd']
     label = label[:, 0]
     X = mat['fea']
     n_sample, n_feature = X.shape
     X = X.astype(float)
     #construct W
-    kwargs = {"metric": "euclidean","neighborMode": "knn","weightMode": "heatKernel","k": 5, 't': 0.1}
+    kwargs = {"metric": "euclidean", "neighborMode": "knn", "weightMode": "heatKernel", "k": 5, 't': 0.1}
     W = construct_W(X, **kwargs)
 
     # mcfs feature selection
-    numFea = 200
-    selected_features = mcfs(X=X, W=W, n_clusters=20, d=numFea)
+    num_fea = 200
+    selected_features = mcfs(X=X, W=W, n_clusters=20, d=num_fea)
 
     # evaluation
-    ARI, NMI, ACC, predictLabel = evaluation(selectedFeatures = selected_features, C=20, Y=label)
+    ARI, NMI, ACC = evaluation(selected_features=selected_features, n_clusters=20, y=label)
     print ARI
     print NMI
     print ACC
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
