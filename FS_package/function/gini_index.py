@@ -1,17 +1,7 @@
-import scipy.io
 import numpy as np
 
 
-def feature_ranking(W):
-    """
-    Rank features in descending order according to their gini index values, the smaller the gini index,
-    the more important the feature is
-    """
-    idx = np.argsort(W)
-    return idx
-
-
-def gini_index(X, y):
+def feature_select(X, y):
     """
     This function implements the gini index function
 
@@ -19,11 +9,11 @@ def gini_index(X, y):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, 1)
+        y: {numpy array}, shape (n_samples, )
             guaranteed to be a numpy array
     Output
     ----------
-        W: {numpy array}, shape (n_features, 1)
+        W: {numpy array}, shape (n_features, )
             a list containing the gini index of each feature
     ----------
     """
@@ -74,25 +64,13 @@ def gini_index(X, y):
     return W
 
 
-def main():
-    # load data
-    mat = scipy.io.loadmat('../data/iris.mat')
-    y = mat['gnd']
-    y = y[:, 0]
-    X = mat['fea']
-
-    X = X.astype(float)
-
-    # feature selection
-    W = gini_index(X, y)
-    print W
-    idx = feature_ranking(W)
-    print idx
-
-if __name__ == '__main__':
-    main()
-
-
+def feature_ranking(W):
+    """
+    Rank features in descending order according to their gini index values, the smaller the gini index,
+    the more important the feature is
+    """
+    idx = np.argsort(W)
+    return idx
 
 
 

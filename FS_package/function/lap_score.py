@@ -20,7 +20,7 @@ def feature_select(X, **kwargs):
             Input weight matrix
     Output
     ----------
-        score: {numpy array}, shape (n_features, 1)
+        score: {numpy array}, shape (n_features, )
             laplacian score for each feature
     Reference:
         He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS. 2005.

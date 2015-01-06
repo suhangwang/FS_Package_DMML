@@ -1,13 +1,9 @@
-import scipy.io
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
 from scipy.sparse import *
-from utility.construct_W import construct_W
-from utility.supervised_evaluation import *
+from ..utility.construct_W import construct_W
 
 
-def fisher_score(X, y):
+def feature_select(X, y):
     """
     This function implement the FisherScore function
     1. Construct the weight matrix W in fisherScore way
@@ -19,11 +15,11 @@ def fisher_score(X, y):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             Input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, 1)
+        y: {numpy array}, shape (n_samples, )
             True labels
     Output
     ----------
-        score: {numpy array}, shape (n_features, 1)
+        score: {numpy array}, shape (n_features, )
             fisher_score for each feature
     """
     # Construct weight matrix W in a fisherScore way
@@ -58,50 +54,3 @@ def feature_ranking(score):
     """
     ind = np.argsort(score, 0)
     return ind[::-1]
-
-
-def main():
-    # load matlab data
-    mat = scipy.io.loadmat('../data/USPS.mat')
-    y = mat['gnd']    # label
-    y = y[:,0]
-    X = mat['fea']    # data
-    n_sample, n_feature = X.shape
-    X = X.astype(float)
-
-    # feature weight learning / feature selection
-    n_iter = 20
-    test_size = 0.5
-    ss = select_train_split(n_sample, n_iter, test_size)
-    i = 0
-    idx_feature = []
-    neigh = KNeighborsClassifier(n_neighbors=1)
-    correct = 0
-    i = 0
-    for train, test in ss:
-        kwargs = {"neighbor_mode": "supervised", "fisher_score": True, 'y': y[train]}
-        W = construct_W(X[train],**kwargs)
-        score = fisher_score(X[train], y[train])
-        idx = feature_ranking(score)
-        #idx_feature.append(idx)
-        numFea = 100
-        selected_features = X[:, idx[0:numFea]]
-        neigh.fit(selected_features[train], y[train])
-        y_predict = neigh.predict(selected_features[test])
-        acc = accuracy_score(y[test], y_predict)
-        correct = correct + acc
-        i += 1
-        print acc
-    print 'ACC'
-    print float(correct)/n_iter
-    # evalaution
-    #idx_feature = np.array(idx_feature)
-    #numFea = 100
-    #idx_feature = idx_feature[:, :numFea]
-    #ACC = evaluation_split(X, y, idx_feature, ss, n_iter)
-    #print ACC
-
-
-
-if __name__ == '__main__':
-    main()

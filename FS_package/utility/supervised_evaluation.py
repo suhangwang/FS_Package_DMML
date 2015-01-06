@@ -1,13 +1,13 @@
 from sklearn import cross_validation
 
 
-def select_train_split(n_samples, train_size, n_iters):
+def select_train_split(n_samples, test_size, n_iter):
     """
     This function implements the function splitting data into training set and test set evenly
     Input
     ----------
     n_samples: {int}
-        number of samples in the dataset X
+        number of samples in dataset X
     n_iter : {int}
         parameter for the function cross_validation.ShuffleSplit
     test_size : {int}
@@ -18,17 +18,17 @@ def select_train_split(n_samples, train_size, n_iters):
         Output.train contains the index of samples for training
         Output.test contains the index of samples for testing
     """
-    ss = cross_validation.ShuffleSplit(n_samples, n_iter=n_iters, test_size=train_size)
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=n_iter, test_size=test_size)
     return ss
 
 
 def select_train_leave_one_out(n_samples):
     """
-    This function implements the function to select one sample for testing
+    This function implements the leave out out method data splitting
     Input
     ----------
     n_samples: {int}
-        number of samples in the dataset X
+        number of samples in dataset X
     Output
     ----------
     result after splitting the input data
