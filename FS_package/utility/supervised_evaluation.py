@@ -1,7 +1,7 @@
 from sklearn import cross_validation
 
 
-def select_train_split(n_samples, train_size, n_iters):
+def select_train_split(n_samples, test_size, n_iter):
     """
     This function implements the function splitting data into training set and test set evenly
     Input
@@ -18,7 +18,7 @@ def select_train_split(n_samples, train_size, n_iters):
         Output.train contains the index of samples for training
         Output.test contains the index of samples for testing
     """
-    ss = cross_validation.ShuffleSplit(n_samples, n_iter=n_iters, test_size=train_size)
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=n_iter, test_size=test_size)
     return ss
 
 
