@@ -11,17 +11,17 @@ from sklearn.metrics import accuracy_score
 
 def calculate_obj(X, Y, W, gamma):
     """
-    This function calculate the objective function of erfs
+    This function calculate the objective function of ls_l21
     """
     temp = np.dot(X, W) - Y
-    return SL.calculate_l21_norm(temp) + gamma*SL.calculate_l21_norm(W)
+    return np.trace(np.dot(temp.T, temp)) + gamma*SL.calculate_l21_norm(W)
 
 
-def erfs(X, Y, **kwargs):
+def ls_l21(X, Y, **kwargs):
     """
-    This function implement efficient and robust feature selection via joint l21-norms minimization
-    Input
-    --------------
+    This function implements the least squre l21-norm feature selection problem, i.e.,
+    ||XW - Y||_2^F + gamma*||W||_{2,1}
+    --------------------------
         X: {numpy array}, shape (n_samples, n_features)
             Input data, guaranteed to be a numpy array
         Y: {numpy array}, shape (n_samples, n_classes)
@@ -52,32 +52,26 @@ def erfs(X, Y, **kwargs):
         verbose = kwargs['verbose']
 
     n_sample, n_feature = X.shape
-    A = np.zeros((n_sample, n_sample + n_feature))
-    A[:, 0:n_feature] = X
-    A[:, n_feature:n_feature+n_sample] = gamma*np.eye(n_sample)
-    D = np.eye(n_feature+n_sample)
+    xtx = np.dot(X.T, X)    # X^T * X
+    D = np.eye(n_feature)
     for i in range(max_iter):
-        # update U as U = D^{-1} A^T (A D^-1 A^T)^-1 Y
-        D_inv = LA.inv(D)
-        temp = LA.inv(np.dot(np.dot(A, D_inv), A.T))  # (A D^-1 A^T)^-1
-        U = np.dot(np.dot(np.dot(D_inv, A.T), temp), Y)
+        # update W as W = (X^T X + gamma*D)^-1 (X^T Y)
+        temp = LA.inv((xtx + gamma*D))  # (X^T X + gamma*D)^-1
+        feature_weights = np.dot(temp, np.dot(X.T, Y))
         # update D as D_ii = 1 / 2 / ||U(i,:)||
-        D = SL.generate_diagonal_matrix(U)
+        D = SL.generate_diagonal_matrix(feature_weights)
 
         # display
         if verbose:
-            obj = calculate_obj(X, Y, U[0:n_feature, :], gamma)
+            obj = calculate_obj(X, Y, feature_weights, gamma)
             print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
-
-    # the first d rows of U are the feature weights
-    feature_weights = U[0:n_feature, :]
     ind = SL.feature_ranking(feature_weights)
     return ind
 
 
 def main():
     # load MATLAB data
-    mat = scipy.io.loadmat('../data/ALLAML.mat')
+    mat = scipy.io.loadmat('../data/LUNG.mat')
     label = mat['L']    # label
     label = label[:, 0]
     X = mat['M']    # data
@@ -93,7 +87,7 @@ def main():
     clf = svm.LinearSVC()
     mean_acc = 0
     for train, test in ss:
-        idx = erfs(X=X[train, :], Y=Y[train, :], gamma=0.1, max_iter=50, verbose=True)
+        idx = ls_l21(X=X[train, :], Y=Y[train, :], gamma=0.1, max_iter=50, verbose=True)
         selected_features = X[:, idx[0:num_fea]]
         clf.fit(selected_features[train, :], label[train])
         y_predict = clf.predict(selected_features[test, :])
@@ -106,4 +100,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
