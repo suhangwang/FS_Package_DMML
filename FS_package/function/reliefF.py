@@ -1,10 +1,8 @@
-import scipy.io
 import numpy as np
-from utility.construct_W import construct_W
-from utility.supervised_evaluation import *
+from ..utility.construct_W import construct_W
 
 
-def reliefF(X, y):
+def feature_select(X, y):
     """
     This function implement the reliefF function
     1. Construct the weight matrix W in reliefF way
@@ -14,7 +12,7 @@ def reliefF(X, y):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, 1)
+        y: {numpy array}, shape (n_samples, )
             true labels, guaranteed to be a numpy array
     Output
     ----------
@@ -38,25 +36,3 @@ def feature_ranking(score):
     ind = np.argsort(score, 0)
     return ind[::-1]
 
-
-def main():
-    # load data
-    mat = scipy.io.loadmat('../data/ORL.mat')
-    label = mat['gnd']
-    label = label[:, 0]
-    X = mat['fea']
-    X = X.astype(float)
-
-    # feature selection
-    score = reliefF(X, label)
-    idx = feature_ranking(score)
-
-    # evaluation
-    n_features = 100
-    selected_features = X[:, idx[0:n_features]]
-
-    acc = evaluation_split(selected_features=selected_features, y=label)
-    print acc
-
-if __name__ == '__main__':
-    main()
