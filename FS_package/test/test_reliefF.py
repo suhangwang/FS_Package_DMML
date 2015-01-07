@@ -13,19 +13,15 @@ def main():
     X = mat['M']      # data
     n_samples, n_features = X.shape
     X = X.astype(float)
+
     # split data
-    n_iter = 1
-    test_size = 0.5
-    ss = supervised_evaluation.select_train_split(n_samples, test_size, n_iter)
+    n_iter = 20
+    ss = supervised_evaluation.select_train_split(n_samples, test_size=0.5, n_iter=n_iter)
 
     # cross validation
     num_fea = 100
     neigh = KNeighborsClassifier(n_neighbors=1)
     correct = 0
-    score = reliefF.feature_select(X, y)
-    idx = reliefF.feature_ranking(score)
-    print idx
-    print score.shape
     for train, test in ss:
         score = reliefF.feature_select(X[train], y[train])
         idx = reliefF.feature_ranking(score)
