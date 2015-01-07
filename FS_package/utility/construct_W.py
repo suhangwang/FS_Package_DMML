@@ -205,7 +205,9 @@ def construct_W(X, **kwargs):
                 D = pairwise_distances(X[class_idx, :])
                 idx = np.argsort(D, axis=1)
                 idx_new = idx[:, 0:k+1]
-                n_smp_class = len(class_idx)*(k+1)
+                n_smp_class = (class_idx[idx_new[:]]).size
+                if len(class_idx) <= k:
+                    k = len(class_idx) - 1
                 G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx, (k+1, 1)).reshape(-1)
                 G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                 G[id_now:n_smp_class+id_now, 2] = -1.0/k
@@ -235,8 +237,6 @@ def construct_W(X, **kwargs):
             W2 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             W = W1 + W2
             return W
-
-
 
         if kwargs['weight_mode'] == 'binary':
             if kwargs['metric'] == 'euclidean':
@@ -331,7 +331,7 @@ def construct_W(X, **kwargs):
                 G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx, (k+1, 1)).reshape(-1)
                 G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                 G[id_now:n_smp_class+id_now, 2] = np.ravel(dump_new, order='F')
-                id_now = id_now + n_smp_class
+                id_now += n_smp_class
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             W = W + np.transpose(W)
