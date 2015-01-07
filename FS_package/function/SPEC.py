@@ -2,11 +2,11 @@ import numpy.matlib
 import numpy as np
 import scipy.io
 from numpy import linalg as LA
-from utility.construct_W import construct_W
-from utility.unsupervised_evaluation import evaluation
+from ..utility.construct_W import construct_W
+from ..utility.unsupervised_evaluation import evaluation
 
 
-def SPEC(X, **kwargs):
+def feature_select(X, **kwargs):
     """
     This function implement the SPEC function which selects feature using the spectrum information of the graph laplacian
 
@@ -97,31 +97,3 @@ def feature_ranking(score, **kwargs):
     elif style != -1 and style != 0:
         ind = np.argsort(score, 0)
         return ind
-
-
-def main():
-    # load data
-    mat = scipy.io.loadmat('../data/ORL.mat')
-    label = mat['gnd']
-    label = label[:, 0]
-    X = mat['fea']
-    X = X.astype(float)
-
-    # feature selection
-    kwargs_W = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
-    W = construct_W(X, **kwargs_W)
-
-    kwargs = {'style': 0, 'W': W}
-    score = SPEC(X, **kwargs)
-    idx = feature_ranking(score, **kwargs)
-
-    # evaluation
-    num_fea = 100
-    selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=40, y=label)
-    print ari
-    print nmi
-    print acc
-
-if __name__ == '__main__':
-    main()
