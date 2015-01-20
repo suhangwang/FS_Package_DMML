@@ -2,7 +2,7 @@ import numpy as np
 from ..utility.construct_W import construct_W
 
 
-def feature_select(X, y):
+def reliefF(X, y):
     """
     This function implement the reliefF function
     1. Construct the weight matrix W in reliefF way
