@@ -13,6 +13,7 @@ def main():
         for row in reader:
             num_columns = len(row)
             break
+            
     # load data
     mat = np.loadtxt('../data/test_lung_s3.csv', delimiter=',', skiprows=1, usecols=range(0, num_columns))
     y = mat[:, 0]  # label
