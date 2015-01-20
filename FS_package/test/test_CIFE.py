@@ -3,7 +3,7 @@ import csv
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from FS_package.utility import supervised_evaluation
-from FS_package.function.information_theoretic_based import MIFS
+from FS_package.function.information_theoretic_based import CIFE
 
 
 def main():
@@ -13,7 +13,6 @@ def main():
         for row in reader:
             num_columns = len(row)
             break
-
     # load data
     mat = np.loadtxt('../data/test_lung_s3.csv', delimiter=',', skiprows=1, usecols=range(0, num_columns))
     y = mat[:, 0]  # label
@@ -30,7 +29,7 @@ def main():
         j = 0
         for train, test in loo:
             # select features
-            F = MIFS.mifs(X[train], y[train], beta=1, n_selected_features=num_fea[i])
+            F = CIFE.cife(X[train], y[train], n_selected_features=num_fea[i])
             features = X[:, F]
             neigh.fit(features[train], y[train])
             y_predict = neigh.predict(features[test])
