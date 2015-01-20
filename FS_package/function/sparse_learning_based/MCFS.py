@@ -1,14 +1,13 @@
 __author__ = 'swang187'
 
-import scipy.io
+import scipy
 import numpy as np
 from sklearn import linear_model
-from ...utility.construct_W import construct_W
-from ...utility.unsupervised_evaluation import evaluation
+
 
 def mcfs(X, **kwargs):
     """
-    This function implement unsupervised feature selection for multi-cluster data
+    This function implements unsupervised feature selection for multi-cluster data
 
     Input
     -------------
@@ -18,7 +17,7 @@ def mcfs(X, **kwargs):
         W: {numpy array}, shape (n_sample, n_samples)
             Affinity matrix
         n_clusters: integer
-            Number of custers
+            Number of clusters
         d: integer
             number of feature to select
     --------------
@@ -55,9 +54,7 @@ def mcfs(X, **kwargs):
     eigen_value, ul = scipy.linalg.eigh(a=W)
     Y = np.dot(W_norm, ul[:, -1*n_clusters-1:-1])
 
-
-    # solve K L1-regularized regression problem using LARs algorithm with
-    # the cardinality constraint set to d
+    # solve K L1-regularized regression problem using LARs algorithm with cardinality constraint being d
     n_sample, n_feature = X.shape
     coefficients = np.zeros((n_feature, n_clusters))
     for i in range(n_clusters):
@@ -72,29 +69,3 @@ def mcfs(X, **kwargs):
     ind = ind[::-1]
 
     return X[:, ind[0:d]]
-
-
-def main():
-    # load matlab data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
-    label = mat['gnd']
-    label = label[:, 0]
-    X = mat['fea']
-    n_sample, n_feature = X.shape
-    X = X.astype(float)
-    #construct W
-    kwargs = {"metric": "euclidean", "neighborMode": "knn", "weightMode": "heatKernel", "k": 5, 't': 0.1}
-    W = construct_W(X, **kwargs)
-
-    # mcfs feature selection
-    num_fea = 200
-    selected_features = mcfs(X=X, W=W, n_clusters=20, d=num_fea)
-
-    # evaluation
-    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=20, y=label)
-    print ari
-    print nmi
-    print acc
-
-if __name__ == '__main__':
-    main()
