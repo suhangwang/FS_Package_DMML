@@ -1,9 +1,8 @@
 __author__ = 'swang187'
 
 import scipy.io
-import numpy as np
 import scipy.linalg as LA
-import utility.sparse_learning as SL
+from ...utility.sparse_learning import *
 from sklearn import svm
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
@@ -14,7 +13,7 @@ def calculate_obj(X, Y, W, gamma):
     This function calculate the objective function of erfs
     """
     temp = np.dot(X, W) - Y
-    return SL.calculate_l21_norm(temp) + gamma*SL.calculate_l21_norm(W)
+    return calculate_l21_norm(temp) + gamma*calculate_l21_norm(W)
 
 
 def erfs(X, Y, **kwargs):
@@ -62,7 +61,7 @@ def erfs(X, Y, **kwargs):
         temp = LA.inv(np.dot(np.dot(A, D_inv), A.T))  # (A D^-1 A^T)^-1
         U = np.dot(np.dot(np.dot(D_inv, A.T), temp), Y)
         # update D as D_ii = 1 / 2 / ||U(i,:)||
-        D = SL.generate_diagonal_matrix(U)
+        D = generate_diagonal_matrix(U)
 
         # display
         if verbose:
@@ -71,7 +70,7 @@ def erfs(X, Y, **kwargs):
 
     # the first d rows of U are the feature weights
     feature_weights = U[0:n_feature, :]
-    ind = SL.feature_ranking(feature_weights)
+    ind = feature_ranking(feature_weights)
     return ind
 
 
@@ -83,7 +82,7 @@ def main():
     X = mat['M']    # data
     n_sample, n_feature = X.shape
     X = X.astype(float)
-    Y = SL.construct_label_matrix(label)
+    Y = construct_label_matrix(label)
     # feature weight learning / feature selection
     #idx = erfs(X=X, Y=Y, gamma=0.1, max_iter=50, verbose=True)
 
@@ -100,7 +99,7 @@ def main():
         acc = accuracy_score(label[test], y_predict)
         print acc
         mean_acc = mean_acc + acc
-    mean_acc = mean_acc / 5
+    mean_acc /= 5
     print mean_acc
 
 

@@ -1,9 +1,8 @@
 __author__ = 'swang187'
 
-import numpy as np
 import scipy.io
-import utility.sparse_learning as SL
-import utility.unsupervised_evaluation as un
+from ...utility.sparse_learning import *
+from ...utility.unsupervised_evaluation import evaluation
 from sklearn.metrics.pairwise import pairwise_distances
 
 
@@ -11,7 +10,7 @@ def calculate_obj(X, W, M, gamma):
     """
     This function calculate the objective function of ls_l21
     """
-    return np.trace(np.dot(np.dot(W.T, M), W)) + gamma*SL.calculate_l21_norm(W)
+    return np.trace(np.dot(np.dot(W.T, M), W)) + gamma*calculate_l21_norm(W)
 
 
 def construct_M(X, k, gamma):
@@ -103,13 +102,13 @@ def udfs(X, **kwargs):
         eigen_value, eigen_vector = scipy.linalg.eigh(a=P)
         W = eigen_vector[:, 0:n_clusters]
         # update D as D_ii = 1 / 2 / ||W(i,:)||
-        D = SL.generate_diagonal_matrix(W)
+        D = generate_diagonal_matrix(W)
 
         # display
         if verbose:
             obj = calculate_obj(X, W, M, gamma)
             print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
-    ind = SL.feature_ranking(W)
+    ind = feature_ranking(W)
     return ind
 
 
@@ -128,7 +127,7 @@ def main():
     selected_features = X[:, 0:num_fea]
 
     # evaluation
-    ari, nmi, acc = un.evaluation(selected_features=selected_features, n_clusters=20, y=label)
+    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=20, y=label)
     print ari
     print nmi
     print acc
