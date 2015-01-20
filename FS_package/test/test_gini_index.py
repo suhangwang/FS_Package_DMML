@@ -14,11 +14,6 @@ def main():
     n_samples, n_features = X.shape
     X = X.astype(float)
 
-    # feature selection
-    W = gini_index.feature_select(X, y)
-    idx = gini_index.feature_ranking(W)
-    print idx
-
     # split data
     n_iter = 20
     test_size = 0.5
@@ -30,8 +25,7 @@ def main():
     correct = 0
 
     for train, test in ss:
-
-        score = gini_index.feature_select(X[train], y[train])
+        score = gini_index.gini_index(X[train], y[train])
         idx = gini_index.feature_ranking(score)
         selected_features = X[:, idx[0:num_fea]]
         neigh.fit(selected_features[train], y[train])
