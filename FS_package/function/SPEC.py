@@ -1,7 +1,8 @@
 import numpy.matlib
 import numpy as np
+from scipy.sparse import *
+from sklearn.metrics.pairwise import rbf_kernel
 from numpy import linalg as LA
-from ..utility.construct_W import construct_W
 
 
 def spec(X, **kwargs):
@@ -29,10 +30,13 @@ def spec(X, **kwargs):
     if 'style' not in kwargs:
         kwargs['style'] = 0
     if 'W' not in kwargs:
-        kwargs['W'] = construct_W(X)
+        kwargs['W'] = rbf_kernel(X)
 
     style = kwargs['style']
     W = kwargs['W']
+    if type(W) is numpy.ndarray:
+        W = csc_matrix(W)
+
     n_samples, n_features = X.shape
     # build the degree matrix
     D = np.array(W.sum(axis=1))
