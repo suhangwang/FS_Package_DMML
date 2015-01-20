@@ -5,7 +5,7 @@ from ...utility.construct_W import construct_W
 
 def fisher_score(X, y):
     """
-    This function implement the FisherScore function
+    This function implements the FisherScore function
     1. Construct the weight matrix W in fisherScore way
     2. For the r-th feature, we define fr = X(:,r), D = diag(W*ones), ones = [1,...,1]', L = D - W
     3. Let fr_hat = fr - (fr'*D*ones)*ones/(ones'*D*ones)
