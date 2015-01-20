@@ -1,8 +1,7 @@
 __author__ = 'swang187'
 
-import scipy.io
+import scipy
 from ...utility.sparse_learning import *
-from ...utility.unsupervised_evaluation import evaluation
 from sklearn.metrics.pairwise import pairwise_distances
 
 
@@ -18,7 +17,6 @@ def construct_M(X, k, gamma):
     This function construct the M matrix described in the paper l2,1-norm
     regularized discriminative feature selection for unsupervised learning
     """
-
     n_sample, n_feature = X.shape
     Xt = X.T
     D = pairwise_distances(X)
@@ -110,27 +108,3 @@ def udfs(X, **kwargs):
             print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
     ind = feature_ranking(W)
     return ind
-
-
-def main():
-    # load matlab data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
-    label = mat['gnd']
-    label = label[:, 0]
-    X = mat['fea']
-    n_sample, n_feature = X.shape
-    X = X.astype(float)
-
-    # mcfs feature selection
-    num_fea = 50
-    ind = udfs(X, max_iter= 50, gamma=0.1, k=5, n_clusters=20, verbose=True)
-    selected_features = X[:, 0:num_fea]
-
-    # evaluation
-    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=20, y=label)
-    print ari
-    print nmi
-    print acc
-
-if __name__ == '__main__':
-    main()
