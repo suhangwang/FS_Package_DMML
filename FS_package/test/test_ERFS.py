@@ -8,10 +8,10 @@ from FS_package.utility.sparse_learning import *
 
 def main():
     # load MATLAB data
-    mat = scipy.io.loadmat('../data/ALLAML.mat')
-    label = mat['L']    # label
+    mat = scipy.io.loadmat('../data/COIL20.mat')
+    label = mat['gnd']    # label
     label = label[:, 0]
-    X = mat['M']    # data
+    X = mat['fea']    # data
     n_sample, n_feature = X.shape
     X = X.astype(float)
     Y = construct_label_matrix(label)
