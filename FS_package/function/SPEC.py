@@ -1,12 +1,10 @@
 import numpy.matlib
 import numpy as np
-import scipy.io
 from numpy import linalg as LA
 from ..utility.construct_W import construct_W
-from ..utility.unsupervised_evaluation import evaluation
 
 
-def feature_select(X, **kwargs):
+def spec(X, **kwargs):
     """
     This function implement the SPEC function which selects feature using the spectrum information of the graph laplacian
 
