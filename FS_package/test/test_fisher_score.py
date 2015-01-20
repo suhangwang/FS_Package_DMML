@@ -28,7 +28,7 @@ def main():
     for train, test in ss:
         kwargs = {"neighbor_mode": "supervised", "fisher_score": True, 'y': y[train]}
         W = construct_W.construct_W(X[train], **kwargs)
-        score = fisher_score.feature_select(X[train], y[train])
+        score = fisher_score.fisher_score(X[train], y[train])
         idx = fisher_score.feature_ranking(score)
         selected_features = X[:, idx[0:num_fea]]
         neigh.fit(selected_features[train], y[train])
