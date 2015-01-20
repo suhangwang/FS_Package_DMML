@@ -18,7 +18,7 @@ def main():
     W = construct_W.construct_W(X, **kwargs_W)
 
     # feature selection
-    score = lap_score.feature_select(X, W = W)
+    score = lap_score.lap_score(X, W = W)
     idx = lap_score.feature_ranking(score)
 
     # evaluation
