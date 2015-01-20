@@ -18,7 +18,7 @@ def main():
 
     # feature selection
     kwargs = {'style': 0, 'W': W}
-    score = SPEC.feature_select(X, **kwargs)
+    score = SPEC.spec(X, **kwargs)
     idx = SPEC.feature_ranking(score, **kwargs)
 
     # evaluation
