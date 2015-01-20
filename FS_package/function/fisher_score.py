@@ -3,7 +3,7 @@ from scipy.sparse import *
 from ..utility.construct_W import construct_W
 
 
-def feature_select(X, y):
+def fisher_score(X, y):
     """
     This function implement the FisherScore function
     1. Construct the weight matrix W in fisherScore way
