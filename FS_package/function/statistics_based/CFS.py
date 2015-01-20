@@ -39,14 +39,14 @@ def cfs(X, y):
     This function uses a correlation based heuristic to evaluate the worth of features which called CFS
     Input
     ----------
-    X: {numpy array}, shape (n_samples, n_features)
-        Input data, guaranteed to be a discrete data matrix
-    y : {numpy array}, shape (n_samples, )
-        guaranteed to be a numpy array
+        X: {numpy array}, shape (n_samples, n_features)
+            Input data, guaranteed to be a discrete data matrix
+        y : {numpy array}, shape (n_samples, )
+            guaranteed to be a numpy array
     Output
     ----------
-    F: {numpy array}
-        contains the index of selected features
+        F: {numpy array}
+            contains the index of selected features
     """
     n_samples, n_features = X.shape
     F = []
