@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def feature_select(X, y):
+def gini_index(X, y):
     """
     This function implements the gini index function
 
@@ -14,8 +14,7 @@ def feature_select(X, y):
     Output
     ----------
         W: {numpy array}, shape (n_features, )
-            a list containing the gini index of each feature
-    ----------
+            contains gini index value of each feature
     """
     n_samples, n_features = X.shape
 
