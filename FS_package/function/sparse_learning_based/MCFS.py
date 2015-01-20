@@ -3,6 +3,7 @@ __author__ = 'swang187'
 import scipy
 import numpy as np
 from sklearn import linear_model
+from ...utility.construct_W import construct_W
 
 
 def mcfs(X, **kwargs):
@@ -28,8 +29,7 @@ def mcfs(X, **kwargs):
     """
     # input error checking
     if 'W' not in kwargs:
-        print("error, need affinity matrix: W")
-        raise
+        W = construct_W(X)
     else:
         W = kwargs['W']
     if 'n_clusters' not in kwargs:
