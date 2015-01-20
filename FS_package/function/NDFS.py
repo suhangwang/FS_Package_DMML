@@ -44,7 +44,7 @@ def calculate_obj(X, W, F, L, alpha, beta):
     return obj
     
 
-def feature_select(X, **kwargs):
+def ndfs(X, **kwargs):
     """
     This function implement the NDFS function
     
