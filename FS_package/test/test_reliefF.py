@@ -23,7 +23,7 @@ def main():
     neigh = KNeighborsClassifier(n_neighbors=1)
     correct = 0
     for train, test in ss:
-        score = reliefF.feature_select(X[train], y[train])
+        score = reliefF.reliefF(X[train], y[train])
         idx = reliefF.feature_ranking(score)
         selected_features = X[:, idx[0:num_fea]]
         neigh.fit(selected_features[train], y[train])
