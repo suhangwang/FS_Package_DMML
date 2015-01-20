@@ -17,6 +17,7 @@ def main():
     W = construct_W.construct_W(X, **kwargs)
 
     ######################################
+    # needs to be fixed
     L = np.diag(W.sum(1)) - W
     ######################################
 
