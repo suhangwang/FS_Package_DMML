@@ -1,4 +1,3 @@
-import numpy as np
 from ...utility.entropy_estimators import *
 
 
