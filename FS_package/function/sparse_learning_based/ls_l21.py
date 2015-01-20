@@ -1,24 +1,20 @@
 __author__ = 'swang187'
 
-import scipy.io
 import scipy.linalg as LA
 from ...utility.sparse_learning import *
-from sklearn import svm
-from sklearn import cross_validation
-from sklearn.metrics import accuracy_score
 
 
 def calculate_obj(X, Y, W, gamma):
     """
-    This function calculate the objective function of ls_l21
+    This function calculates the objective function of ls_l21
     """
     temp = np.dot(X, W) - Y
     return np.trace(np.dot(temp.T, temp)) + gamma*calculate_l21_norm(W)
 
 
-def ls_l21(X, Y, **kwargs):
+def ls_l21_gradient_descent(X, Y, **kwargs):
     """
-    This function implements the least squre l21-norm feature selection problem, i.e.,
+    This function implements the least square l21-norm feature selection problem, i.e.,
     ||XW - Y||_2^F + gamma*||W||_{2,1}
     --------------------------
         X: {numpy array}, shape (n_samples, n_features)
@@ -66,36 +62,3 @@ def ls_l21(X, Y, **kwargs):
             print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
     ind = feature_ranking(feature_weights)
     return ind
-
-
-def main():
-    # load MATLAB data
-    mat = scipy.io.loadmat('../data/LUNG.mat')
-    label = mat['L']    # label
-    label = label[:, 0]
-    X = mat['M']    # data
-    n_sample, n_feature = X.shape
-    X = X.astype(float)
-    Y = construct_label_matrix(label)
-    # feature weight learning / feature selection
-    #idx = erfs(X=X, Y=Y, gamma=0.1, max_iter=50, verbose=True)
-
-    # evalaution
-    num_fea = 20
-    ss = cross_validation.ShuffleSplit(n_sample, n_iter=5, test_size=0.2)
-    clf = svm.LinearSVC()
-    mean_acc = 0
-    for train, test in ss:
-        idx = ls_l21(X=X[train, :], Y=Y[train, :], gamma=0.1, max_iter=50, verbose=True)
-        selected_features = X[:, idx[0:num_fea]]
-        clf.fit(selected_features[train, :], label[train])
-        y_predict = clf.predict(selected_features[test, :])
-        acc = accuracy_score(label[test], y_predict)
-        print acc
-        mean_acc = mean_acc + acc
-    mean_acc /= 5
-    print mean_acc
-
-
-if __name__ == '__main__':
-    main()
