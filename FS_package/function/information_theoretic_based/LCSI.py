@@ -23,7 +23,7 @@ def lcsi(X, y, **kwargs):
                 indicates the number of features to select
     Output
     ----------
-    F: {numpy array}, shape
+    F: {numpy array}, shape: (n_features, )
         Index of selected features, F(1) is the most important feature.
     """
     n_samples, n_features = X.shape
