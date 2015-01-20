@@ -18,7 +18,7 @@ def main():
     L = np.diag(W.sum(1)) - W
 
     # feature weight learning / feature selection
-    W, obj = NDFS.feature_select(X, n_clusters=40, L=L, verbose=1, max_iter=30)
+    W, obj = NDFS.ndfs(X, n_clusters=40, L=L, verbose=1, max_iter=30)
     idx = NDFS.feature_ranking(W)
 
     # evaluation
