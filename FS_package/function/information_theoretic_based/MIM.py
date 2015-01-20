@@ -15,7 +15,7 @@ def mim(X, y, **kwargs):
             indicates the number of features to select
     Output
     ----------
-    F: {numpy array},shape {n_features, }
+    F: {numpy array},shape (n_features, )
         Index of selected features, F(1) is the most important feature.
     """
     if 'n_selected_features' in kwargs.keys():
