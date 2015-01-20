@@ -3,7 +3,7 @@ from scipy.sparse import *
 from ..utility.construct_W import construct_W
 
 
-def feature_select(X, **kwargs):
+def lap_score(X, **kwargs):
     """
     This function implement the LapScore function
     1. Construct the weight matrix W if it is not specified
