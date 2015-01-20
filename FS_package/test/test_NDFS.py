@@ -15,11 +15,7 @@ def main():
 
     kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W.construct_W(X, **kwargs)
-
-    ######################################
-    # needs to be fixed
-    L = np.diag(W.sum(1)) - W
-    ######################################
+    L = np.array(W.sum(1))[:, 0] - W - W
 
     # feature weight learning / feature selection
     W, obj = NDFS.ndfs(X, n_clusters=40, L=L, verbose=1, max_iter=30)

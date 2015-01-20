@@ -86,7 +86,7 @@ def ndfs(X, **kwargs):
             k = kwargs['k']
         # construct affinity matrix W
         W = construct_W(X, weight_mode='heat_kernel', neighborMode='knn', k=k)
-        L = np.diag(W.sum(1)) - W
+        L = np.array(W.sum(1))[:, 0] - W
     else:
         L = kwargs['L']
     if 'alpha' not in kwargs:
