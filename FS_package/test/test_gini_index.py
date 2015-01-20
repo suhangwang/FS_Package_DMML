@@ -1,7 +1,7 @@
 import scipy.io
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from FS_package.function import gini_index
+from FS_package.function.statistics_based import gini_index
 from FS_package.utility import supervised_evaluation
 
 

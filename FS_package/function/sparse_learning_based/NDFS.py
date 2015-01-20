@@ -1,7 +1,7 @@
 import sklearn.cluster
 import numpy as np
 import sys
-from ..utility.construct_W import construct_W
+from ...utility.construct_W import construct_W
 
 
 def kmeans_initialization(X, n_clusters):

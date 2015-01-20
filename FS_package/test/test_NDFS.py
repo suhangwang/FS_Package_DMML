@@ -1,7 +1,7 @@
 import scipy.io
 import numpy as np
 from FS_package.utility import construct_W
-from FS_package.function import NDFS
+from FS_package.function.sparse_learning_based import NDFS
 from FS_package.utility import unsupervised_evaluation
 
 

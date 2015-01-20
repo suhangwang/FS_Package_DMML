@@ -1,5 +1,5 @@
 import scipy.io
-from FS_package.function import lap_score
+from FS_package.function.similarity_based import lap_score
 from FS_package.utility import construct_W
 from FS_package.utility import unsupervised_evaluation
 

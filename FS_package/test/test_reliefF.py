@@ -1,7 +1,7 @@
 import scipy.io
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from FS_package.function import reliefF
+from FS_package.function.similarity_based import reliefF
 from FS_package.utility import supervised_evaluation
 
 

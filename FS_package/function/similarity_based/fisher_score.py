@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.sparse import *
-from ..utility.construct_W import construct_W
+from ...utility.construct_W import construct_W
 
 
 def fisher_score(X, y):
