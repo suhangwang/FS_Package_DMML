@@ -11,7 +11,7 @@ def main():
     label = mat['gnd']    # label
     label = label[:, 0]
     Y = construct_label_matrix(label)
-    ls_l21_proximal.proximal_gradient_descent(X, Y, 1)
+    ls_l21_proximal.proximal_gradient_descent(X, Y, 0.1)
 
 
 if __name__ == '__main__':

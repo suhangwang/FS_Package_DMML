@@ -1,7 +1,6 @@
-import numpy as np
+import math
 from numpy import linalg as LA
 from ...utility.sparse_learning import *
-from __future__ import division
 
 
 def proximal_gradient_descent(X, Y, z):
@@ -9,40 +8,65 @@ def proximal_gradient_descent(X, Y, z):
     n_samples, n_classes = Y.shape
 
     print n_features, n_classes
-    # Initial line search parameter alpha = 1
+
+    # At t = 1, initialize line search parameter alpha_minus1 = 1, alpha = 1
+    alpha_minus1 = 0
     alpha = 1
 
-    # Initial step size gamma = 0.1
-    gamma = 0.01
+    # Initial current step size gamma = 0.1
+    gamma = 0.1
 
-    # Initial weight matrix W to be identity
-    W = np.ones((n_features, n_classes))
+    # At t = 1, initialize weight matrix W_minus1 and W to be identity
+    W_minus1 = np.zeros((n_features, n_classes))
+    W = np.zeros((n_features, n_classes))
+    W_plus1 = np.zeros((n_features, n_classes))
 
-    # Iterate until convergence
-    while True:
+    # iterate until convergence
+    max_iter = 10000
+    count = 0
+    obj = np.zeros(max_iter)
+    while count < max_iter:
+        # line search update V_new
+        V = W + (alpha_minus1-1)/alpha*(W - W_minus1)
+        W_new_gradient = np.dot(np.dot(np.transpose(X), X), W)-np.dot(np.transpose(X), Y)
+
         # Iterate to get the suitable step size
+        j = 1
         while True:
-            F = LA.norm((np.dot(X, W)-Y), 'fro')**2 + z*calculate_l21_norm(W)
             # calculate U
-            U = W - np.dot(np.dot(np.transpose(X), X), W)-np.dot(np.transpose(X), Y)/gamma
-            W_new = np.zeros((n_features, n_classes))
+            U = V - W_new_gradient/gamma
+            # compute W_plus1 according to euclidean projection
             for i in range(n_features):
                 if LA.norm(U[i, :]) > z/gamma:
-                    W_new[i, :] = (1-z/(gamma*LA.norm(U[i, :])))*U[i, :]
+                    W_plus1[i, :] = (1-z/(gamma*LA.norm(U[i, :])))*U[i, :]
                 else:
-                    W_new[i, :] = np.zeros(n_classes)
+                    W_plus1[i, :] = np.zeros(n_classes)
+            # compute F(W_plus1)
+            F = LA.norm((np.dot(X, W_plus1)-Y), 'fro')**2 + z*calculate_l21_norm(W_plus1)
             # calculate G
-            term1 = LA.norm((np.dot(X, W)-Y), 'fro')**2 + z*calculate_l21_norm(W)
-            term2 = np.trace(np.dot(np.dot(np.transpose(X), X), W)-np.dot(np.transpose(X), Y)*np.transpose(W_new-W))
-            term3 = gamma/2*(LA.norm((W_new-W), 'fro')**2)
-            term4 = z*calculate_l21_norm(W_new)
+            term1 = LA.norm((np.dot(X, V)-Y), 'fro')**2
+            V_gradient = np.dot(np.dot(np.transpose(X), X), V)-np.dot(np.transpose(X), Y)
+            term2 = np.trace(np.dot(np.transpose(V_gradient),(W_plus1-V)))
+            term3 = gamma/2*(LA.norm((W_plus1-V), 'fro')**2)
+            term4 = z*calculate_l21_norm(W_plus1)
             G = term1 + term2 + term3 + term4
+            # determine if it meets the Armijo-Goldstein rule
             if F > G:
-                gamma *= 2
+                gamma *= math.pow(2,j)
             else:
                 break
-        # calculate new W
+            j += 1
+        # update W_minus1 and W
+        W_minus1 = W
+        W = W_plus1
+        # update alpha_minus1 and alpha
+        alpha_minus1 = alpha
+        alpha = (1+math.sqrt(4*alpha+1))/2
 
-    print F
-    return X
+        obj[count] = LA.norm((np.dot(X, W)-Y), 'fro')**2 + z*calculate_l21_norm(W)
+        print 'obj at iter ' + str(count) + ': ' + str(obj[count])
+        if count >= 1 and (obj[count-1] - obj[count] < 1e-4):
+            break
+        count += 1
+    return W
 
