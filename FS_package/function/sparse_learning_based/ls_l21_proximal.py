@@ -42,7 +42,7 @@ def proximal_gradient_descent_fast(X, Y, z, **kwargs):
     ----------
         X: {numpy array}, shape (n_samples, n_features)
             Input data, guaranteed to be a numpy array
-        Y: {numpy array}, shape (n_samples, nclasses)
+        Y: {numpy array}, shape (n_samples, n_classes)
             Label matrix
         z: {float}
             regularization parameter
