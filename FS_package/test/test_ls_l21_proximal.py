@@ -27,7 +27,7 @@ def main():
 
     for train, test in ss:
         Y = construct_label_matrix(y[train])
-        W, obj, value_gamma = ls_l21_proximal.proximal_gradient_descent_fast(X[train], Y, 0.1)
+        W, obj, value_gamma = ls_l21_proximal.proximal_gradient_descent_fast(X[train], Y, 0.1, verbose=False)
         idx = ls_l21_proximal.feature_ranking(W)
         selected_features = X[:, idx[0:num_fea]]
         neigh.fit(selected_features[train], y[train])

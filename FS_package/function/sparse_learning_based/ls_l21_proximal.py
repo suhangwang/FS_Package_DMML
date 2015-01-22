@@ -31,7 +31,7 @@ def euclidean_projection(V, n_features, n_classes, z, gamma):
     return W_projection
 
 
-def proximal_gradient_descent_fast(X, Y, z):
+def proximal_gradient_descent_fast(X, Y, z, **kwargs):
     """
     This function implements supervised sparse feature selection via l2,1 norm
 
@@ -62,6 +62,11 @@ def proximal_gradient_descent_fast(X, Y, z):
     Reference:
         Liu, Jun, et al. "Multi-Task Feature Learning Via Efficient l2,1-Norm Minimization." UAI. 2009.
     """
+    if 'verbose' not in kwargs:
+        verbose = False
+    else:
+        verbose = kwargs['verbose']
+
     # Starting point initialization #
     n_samples, n_features = X.shape
     n_samples, n_classes = Y.shape
@@ -138,9 +143,12 @@ def proximal_gradient_descent_fast(X, Y, z):
         WWp = W - Wp
         XWY = XW -Y
         # calculate obj
-        # obj[iter_step] = LA.norm(XWY, 'fro')**2/2
-        # obj[iter_step] += z*calculate_l21_norm(W)
-        # print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
+        obj[iter_step] = LA.norm(XWY, 'fro')**2/2
+        obj[iter_step] += z*calculate_l21_norm(W)
+
+        if verbose:
+            print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
+
         if flag is True:
             break
 
