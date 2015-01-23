@@ -4,9 +4,11 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 
 def construct_W(X, **kwargs):
-    """ Construct the affinity matrix W
+    """
+    Construct the affinity matrix W
     If kwargs is none, use the default parameter settings
     If kwargs is not null, construct the affinity matrix according to parameters in kwargs
+
     Input
     ----------
     data: {numpy array}, shape (n_samples, n_features)
