@@ -37,7 +37,7 @@ def main():
             acc = accuracy_score(y[test], y_predict)
             correct = correct + acc
             j += 1
-        print 'LOO number of mistakes', num_fea[i], float(1 - (correct/j))
+        print 'LOO error rate', num_fea[i], float(1 - (correct/j))
 
 
 if __name__ == '__main__':

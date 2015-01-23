@@ -18,9 +18,9 @@ def main():
     y = mat[:, 0]  # label
     X = mat[:, 1:num_columns]  # data
     X = X.astype(float)
-    n_sample, n_feature = X.shape
+    n_samples, n_features = X.shape
     # split data into train and test sets
-    loo = supervised_evaluation.select_train_leave_one_out(n_sample)
+    loo = supervised_evaluation.select_train_leave_one_out(n_samples)
     neigh = KNeighborsClassifier(n_neighbors=3)
     num_fea = np.array([5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
     for i in range(len(num_fea)):
@@ -35,7 +35,7 @@ def main():
             acc = accuracy_score(y[test], y_predict)
             correct = correct + acc
             j += 1
-        print 'LOO number of mistakes', num_fea[i], float(1 - (correct/j))
+        print 'LOO error rate', num_fea[i], float(1 - (correct/j))
 
 
 if __name__ == '__main__':
