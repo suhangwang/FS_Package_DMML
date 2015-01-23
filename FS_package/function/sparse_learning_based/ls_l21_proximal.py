@@ -1,34 +1,5 @@
 import math
-from numpy import linalg as LA
 from ...utility.sparse_learning import *
-
-
-def init_factor(W_norm, XW, Y, z):
-    """
-    Initialize the starting point of W, according to the author's code
-
-    Reference:
-        Liu, Jun, et al. "Multi-Task Feature Learning Via Efficient l2,1-Norm Minimization." UAI. 2009.
-    """
-    n_samples, n_classes = XW.shape
-    a = np.inner(np.reshape(XW, n_samples*n_classes), np.reshape(Y, n_samples*n_classes)) - z*W_norm
-    b = LA.norm(XW, 'fro')**2
-    ratio = a / b
-    return ratio
-
-
-def euclidean_projection(V, n_features, n_classes, z, gamma):
-    """
-    L2 Norm Regularized Euclidean Projection
-    min  1/2 ||W- V||_2^2 + z * ||W||_2
-    """
-    W_projection = np.zeros((n_features, n_classes))
-    for i in range(n_features):
-        if LA.norm(V[i, :]) > z/gamma:
-            W_projection[i, :] = (1-z/(gamma*LA.norm(V[i, :])))*V[i, :]
-        else:
-            W_projection[i, :] = np.zeros(n_classes)
-    return W_projection
 
 
 def proximal_gradient_descent_fast(X, Y, z, **kwargs):
@@ -113,7 +84,7 @@ def proximal_gradient_descent_fast(X, Y, z, **kwargs):
         XWp = XW
 
         while True:
-            # let S walk in a step in the antigradient of S to get V and then do the L1/Lq-norm regularized projection
+            # let S walk in a step in the antigradient of S to get V and then do the L1/L2-norm regularized projection
             V = S - G/gamma
             W = euclidean_projection(V, n_features, n_classes, z, gamma)
             # the difference between the new approximate solution W and the search point S
@@ -158,13 +129,18 @@ def proximal_gradient_descent_fast(X, Y, z, **kwargs):
     return W, obj, value_gamma
 
 
-def feature_ranking(W):
+def init_factor(W_norm, XW, Y, z):
     """
-    Rank features in descending order according to ||w_i||
+    Initialize the starting point of W, according to the author's code
+
+    Reference:
+        Liu, Jun, et al. "Multi-Task Feature Learning Via Efficient l2,1-Norm Minimization." UAI. 2009.
     """
-    T = (W*W).sum(1)
-    ind = np.argsort(T, 0)
-    return ind[::-1]
+    n_samples, n_classes = XW.shape
+    a = np.inner(np.reshape(XW, n_samples*n_classes), np.reshape(Y, n_samples*n_classes)) - z*W_norm
+    b = LA.norm(XW, 'fro')**2
+    ratio = a / b
+    return ratio
 
 
 def proximal_gradient_descent(X, Y, z):
@@ -232,5 +208,6 @@ def proximal_gradient_descent(X, Y, z):
         if count >= 1 and (obj[count-1] - obj[count] < 1e-4):
             break
         count += 1
+
     return W
 
