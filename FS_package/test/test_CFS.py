@@ -16,7 +16,7 @@ def main():
 
     # load data
     mat = np.loadtxt('../data/test_lung_s3.csv', delimiter=',', skiprows=1, usecols=range(0, 101))
-    X = mat[:, 1:101]  # data
+    X = mat[:, 1:num_columns]  # data
     X = X.astype(float)
     y = mat[:, 0]  # label
     n_samples, n_features = X.shape
