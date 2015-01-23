@@ -2,19 +2,16 @@ import math
 from ...utility.sparse_learning import *
 
 
-def proximal_gradient_descent_fast(X, Y, z, **kwargs):
+def proximal_gradient_descent(X, Y, z, **kwargs):
     """
-    This function implements supervised sparse feature selection via l2,1 norm
-
-    Objective Function:
+    This function implements supervised sparse feature selection via l2,1 norm, i.e.
         min_{W} sum_{i}log(1+exp(-yi*(W'*x+C))) + z*||W||_{2,1}
-
+    --------------------------
     Input
-    ----------
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
+            input data, guaranteed to be a numpy array
         Y: {numpy array}, shape (n_samples, n_classes)
-            Label matrix
+            each row is a one-hot-coding class label, guaranteed to be a numpy array
         z: {float}
             regularization parameter
         kwargs : {dictionary}
@@ -27,7 +24,7 @@ def proximal_gradient_descent_fast(X, Y, z, **kwargs):
         obj: {numpy array}, shape (n_iterations, )
             objective function value during iterations
         value_gamma: {numpy array}, shape (n_iterations, )
-            the most suitable step size during iterations
+            suitable step size during iterations
 
 
     Reference:
@@ -72,7 +69,7 @@ def proximal_gradient_descent_fast(X, Y, z, **kwargs):
     # indicates whether the gradient step only changes a little
     flag = False
 
-    max_iter = 10000
+    max_iter = 1000
     value_gamma = np.zeros(max_iter)
     obj = np.zeros(max_iter)
     for iter_step in range(max_iter):
