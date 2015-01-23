@@ -7,9 +7,9 @@ from FS_package.utility import unsupervised_evaluation
 def main():
     # load data
     mat = scipy.io.loadmat('../data/COIL20.mat')
+    X = mat['fea']
     y = mat['gnd']
     y = y[:, 0]
-    X = mat['fea']
     X = X.astype(float)
 
     # build affinity matrix
@@ -17,7 +17,7 @@ def main():
     W = construct_W.construct_W(X, **kwargs_W)
 
     # feature selection
-    kwargs = {'style': 0, 'W': W}
+    kwargs = {'style': 1, 'W': W}
     score = SPEC.spec(X, **kwargs)
     idx = SPEC.feature_ranking(score, **kwargs)
 
@@ -28,6 +28,7 @@ def main():
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc
+
 
 if __name__ == '__main__':
     main()
