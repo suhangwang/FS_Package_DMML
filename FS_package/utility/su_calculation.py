@@ -1,11 +1,10 @@
-import numpy as np
 import entropy_estimators as ee
 import information_gain as ig
 
 
 def su_calculation(f1, f2):
     """
-    This function implement the function which calculates the symmetrical uncertainty, SU
+    This function implements the function which calculates the symmetrical uncertainty, SU
     Input
     ----------
         f1: {numpy array}, shape (n_samples)
@@ -28,5 +27,6 @@ def su_calculation(f1, f2):
     # calculate entropy of f2, t3 = H(f2)
     t3 = ee.entropyd(f2)
     # su(f1,f2) = 2(t1/t2+t3)
-    su = 2 * np.true_divide(t1, t2+t3)
+    su = 2.0*t1/(t2+t3)
+
     return su
