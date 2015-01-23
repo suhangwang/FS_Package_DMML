@@ -8,17 +8,17 @@ from FS_package.function.sparse_learning_based import ls_l21
 
 def main():
     # load MATLAB data
-    mat = scipy.io.loadmat('../data/ORL.mat')
+    mat = scipy.io.loadmat('../data/COIL20.mat')
     X = mat['fea']    # data
     y = mat['gnd']    # label
     y = y[:, 0]
-    n_sample, n_feature = X.shape
+    n_samples, n_features = X.shape
     X = X.astype(float)
     Y = construct_label_matrix(y)
 
     # 5-fold cross validation
     num_fea = 20
-    ss = cross_validation.ShuffleSplit(n_sample, n_iter=5, test_size=0.2)
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=5, test_size=0.2)
     clf = svm.LinearSVC()
     mean_acc = 0
 

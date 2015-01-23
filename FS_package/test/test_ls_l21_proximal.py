@@ -1,40 +1,38 @@
 import scipy.io
-from FS_package.utility import supervised_evaluation
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
+from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
 from FS_package.utility.sparse_learning import *
 from FS_package.function.sparse_learning_based import ls_l21_proximal
 
 
 def main():
-    # load data
-    mat = scipy.io.loadmat('../data/ORL.mat')
+    # load MATLAB data
+    mat = scipy.io.loadmat('../data/COIL20.mat')
     X = mat['fea']    # data
-    X = X.astype(float)
     y = mat['gnd']    # label
     y = y[:, 0]
     n_samples, n_features = X.shape
+    X = X.astype(float)
+    Y = construct_label_matrix_pan(y)
 
-    # split data
-    n_iter = 1
-    test_size = 0.5
-    ss = supervised_evaluation.select_train_split(n_samples, test_size, n_iter)
-
-    # evaluation
-    num_fea = 50
-    neigh = KNeighborsClassifier(n_neighbors=1)
-    correct = 0
+    # 5-fold cross validation
+    num_fea = 20
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=5, test_size=0.2)
+    clf = svm.LinearSVC()
+    mean_acc = 0
 
     for train, test in ss:
-        Y = construct_label_matrix_pan(y[train])
-        W, obj, value_gamma = ls_l21_proximal.proximal_gradient_descent_fast(X[train], Y, 0.1, verbose=False)
+        W, obj, value_gamma = ls_l21_proximal.proximal_gradient_descent(X[train], Y[train], 0.1, verbose=False)
         idx = feature_ranking(W)
         selected_features = X[:, idx[0:num_fea]]
-        neigh.fit(selected_features[train], y[train])
-        y_predict = neigh.predict(selected_features[test])
+        clf.fit(selected_features[train], y[train])
+        y_predict = clf.predict(selected_features[test])
         acc = accuracy_score(y[test], y_predict)
-        correct = correct + acc
-    print 'ACC', float(correct)/n_iter
+        print acc
+        mean_acc = mean_acc + acc
+    mean_acc /= 5
+    print 'mean_acc', mean_acc
 
 
 if __name__ == '__main__':
