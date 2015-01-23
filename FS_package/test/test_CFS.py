@@ -1,4 +1,5 @@
 import numpy as np
+import csv
 from sklearn import svm
 from sklearn import cross_validation
 from sklearn.metrics import accuracy_score
@@ -6,6 +7,13 @@ from FS_package.function.statistics_based import CFS
 
 
 def main():
+    # num_columns is number of columns in file
+    with open('../data/test_lung_s3.csv', 'rb') as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            num_columns = len(row)
+            break
+
     # load data
     mat = np.loadtxt('../data/test_lung_s3.csv', delimiter=',', skiprows=1, usecols=range(0, 101))
     X = mat[:, 1:101]  # data
