@@ -9,11 +9,11 @@ from FS_package.utility import supervised_evaluation
 def main():
     # load matlab data
     mat = scipy.io.loadmat('../data/COIL20.mat')
+    X = mat['fea']    # data
     y = mat['gnd']    # label
     y = y[:, 0]
-    X = mat['fea']    # data
-    n_samples, n_features = X.shape
     X = X.astype(float)
+    n_samples, n_features = X.shape
 
     # split data
     n_iter = 20
@@ -34,6 +34,7 @@ def main():
         neigh.fit(selected_features[train], y[train])
         y_predict = neigh.predict(selected_features[test])
         acc = accuracy_score(y[test], y_predict)
+        print acc
         correct = correct + acc
     print 'ACC', float(correct)/n_iter
 
