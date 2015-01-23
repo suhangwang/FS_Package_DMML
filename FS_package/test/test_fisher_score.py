@@ -20,7 +20,7 @@ def main():
     test_size = 0.5
     ss = supervised_evaluation.select_train_split(n_samples, test_size, n_iter)
 
-    # cross validation
+    # evaluation
     num_fea = 100
     neigh = KNeighborsClassifier(n_neighbors=1)
     correct = 0
