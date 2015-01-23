@@ -1,46 +1,31 @@
-__author__ = 'swang187'
-
-import scipy.linalg as LA
+import math
 from ...utility.sparse_learning import *
 
 
-def calculate_obj(X, Y, W, gamma):
-    """
-    This function calculates the objective function of ls_l21
-    """
-    temp = np.dot(X, W) - Y
-    return np.trace(np.dot(temp.T, temp)) + gamma*calculate_l21_norm(W)
-
-
-def ls_l21_gradient_descent(X, Y, **kwargs):
+def ls_l21_gradient_descent(X, Y, z, **kwargs):
     """
     This function implements the least square l21-norm feature selection problem, i.e.,
-    ||XW - Y||_2^F + gamma*||W||_{2,1}
+    min_{W}||XW - Y||_2^F + gamma*||W||_{2,1}
     --------------------------
+    Input
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
+            input data, guaranteed to be a numpy array
         Y: {numpy array}, shape (n_samples, n_classes)
             Each row is a one-hot-coding class label
             guaranteed to be a numpy array
+        z: {float}
+            regularization parameter
         kwargs: {dictionary}
-            gamma: positive scalar
-            verbose: boolean
-                True if want to display the objective function value
-    --------------
+            verbose: {boolean} true or false
+                True if user want to print out the objective function value in each iteration, False if not
     Output:
     --------------
-        ind: {numpy array}
+        W: {numpy array}, shape (n_features, n_classes)
+            weight matrix
+        obj: {numpy array}, shape (n_iterations, )
+            objective function value during iterations
     """
-    # input error checking
-    if 'gamma' not in kwargs:
-        print('error, please specify gamma')
-        raise
-    else:
-        gamma = kwargs['gamma']
-    if 'max_iter' not in kwargs:
-        max_iter = 100
-    else:
-        max_iter = kwargs['max_iter']
+
     if 'verbose' not in kwargs:
         verbose = False
     else:
@@ -49,16 +34,22 @@ def ls_l21_gradient_descent(X, Y, **kwargs):
     n_sample, n_feature = X.shape
     xtx = np.dot(X.T, X)    # X^T * X
     D = np.eye(n_feature)
-    for i in range(max_iter):
-        # update W as W = (X^T X + gamma*D)^-1 (X^T Y)
-        temp = LA.inv((xtx + gamma*D))  # (X^T X + gamma*D)^-1
-        feature_weights = np.dot(temp, np.dot(X.T, Y))
-        # update D as D_ii = 1 / 2 / ||U(i,:)||
-        D = generate_diagonal_matrix(feature_weights)
+    max_iter = 1000
+    obj = np.zeros(max_iter)
 
+    for iter_step in range(max_iter):
+        # update W as W = (X^T X + gamma*D)^-1 (X^T Y)
+        temp = LA.inv((xtx + z*D))  # (X^T X + gamma*D)^-1
+        W = np.dot(temp, np.dot(X.T, Y))
+        # update D as D_ii = 1 / 2 / ||U(i,:)||
+        D = generate_diagonal_matrix(W)
+        temp = np.dot(X, W) - Y
+        obj[iter_step] = np.trace(np.dot(temp.T, temp)) + z*calculate_l21_norm(W)
         # display
         if verbose:
-            obj = calculate_obj(X, Y, feature_weights, gamma)
-            print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
-    ind = feature_ranking(feature_weights)
-    return ind
+            print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
+        # determine weather converge
+        if iter_step >= 2 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
+            break
+
+    return W, obj
