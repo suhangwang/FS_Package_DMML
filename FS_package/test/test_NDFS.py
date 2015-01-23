@@ -8,10 +8,10 @@ from FS_package.utility import unsupervised_evaluation
 def main():
     # load data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    y = mat['gnd']    # label
-    y = y[:, 0]
     X = mat['fea']    # data
     X = X.astype(float)
+    y = mat['gnd']    # label
+    y = y[:, 0]
 
     kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W.construct_W(X, **kwargs)
@@ -28,6 +28,7 @@ def main():
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc
+
 
 if __name__ == '__main__':
     main()

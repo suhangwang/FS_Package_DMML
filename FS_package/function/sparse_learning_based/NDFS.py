@@ -144,7 +144,7 @@ def ndfs(X, **kwargs):
 
         obj[count] = np.trace(np.dot(np.dot(F.transpose(), M), F)) + gamma/4*np.linalg.norm(np.dot(F.transpose(), F)-np.identity(n_clusters), 'fro')
         if verbose:
-            print('obj at iter ' + str(count) + ': ' + str(obj[count]) + '\n')
+            print 'obj at iter ' + str(count) + ': ' + str(obj[count])
         count += 1
     return W, obj
 
@@ -154,5 +154,5 @@ def feature_ranking(W):
     Rank features in descending order according to ||w_i||
     """
     T = (W*W).sum(1)
-    ind = np.argsort(T, 0)
-    return ind[::-1]
+    idx = np.argsort(T, 0)
+    return idx[::-1]
