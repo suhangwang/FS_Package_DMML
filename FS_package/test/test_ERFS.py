@@ -12,13 +12,13 @@ def main():
     X = mat['fea']    # data
     y = mat['gnd']    # label
     y = y[:, 0]
-    n_sample, n_feature = X.shape
+    n_samples, n_features = X.shape
     X = X.astype(float)
     Y = construct_label_matrix(y)
 
     # evalaution
     num_fea = 20
-    ss = cross_validation.ShuffleSplit(n_sample, n_iter=5, test_size=0.2)
+    ss = cross_validation.ShuffleSplit(n_samples, n_iter=5, test_size=0.2)
     clf = svm.LinearSVC()
     mean_acc = 0
 
