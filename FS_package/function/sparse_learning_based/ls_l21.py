@@ -11,8 +11,7 @@ def ls_l21_gradient_descent(X, Y, z, **kwargs):
         X: {numpy array}, shape (n_samples, n_features)
             input data, guaranteed to be a numpy array
         Y: {numpy array}, shape (n_samples, n_classes)
-            Each row is a one-hot-coding class label
-            guaranteed to be a numpy array
+            each row is a one-hot-coding class label, guaranteed to be a numpy array
         z: {float}
             regularization parameter
         kwargs: {dictionary}
