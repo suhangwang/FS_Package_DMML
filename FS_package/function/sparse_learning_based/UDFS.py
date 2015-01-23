@@ -105,6 +105,5 @@ def udfs(X, **kwargs):
         # display
         if verbose:
             obj = calculate_obj(X, W, M, gamma)
-            print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
-    ind = feature_ranking(W)
-    return ind
+            print 'obj at iter ' + str(i+1) + ': ' + str(obj)
+    return W

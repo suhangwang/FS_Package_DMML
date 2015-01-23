@@ -13,7 +13,8 @@ def main():
 
     # UDFS feature selection
     num_fea = 50
-    idx = UDFS.udfs(X, max_iter= 50, gamma=0.1, k=5, n_clusters=20, verbose=True)
+    W = UDFS.udfs(X, max_iter= 50, gamma=0.1, k=5, n_clusters=20, verbose=True)
+    idx = UDFS.feature_ranking(W)
     selected_features = X[:, idx[0:num_fea]]
 
     # evaluation
