@@ -59,7 +59,7 @@ def erfs(X, Y, **kwargs):
         # display
         if verbose:
             obj = calculate_obj(X, Y, U[0:n_feature, :], gamma)
-            print('obj at iter ' + str(i+1) + ': ' + str(obj) + '\n')
+            print 'obj at iter ' + str(i+1) + ': ' + str(obj)
 
     # the first d rows of U are the feature weights
     feature_weights = U[0:n_feature, :]
