@@ -8,18 +8,18 @@ from FS_package.function.similarity_based import trace_ratio
 def main():
     # load matlab data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    label = mat['gnd']
-    y = label[:, 0]
-    X = mat['fea']
-    n_samples, n_features = X.shape
+    X = mat['fea']  # data
+    y = mat['gnd']  # label
+    y = y[:, 0]
     X = X.astype(float)
+    n_samples, n_features = X.shape
 
     # split data
     n_iter = 20
     test_size = 0.5
     ss = supervised_evaluation.select_train_split(n_samples, test_size, n_iter)
 
-    # cross validation
+    # evaluation
     num_fea = 100
     neigh = KNeighborsClassifier(n_neighbors=1)
     correct = 0
