@@ -1,6 +1,3 @@
-__author__ = 'swang187'
-
-import scipy.linalg as LA
 from ...utility.sparse_learning import *
 
 
