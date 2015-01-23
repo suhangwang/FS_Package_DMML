@@ -84,7 +84,7 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
         idx = I[0:n_selected_features]
         old_k = k
         k = np.sum(s_between[idx])/np.sum(s_within[idx])
-        if abs(k - old_k) < 1e-11:
+        if abs(k - old_k) < 1e-3:
             break
 
     # get feature index, feature-level score and subset-level score
