@@ -1,6 +1,8 @@
 import numpy as np
 import csv
-import FS_package.utility.information_gain as ig
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+from FS_package.utility.supervised_evaluation import select_train_leave_one_out
 from FS_package.function.information_theoretic_based import IGFS
 
 
@@ -19,11 +21,21 @@ def main():
     X = X.astype(float)
     n_samples, n_features = X.shape
 
-    # feature weight learning / feature selection
-    F = ig.igfs(X, y)
-    idx = IGFS.feature_ranking(F)
-    print F
-    print idx
+    loo = select_train_leave_one_out(n_samples)
+    neigh = KNeighborsClassifier(n_neighbors=1)
+
+    num_features = 20
+    correct = 0
+    for train, test in loo:
+            # select features
+            F = IGFS.igfs(X[train], y[train])
+            idx = IGFS.feature_ranking(F)
+            features = X[:, idx[0:num_features]]
+            neigh.fit(features[train], y[train])
+            y_predict = neigh.predict(features[test])
+            acc = accuracy_score(y[test], y_predict)
+            correct = correct + acc
+    print 'LOO error rate', float(1 - (correct/n_samples))
 
 
 if __name__ == '__main__':
