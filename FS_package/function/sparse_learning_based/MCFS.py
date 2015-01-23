@@ -1,5 +1,3 @@
-__author__ = 'swang187'
-
 import scipy
 import numpy as np
 from sklearn import linear_model
@@ -9,9 +7,9 @@ from ...utility.construct_W import construct_W
 def mcfs(X, **kwargs):
     """
     This function implements unsupervised feature selection for multi-cluster data
-
-    Input
     -------------
+    Input
+
     X: {numpy array}, shape (n_samples, n_features)
         Input data, guaranteed to be a numpy array
     kwargs : {dictionary}
@@ -23,7 +21,6 @@ def mcfs(X, **kwargs):
             number of feature to select
     --------------
     Output
-    --------------
     S: {numpy array}, shape(n_samples, d)
         selected features
     """
@@ -56,16 +53,18 @@ def mcfs(X, **kwargs):
 
     # solve K L1-regularized regression problem using LARs algorithm with cardinality constraint being d
     n_sample, n_feature = X.shape
-    coefficients = np.zeros((n_feature, n_clusters))
+    W = np.zeros((n_feature, n_clusters))
     for i in range(n_clusters):
         clf = linear_model.Lars(n_nonzero_coefs=d)
         clf.fit(X, Y[:, i])
-        coefficients[:, i] = clf.coef_
+        W[:, i] = clf.coef_
+    return W
 
+
+def feature_ranking(W):
     # compute the MCFS score for each feature
-    mcfs_score = coefficients.max(1)
+    mcfs_score = W.max(1)
 
-    ind = np.argsort(mcfs_score, 0)
-    ind = ind[::-1]
-
-    return X[:, ind[0:d]]
+    idx = np.argsort(mcfs_score, 0)
+    idx = idx[::-1]
+    return idx
