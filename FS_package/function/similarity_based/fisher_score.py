@@ -43,6 +43,7 @@ def fisher_score(X, y):
     lap_score = np.array(np.multiply(L_prime, 1/D_prime))[0, :]
 
     # compute fisher score from lap_score, where fisher_score = 1/lap_score - 1
+    score = lap_score
     score = 1.0/lap_score - 1
     return np.transpose(score)
 
@@ -53,4 +54,4 @@ def feature_ranking(score):
     feature is
     """
     ind = np.argsort(score, 0)
-    return ind[::-1]
+    return ind
