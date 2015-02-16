@@ -8,16 +8,16 @@ from FS_package.utility import supervised_evaluation
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
-    X = mat['fea']    # data
-    y = mat['gnd']    # label
+    mat = scipy.io.loadmat('../data/GLIOMA.mat')
+    X = mat['M']    # data
+    y = mat['L']    # label
     y = y[:, 0]
     X = X.astype(float)
     n_samples, n_features = X.shape
 
     # split data
     n_iter = 20
-    test_size = 0.5
+    test_size = 0.1
     ss = supervised_evaluation.select_train_split(n_samples, test_size, n_iter)
 
     # evaluation
