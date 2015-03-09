@@ -10,15 +10,20 @@ def alpha_investing(X, y, w0, dw):
         x_can = X[:, i]  # generate next feature
         alpha = w/2/(i+1)
         X_old = X[:, F]
-
-        # model built with only X_old
-        logreg_old = linear_model.LogisticRegression()
-        logreg_old.fit(X_old, y)
-        error_old = 1 - logreg_old.score(X_old, y)
+        if i is 0:
+            X_old = np.ones((n_samples, 1))
+            linreg_old = linear_model.LinearRegression()
+            linreg_old.fit(X_old, y)
+            error_old = 1 - linreg_old.score(X_old, y)
+        if i is not 0:
+            # model built with only X_old
+            linreg_old = linear_model.LinearRegression()
+            linreg_old.fit(X_old, y)
+            error_old = 1 - linreg_old.score(X_old, y)
 
         # model built with X_old & {x_can}
         X_new = np.concatenate((X_old, x_can.reshape(n_samples, 1)), axis=1)
-        logreg_new = linear_model.LogisticRegression()
+        logreg_new = linear_model.LinearRegression()
         logreg_new.fit(X_new, y)
         error_new = 1 - logreg_new.score(X_new, y)
 
@@ -28,5 +33,5 @@ def alpha_investing(X, y, w0, dw):
             F.append(i)
             w = w + dw - alpha
         else:
-            w = w - alpha
+            w -= alpha
     return np.array(F)

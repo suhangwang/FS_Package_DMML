@@ -10,8 +10,8 @@ def main():
     y = y[:, 0]
     X = X.astype(float)
     y = y.astype(float)
-    sel = alpha_investing.alpha_investing(X, y, 0.05, 0.05)
-    print sel
+    idx = alpha_investing.alpha_investing(X, y, 0.05, 0.05)
+    print idx
 
 if __name__ == '__main__':
     main()
