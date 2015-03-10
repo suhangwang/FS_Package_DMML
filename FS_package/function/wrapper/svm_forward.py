@@ -25,7 +25,7 @@ def svm_forward(X, y, n_selected_features):
     n_samples, n_features = X.shape
     # using 10 fold cross validation
     cv = KFold(n_samples, n_folds=10)
-    # choose decision tree as the classifier
+    # choose SVM as the classifier
     clf = SVC()
 
     F = []  # selected feature set, initialized to be empty
@@ -44,11 +44,11 @@ def svm_forward(X, y, n_selected_features):
                     acc += acc_tmp
                 acc = float(acc)/10
                 F.pop()
-                # record the feature with the largest accuracy
+                # record the feature which results in largest accuracy when appended
                 if acc > max_acc:
                     max_acc = acc
                     idx = i
-        # add the feature with the largest accuracy
+        # add the feature which results in largest accuracy when appended
         F.append(idx)
         count += 1
     return np.array(F)
