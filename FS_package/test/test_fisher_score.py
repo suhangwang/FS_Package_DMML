@@ -8,7 +8,7 @@ from FS_package.utility import supervised_evaluation
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/GLIOMA.mat')
+    mat = scipy.io.loadmat('../data/Prostate-GE.mat')
     X = mat['M']    # data
     y = mat['L']    # label
     y = y[:, 0]
