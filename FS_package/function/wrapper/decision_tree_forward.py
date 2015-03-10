@@ -30,11 +30,12 @@ def decision_tree_forward(X, y, n_selected_features):
 
 
     F = []  # selected feature set, initialized to be empty
-    for i in range(n_selected_features):
+    count = 0
+    while count < n_selected_features:
         max_acc = 0
-        for j in range(n_features):
-            if j not in F:
-                F.append(j)
+        for i in range(n_features):
+            if i not in F:
+                F.append(i)
                 X_tmp = X[:, F]
                 acc = 0
                 for train, test in cv:
@@ -47,8 +48,9 @@ def decision_tree_forward(X, y, n_selected_features):
                 # record the feature with the largest accuracy
                 if acc > max_acc:
                     max_acc = acc
-                    idx = j
+                    idx = i
         # add the feature with the largest accuracy
         F.append(idx)
+        count += 1
     return np.array(F)
 
