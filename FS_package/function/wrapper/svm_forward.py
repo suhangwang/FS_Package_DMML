@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 
 def svm_forward(X, y, n_selected_features):
     """
-    This function implements the forward feature selection algorithm based on svm
+    This function implements the forward feature selection algorithm based on SVM
 
     Input
     ----------
