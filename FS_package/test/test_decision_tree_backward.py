@@ -31,7 +31,7 @@ def main():
     acc = 0
 
     for train, test in cv:
-        idx = decision_tree_backward.decision_tree_forward(X[train], y[train], n_features)
+        idx = decision_tree_backward.decision_tree_backward(X[train], y[train], n_features)
         print idx
         X_selected = X[:, idx]
         neigh.fit(X_selected[train], y[train])

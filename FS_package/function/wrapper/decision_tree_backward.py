@@ -4,7 +4,7 @@ from sklearn.cross_validation import KFold
 from sklearn.metrics import accuracy_score
 
 
-def decision_tree_forward(X, y, n_selected_features):
+def decision_tree_backward(X, y, n_selected_features):
     """
     This function implements the forward feature selection algorithm based on decision tree
 
