@@ -50,7 +50,7 @@ def fisher_score(X, y):
 
 def feature_ranking(score):
     """
-    Rank features in descending order according to fisher score, the higher the fisher score, the more important the
+    Rank features in descending order according to fisher score, the lower the fisher score, the more important the
     feature is
     """
     ind = np.argsort(score, 0)
