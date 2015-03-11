@@ -46,3 +46,15 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
     n_samples, n_features = X.shape
     # compute X'y
     Xty = np.dot(np.transpose(X), y)
+    # initialize a starting point
+    w = np.zeros(n_features)
+    # compute Xw = X*w
+    Xw = np.dot(X, w)
+
+    # Starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
+    # initialize step size gamma = 1
+    gamma = 1
+    # assign wp with w, and Xwp with Xw
+    wp = w
+    XWp = Xw
+    wwp = np.zeros(n_features)
