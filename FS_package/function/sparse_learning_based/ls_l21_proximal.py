@@ -49,7 +49,7 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
         ratio = init_factor(W_norm, XW, Y, z)
         W = ratio*W
         XW = ratio*XW
-    # Starting the main program, the Armijo Goldstein line search scheme + accelearted gradient descent
+    # Starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
     # initialize step size gamma = 1
     gamma = 1
 
