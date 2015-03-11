@@ -53,7 +53,7 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
     # compute XW = X*W
     XW = np.dot(X, W)
 
-    # Starting the main program, the Armijo Goldstein line search scheme + accelearted gradient descent
+    # Starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
     # the intial guess of the Lipschitz continuous gradient
     gamma = 1.0/(n_samples*n_classes)
     # assign Wp with W, and XWp with XW
