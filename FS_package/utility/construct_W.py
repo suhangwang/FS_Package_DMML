@@ -111,7 +111,6 @@ def construct_W(X, **kwargs):
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
-                print W[0:6,0:6]
                 return W
 
             elif kwargs['metric'] == 'cosine':
@@ -129,12 +128,11 @@ def construct_W(X, **kwargs):
                 G = np.zeros((n_samples*(k+1), 3))
                 G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
                 G[:, 1] = np.ravel(idx_new, order='F')
-                G[:, 2] = np.ravel(dump_new, order='F')
+                G[:, 2] = 1
                 # build sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-                W[W > 0] = 1
-                W = W + np.transpose(W)
-                W.setdiag(0)
+                bigger = np.transpose(W) > W
+                W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
                 return W
 
         elif kwargs['weight_mode'] == 'heat_kernel':
@@ -155,7 +153,8 @@ def construct_W(X, **kwargs):
             G[:, 2] = np.ravel(dump_heat_kernel, order='F')
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            W.setdiag(0)
+            bigger = np.transpose(W) > W
+            W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
             return W
 
         elif kwargs['weight_mode'] == 'cosine':
@@ -176,8 +175,8 @@ def construct_W(X, **kwargs):
             G[:, 2] = np.ravel(dump_new, order='F')
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            W = W + np.transpose(W)
-            W.setdiag(0)
+            bigger = np.transpose(W) > W
+            W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
             return W
 
     # Choose supervised neighborMode
@@ -206,6 +205,7 @@ def construct_W(X, **kwargs):
             for i in range(n_classes):
                 class_idx = np.column_stack(np.where(y == label[i]))[:, 0]
                 D = pairwise_distances(X[class_idx, :])
+                D **= 2
                 idx = np.argsort(D, axis=1)
                 idx_new = idx[:, 0:k+1]
                 n_smp_class = (class_idx[idx_new[:]]).size
@@ -249,6 +249,7 @@ def construct_W(X, **kwargs):
                     class_idx = np.column_stack(np.where(y==label[i]))[:, 0]
                     # compute pairwise euclidean distances for instances in class i
                     D = pairwise_distances(X[class_idx, :])
+                    D **= 2
                     # sort the distance matrix D in ascending order for instances in class i
                     idx = np.argsort(D, axis=1)
                     idx_new = idx[:, 0:k+1]
@@ -259,8 +260,8 @@ def construct_W(X, **kwargs):
                     id_now += n_smp_class
                 # build sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-                W = W + np.transpose(W)
-                W.setdiag(0)
+                bigger = np.transpose(W) > W
+                W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
                 return W
 
             if kwargs['metric'] == 'cosine':
@@ -284,8 +285,8 @@ def construct_W(X, **kwargs):
                     id_now += n_smp_class
                 # build sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-                W = W + np.transpose(W)
-                W.setdiag(0)
+                bigger = np.transpose(W) > W
+                W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
                 return W
 
         elif kwargs['weight_mode'] == 'heat_kernel':
@@ -311,8 +312,8 @@ def construct_W(X, **kwargs):
                 id_now += n_smp_class
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            W = W + np.transpose(W)
-            W.setdiag(0)
+            bigger = np.transpose(W) > W
+            W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
             return W
 
         elif kwargs['weight_mode'] == 'cosine':
@@ -338,6 +339,6 @@ def construct_W(X, **kwargs):
                 id_now += n_smp_class
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            W = W + np.transpose(W)
-            W.setdiag(0)
+            bigger = np.transpose(W) > W
+            W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
             return W
