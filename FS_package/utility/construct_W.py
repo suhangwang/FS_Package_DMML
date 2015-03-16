@@ -96,6 +96,7 @@ def construct_W(X, **kwargs):
             if kwargs['metric'] == 'euclidean':
                 # compute pairwise euclidean distances
                 D = pairwise_distances(X)
+                D **= 2
                 # sort the distance matrix D in ascending order
                 dump = np.sort(D, axis=1)
                 idx = np.argsort(D, axis=1)
@@ -105,12 +106,12 @@ def construct_W(X, **kwargs):
                 G = np.zeros((n_samples*(k+1), 3))
                 G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
                 G[:, 1] = np.ravel(idx_new, order='F')
-                G[:, 2] = np.ravel(dump_new, order='F')
+                G[:, 2] = 1
                 # build sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-                W[W > 0] = 1
-                W = W + np.transpose(W)
-                W.setdiag(0)
+                bigger = np.transpose(W) > W
+                W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
+                print W[0:6,0:6]
                 return W
 
             elif kwargs['metric'] == 'cosine':
@@ -140,6 +141,7 @@ def construct_W(X, **kwargs):
             t = kwargs['t']
             # compute pairwise euclidean distances
             D = pairwise_distances(X)
+            D **= 2
             # sort the distance matrix D in ascending order
             dump = np.sort(D, axis=1)
             idx = np.argsort(D, axis=1)
@@ -153,7 +155,6 @@ def construct_W(X, **kwargs):
             G[:, 2] = np.ravel(dump_heat_kernel, order='F')
             # build sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            W = W + np.transpose(W)
             W.setdiag(0)
             return W
 
@@ -294,6 +295,7 @@ def construct_W(X, **kwargs):
                 class_idx = np.column_stack(np.where(y == label[i]))[:, 0]
                 # compute pairwise cosine distances for instances in class i
                 D = pairwise_distances(X[class_idx, :])
+                D **= 2
                 # sort the distance matrix D in ascending order for instances in class i
                 dump = np.sort(D, axis=1)
                 idx = np.argsort(D, axis=1)
