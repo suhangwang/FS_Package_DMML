@@ -108,3 +108,76 @@ def euclidean_projection(V, n_features, n_classes, z, gamma):
         else:
             W_projection[i, :] = np.zeros(n_classes)
     return W_projection
+
+
+def tree_lasso_projection(v, n_features, idx, n_nodes):
+    """
+    tree_lasso_projection solves the following optimization problem
+    min 1/2 ||w-v||_2^2 + \sum z_i||w_{G_{i}}||
+    where w and v are of dimensions of n_features,
+    z_i >=0, and G_{i} follow the tree structure
+    """
+    # test whether the first node is special
+    if idx[0, 0] is -1 and idx[0, 1] is -1:
+        w_projection = np.zeros(n_features)
+        z = idx[0, 2]
+        for j in range(n_features):
+            if v[j] > z:
+                w_projection[j] = v[j] - z
+            else:
+                if v[j] < -z:
+                    w_projection[j] = v[j] + z
+                else:
+                    w_projection[j] = 0
+        i = 1
+
+    else:
+        w = v.copy()
+        i = 0
+
+    # sequentially process each node
+    while i < n_nodes:
+        # compute the L2 norm of this group
+        two_norm = 0
+        for j in range(idx[0, i]-1, idx[1, i]):
+            two_norm += w[j] * w[j]
+        two_norm = np.sqrt(two_norm)
+        z = idx(2, i)
+        if two_norm > z:
+            ratio = (two_norm - z) / two_norm
+            # shrinkage this group by ratio
+            for j in range(idx[0, i]-1, idx[1, i]):
+                w_projection[j] *= ratio
+        else:
+            for j in range(idx[0, i]-1, idx[1, i]):
+                w_projection[j] = 0
+        i += 1
+    return w_projection
+
+
+def tree_norm(w, n_features, idx, n_nodes):
+    """
+    tree_norm computes \sum z_i||w_{G_{i}}||
+    """
+    obj = 0
+    # test whether the first node is special
+    if idx[0, 0] is -1 and idx[0, 1] is -1:
+        z = idx[0, 2]
+        for j in range(n_features):
+            obj += np.abs(w[j])
+        obj *= z
+        i = 1
+    else:
+        i = 0
+
+    # sequentially process each node
+    while i < n_nodes:
+        two_norm = 0
+        for j in range(idx[0, i]-1, idx[1, i]):
+            two_norm += w[j] * w[j]
+        two_norm = np.sqrt(two_norm)
+        z = idx(2, i)
+        obj += z*two_norm
+        i += 1
+    return obj
+
