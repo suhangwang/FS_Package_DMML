@@ -2,9 +2,9 @@ import math
 from ...utility.sparse_learning import *
 
 
-def group_fs(X, y, z, idx, **kwargs):
+def tree_fs(X, y, z, idx, **kwargs):
     """
-    This function implements supervised sparse group feature selection with least square loss, i.e.,
+    This function implements tree structured group lasso regularization with least square loss, i.e.,
     min_{w} ||Xw-Y||_2^2 + z_1||x||_1 + z_2*sum_j w_j||w_{G_{j}}||
     --------------------------
     Input
@@ -89,6 +89,7 @@ def group_fs(X, y, z, idx, **kwargs):
             # the difference between the new approximate solution w and the search point s
             v = w - s
             # compute Xw = X*w
+            Xw = np.dot(X, w)
             Xv = Xw - Xs
             r_sum = np.inner(v, v)
             l_sum = np.inner(Xv, Xv)
