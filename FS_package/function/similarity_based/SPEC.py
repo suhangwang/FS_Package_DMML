@@ -32,6 +32,7 @@ def spec(X, **kwargs):
     if 'W' not in kwargs:
         kwargs['W'] = rbf_kernel(X)
 
+
     style = kwargs['style']
     W = kwargs['W']
     if type(W) is numpy.ndarray:
