@@ -17,7 +17,7 @@ def main():
     W = construct_W.construct_W(X, **kwargs_W)
 
     # feature selection
-    kwargs = {'style': 1, 'W': W}
+    kwargs = {'style': 0, 'W': W}
     score = SPEC.spec(X, **kwargs)
     idx = SPEC.feature_ranking(score, **kwargs)
 
