@@ -118,9 +118,9 @@ def tree_lasso_projection(v, n_features, idx, n_nodes):
     z_i >=0, and G_{i} follow the tree structure
     """
     # test whether the first node is special
-    if idx[0, 0] is -1 and idx[0, 1] is -1:
+    if idx[0, 0] == -1 and idx[1, 0] == -1:
         w_projection = np.zeros(n_features)
-        z = idx[0, 2]
+        z = idx[2, 0]
         for j in range(n_features):
             if v[j] > z:
                 w_projection[j] = v[j] - z
@@ -139,17 +139,19 @@ def tree_lasso_projection(v, n_features, idx, n_nodes):
     while i < n_nodes:
         # compute the L2 norm of this group
         two_norm = 0
-        for j in range(idx[0, i]-1, idx[1, i]):
-            two_norm += w[j] * w[j]
+        start_idx = int(idx[0, i] - 1)
+        end_idx = int(idx[1, i])
+        for j in range(start_idx, end_idx):
+            two_norm += w_projection[j] * w_projection[j]
         two_norm = np.sqrt(two_norm)
-        z = idx(2, i)
+        z = idx[2, i]
         if two_norm > z:
             ratio = (two_norm - z) / two_norm
             # shrinkage this group by ratio
-            for j in range(idx[0, i]-1, idx[1, i]):
+            for j in range(start_idx, end_idx):
                 w_projection[j] *= ratio
         else:
-            for j in range(idx[0, i]-1, idx[1, i]):
+            for j in range(start_idx, end_idx):
                 w_projection[j] = 0
         i += 1
     return w_projection
@@ -161,8 +163,8 @@ def tree_norm(w, n_features, idx, n_nodes):
     """
     obj = 0
     # test whether the first node is special
-    if idx[0, 0] is -1 and idx[0, 1] is -1:
-        z = idx[0, 2]
+    if idx[0, 0] == -1 and idx[1, 0] == -1:
+        z = idx[2, 0]
         for j in range(n_features):
             obj += np.abs(w[j])
         obj *= z
@@ -173,10 +175,12 @@ def tree_norm(w, n_features, idx, n_nodes):
     # sequentially process each node
     while i < n_nodes:
         two_norm = 0
-        for j in range(idx[0, i]-1, idx[1, i]):
+        start_idx = int(idx[0, i] - 1)
+        end_idx = int(idx[1, i])
+        for j in range(start_idx, end_idx):
             two_norm += w[j] * w[j]
         two_norm = np.sqrt(two_norm)
-        z = idx(2, i)
+        z = idx[2, i]
         obj += z*two_norm
         i += 1
     return obj
