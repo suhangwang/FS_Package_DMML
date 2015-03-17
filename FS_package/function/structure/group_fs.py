@@ -17,9 +17,9 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
         z2: {float}
             regularization parameter of L2 norm for the non-overlapping group
         idx: {numpy array}, shape (3, n_nodes)
-            3*nodes matrix, where nodes denotes the number of nodes of the tree
-            idx(1,:) contains the starting index
-            idx(2,:) contains the ending index
+            3*nodes matrix, where nodes denotes the number of groups
+            idx(1,:) contains the starting index of a group
+            idx(2,:) contains the ending index of a group
             idx(3,:) contains the corresponding weight (w_{j})
         kwargs : {dictionary}
             verbose: {boolean} True or False
@@ -35,6 +35,7 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
 
     Reference:
         Liu, Jun, et al. "Moreau-Yosida Regularization for Grouped Tree Structure Learning." NIPS. 2010.
+        Liu, Jun, et al. "SLEP: Sparse Learning with Efficient Projections." http://www.public.asu.edu/~jye02/Software/SLEP, 2009.
     """
     if 'verbose' not in kwargs:
         verbose = False
@@ -45,6 +46,7 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
     n_samples, n_features = X.shape
     # compute X'y
     Xty = np.dot(np.transpose(X), y)
+
     # initialize a starting point
     w = np.zeros(n_features)
     # compute Xw = X*w
@@ -54,7 +56,6 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
     # initialize step size gamma = 1
     gamma = 1
     # assign wp with w, and Xwp with Xw
-    wp = w
     Xwp = Xw
     wwp = np.zeros(n_features)
     alphap = 0
@@ -82,12 +83,12 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
         while True:
             # let s walk in a step in the antigradient of s to get v and then do the L1/L2-norm regularized projection
             v = s - G/gamma
-
             # tree overlapping group lasso projection
             n_nodes = int(idx.shape[1])
-            idx[0:2, :] = np.concatenate((np.array([[-1], [-1]]), idx[0:2, :]), axis=1)
-            idx[2, :] = np.concatenate((np.array([z1/gamma]), z2/gamma*idx[2, :]), axis=1)
-            w = tree_lasso_projection(v, n_features, idx, n_nodes)
+            idx_tmp = np.zeros((3, n_nodes+1))
+            idx_tmp[0:2, :] = np.concatenate((np.array([[-1], [-1]]), idx[0:2, :]), axis=1)
+            idx_tmp[2, :] = np.concatenate((np.array([z1/gamma]), z2/gamma*idx[2, :]), axis=1)
+            w = tree_lasso_projection(v, n_features, idx_tmp, n_nodes+1)
             # the difference between the new approximate solution w and the search point s
             v = w - s
             # compute Xw = X*w
@@ -95,43 +96,43 @@ def group_fs(X, y, z1, z2, idx, **kwargs):
             Xv = Xw - Xs
             r_sum = np.inner(v, v)
             l_sum = np.inner(Xv, Xv)
-
             # determine weather the gradient step makes little improvement
             if r_sum <= 1e-20:
                 flag = True
                 break
 
             # the condition is ||Xv||_2^2 <= gamma * ||v||_2^2
-            if l_sum < r_sum*gamma:
+            if l_sum <= r_sum*gamma:
                 break
             else:
                 gamma = max(2*gamma, l_sum/r_sum)
-            value_gamma[iter_step] = gamma
+        value_gamma[iter_step] = gamma
 
-            # step3: update alpha and alphap, and check weather converge
-            alphap = alpha
-            alpha = (1+math.sqrt(4*alpha*alpha+1))/2
+        # step3: update alpha and alphap, and check weather converge
+        alphap = alpha
+        alpha = (1+math.sqrt(4*alpha*alpha+1))/2
 
-            wwp = w - wp
-            Xwy = Xw -y
+        wwp = w - wp
+        Xwy = Xw -y
 
-            # calculate the regularization part
-            idx[0:2, :] = np.concatenate((np.array([[-1], [-1]]), idx[0:2, :]), axis=1)
-            idx[2, :] = np.concatenate((np.array([z1]), z2*idx[2, :]), axis=1)
-            tree_norm_val = tree_norm(w, n_features, idx, n_nodes)
+        # calculate the regularization part
+        idx_tmp = np.zeros((3, n_nodes+1))
+        idx_tmp[0:2, :] = np.concatenate((np.array([[-1], [-1]]), idx[0:2, :]), axis=1)
+        idx_tmp[2, :] = np.concatenate((np.array([z1]), z2*idx[2, :]), axis=1)
+        tree_norm_val = tree_norm(w, n_features, idx_tmp, n_nodes+1)
 
-            # function value = loss + regularization
-            obj[iter_step] = np.inner(Xwy, Xwy)/2 + tree_norm_val
+        # function value = loss + regularization
+        obj[iter_step] = np.inner(Xwy, Xwy)/2 + tree_norm_val
 
-            if verbose:
-                print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
+        if verbose:
+            print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
 
-            if flag is True:
-                break
+        if flag is True:
+            break
 
-            # determine weather converge
-            if iter_step >= 2 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
-                break
-        return w, obj, value_gamma
+        # determine weather converge
+        if iter_step >= 2 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
+            break
+    return w, obj, value_gamma
 
 
