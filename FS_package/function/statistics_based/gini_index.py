@@ -1,9 +1,9 @@
 import numpy as np
-
+import sys
 
 def gini_index(X, y):
     """
-    This function implements the gini index function
+    This function implements the gini index function, only constrained to binary classification problem
 
     Input
     ----------
