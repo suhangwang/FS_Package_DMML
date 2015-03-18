@@ -32,15 +32,20 @@ def spec(X, **kwargs):
     if 'W' not in kwargs:
         kwargs['W'] = rbf_kernel(X)
 
-
     style = kwargs['style']
     W = kwargs['W']
     if type(W) is numpy.ndarray:
         W = csc_matrix(W)
 
     n_samples, n_features = X.shape
+
     # build the degree matrix
-    D = np.array(W.sum(axis=1))
+    X_sum = np.array(W.sum(axis=1))
+    D = np.zeros((n_samples, n_samples))
+    for i in range(n_samples):
+        D[i, i] = X_sum[i]
+
+    # obtain the laplacian matrix
     L = D - W
     d1 = np.power(np.array(W.sum(axis=1)), -0.5)
     d1[np.isinf(d1)] = 0
@@ -48,11 +53,12 @@ def spec(X, **kwargs):
     v = np.dot(np.diag(d2[:, 0]), np.ones(n_samples))
     v = v/LA.norm(v)
 
-    # build the normalized laplacian matrix hatW = diag(d1)*W*diag(d1)
-    L_hat = np.matlib.repmat(d1, 1, n_samples)*L*np.matlib.repmat(np.transpose(d1), n_samples, 1)
+    # build the normalized laplacian matrix
+    L_hat = (np.matlib.repmat(d1, 1, n_samples)) * np.array(L) * np.matlib.repmat(np.transpose(d1), n_samples, 1)
 
     # calculate and construct spectral information
     U, s, V = np.linalg.svd(L_hat)
+
     # begin to select features
     w_fea = np.ones(n_features)*1000
 
@@ -71,15 +77,15 @@ def spec(X, **kwargs):
 
         # use f'Lf formulation
         if style == -1:
-            w_fea[i] = np.sum(np.multiply(a[:, 0], s))
+            w_fea[i] = np.sum(a * s)
         # using all eigenvalues except the 1st
         elif style == 0:
             a1 = a[0:n_samples-1]
-            w_fea[i] = np.sum(np.multiply(a1[:, 0], s[0:n_samples-1]))/(1-np.power(np.dot(F_hat, v), 2))
+            w_fea[i] = np.sum(a1 * s[0:n_samples-1])/(1-np.power(np.dot(np.transpose(F_hat), v), 2))
         # use first k except the 1st
         else:
             a1 = a[n_samples-style:n_samples-1]
-            w_fea[i] = np.sum(np.multiply(a1[:, 0], (2-s[n_samples-style: n_samples-1])))
+            w_fea[i] = np.sum(a1 * (2-s[n_samples-style: n_samples-1]))
 
     if style != -1 and style != 0:
         w_fea[w_fea == 1000] = -1000

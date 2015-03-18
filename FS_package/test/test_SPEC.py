@@ -7,8 +7,8 @@ from FS_package.utility import unsupervised_evaluation
 def main():
     # load data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    X = mat['fea']
-    y = mat['gnd']
+    X = mat['X']
+    y = mat['Y']
     y = y[:, 0]
     X = X.astype(float)
 
