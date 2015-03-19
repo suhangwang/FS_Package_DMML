@@ -1,23 +1,22 @@
-__author__ = 'kewei'
 import numpy as np
 import sklearn.preprocessing
 
 
 def data_discretization(X, n_bins):
     """
-    This function implement the data discretization function
+    This function implements the data discretization function to discrete data into n_bins
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
+            input data, guaranteed to be a numpy array
         num: {int}
-            number of bins
+            number of bins to be discretized
 
     Output
-    ----------
-        X_digitized: {numpy array}, shape (n_samples, n_features)
-            Output data, where features are digitized to n_bins
+    ------
+        X_discretized: {numpy array}, shape (n_samples, n_features)
+            output discretized data, where features are digitized to n_bins
     """
 
     # normalize each feature
@@ -27,7 +26,6 @@ def data_discretization(X, n_bins):
     # discretize X
     n_samples, n_features = X.shape
     X_discretized = np.zeros(n_samples, n_features)
-
     bins = np.linspace(0, 1, n_bins)
     for i in range(n_features):
         X_discretized[:, i] = np.digitize(X_normalized[:, i], bins)
