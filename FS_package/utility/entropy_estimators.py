@@ -4,8 +4,8 @@
 # Or go to http://www.isi.edu/~gregv/npeet.html
 
 import scipy.spatial as ss
-from scipy.special import digamma, gamma
-from math import log, pi
+from scipy.special import digamma
+from math import log
 import numpy.random as nr
 import numpy as np
 import random
@@ -13,9 +13,9 @@ import random
 
 # Continuous estimators
 def entropy(x, k=3, base=2):
-    """ The classic K-L k-nearest neighbor continuous entropy estimator
-    x should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
-    if x is a one-dimensional scalar and we have four samples
+    """
+    The classic K-L k-nearest neighbor continuous entropy estimator x should be a list of vectors,
+    e.g. x = [[1.3],[3.7],[5.1],[2.4]] if x is a one-dimensional scalar and we have four samples
     """
 
     assert k <= len(x)-1, "Set k smaller than num. samples - 1"
@@ -30,8 +30,8 @@ def entropy(x, k=3, base=2):
 
 
 def mi(x, y, k=3, base=2):
-    """ Mutual information of x and y
-    x,y should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
+    """
+    Mutual information of x and y; x, y should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
     assert len(x) == len(y), "Lists should have same length"
@@ -48,8 +48,8 @@ def mi(x, y, k=3, base=2):
 
 
 def cmi(x, y, z, k=3, base=2):
-    """ Mutual information of x and y, conditioned on z
-    x,y,z should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
+    """
+    Mutual information of x and y, conditioned on z; x, y, z should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
     assert len(x) == len(y), "Lists should have same length"
@@ -67,8 +67,8 @@ def cmi(x, y, z, k=3, base=2):
 
 
 def kldiv(x, xp, k=3, base=2):
-    """ KL Divergence between p and q for x~p(x),xp~q(x)
-    x,xp should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
+    """
+    KL Divergence between p and q for x~p(x), xp~q(x); x, xp should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
     assert k <= len(x) - 1, "Set k smaller than num. samples - 1"
@@ -87,22 +87,22 @@ def kldiv(x, xp, k=3, base=2):
 
 # Discrete estimators
 def entropyd(sx, base=2):
-    """ Discrete entropy estimator
-    Given a list of samples which can be any hashable object
+    """
+    Discrete entropy estimator given a list of samples which can be any hashable object
     """
     return entropyfromprobs(hist(sx), base=base)
 
 
 def midd(x, y):
-    """ Discrete mutual information estimator
-    Given a list of samples which can be any hashable object
+    """
+    Discrete mutual information estimator given a list of samples which can be any hashable object
     """
     return -entropyd(zip(x, y))+entropyd(x)+entropyd(y)
 
 
 def cmidd(x, y, z):
-    """ Discrete mutual information estimator
-    Given a list of samples which can be any hashable object
+    """
+    Discrete mutual information estimator given a list of samples which can be any hashable object
     """
     return entropyd(zip(y, z))+entropyd(zip(x, z))-entropyd(zip(x, y, z))-entropyd(z)
 
@@ -121,7 +121,7 @@ def entropyfromprobs(probs, base=2):
 
 
 def elog(x):
-    #for entropy, 0 log 0 = 0. but we get an error for putting log 0
+    # for entropy, 0 log 0 = 0. but we get an error for putting log 0
     if x <= 0. or x >= 1.:
         return 0
     else:
@@ -153,17 +153,18 @@ def micd(x, y, k=3, base=2, warning=True):
 
 # Utility functions
 def vectorize(scalarlist):
-    """ Turn a list of scalars into a list of one-d vectors
+    """
+    Turn a list of scalars into a list of one-d vectors
     """
     return [(x,) for x in scalarlist]
 
 
 def shuffle_test(measure, x, y, z=False, ns=200, ci=0.95, **kwargs):
-    """ Shuffle test
+    """
+    Shuffle test
     Repeatedly shuffle the x-values and then estimate measure(x,y,[z]).
-    Returns the mean and conf. interval ('ci=0.95' default) over 'ns' runs.
-    'measure' could me mi,cmi, e.g. Keyword arguments can be passed.
-    Mutual information and CMI should have a mean near zero.
+    Returns the mean and conf. interval ('ci=0.95' default) over 'ns' runs, 'measure' could me mi,cmi,
+    e.g. Keyword arguments can be passed. Mutual information and CMI should have a mean near zero.
     """
     xp = x[:]   # A copy that we can shuffle
     outputs = []
