@@ -8,9 +8,7 @@ def information_gain(f1, f2):
     Input
     -----
         f1: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
         f2: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
     Output
     ------
         ig: {float}
@@ -27,9 +25,7 @@ def conditional_entropy(f1, f2):
     Input
     -----
         f1: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
         f2: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
 
     Output
     ------
@@ -48,9 +44,7 @@ def su_calculation(f1, f2):
     Input
     -----
         f1: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
         f2: {numpy array}, shape (n_samples,)
-            guaranteed to be a discrete one-dimensional numpy array
 
     Output
     ------

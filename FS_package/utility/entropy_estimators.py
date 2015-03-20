@@ -1,7 +1,4 @@
-# python2.7
-# Written by Greg Ver Steeg
-# See readme.pdf for documentation
-# Or go to http://www.isi.edu/~gregv/npeet.html
+# Written by Greg Ver Steeg (http://www.isi.edu/~gregv/npeet.html)
 
 import scipy.spatial as ss
 from scipy.special import digamma
@@ -11,7 +8,8 @@ import numpy as np
 import random
 
 
-# Continuous estimators
+# continuous estimators
+
 def entropy(x, k=3, base=2):
     """
     The classic K-L k-nearest neighbor continuous entropy estimator x should be a list of vectors,
@@ -34,6 +32,7 @@ def mi(x, y, k=3, base=2):
     Mutual information of x and y; x, y should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
+
     assert len(x) == len(y), "Lists should have same length"
     assert k <= len(x) - 1, "Set k smaller than num. samples - 1"
     intens = 1e-10  # small noise to break degeneracy, see doc.
@@ -52,6 +51,7 @@ def cmi(x, y, z, k=3, base=2):
     Mutual information of x and y, conditioned on z; x, y, z should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
+
     assert len(x) == len(y), "Lists should have same length"
     assert k <= len(x) - 1, "Set k smaller than num. samples - 1"
     intens = 1e-10  # small noise to break degeneracy, see doc.
@@ -71,6 +71,7 @@ def kldiv(x, xp, k=3, base=2):
     KL Divergence between p and q for x~p(x), xp~q(x); x, xp should be a list of vectors, e.g. x = [[1.3],[3.7],[5.1],[2.4]]
     if x is a one-dimensional scalar and we have four samples
     """
+
     assert k <= len(x) - 1, "Set k smaller than num. samples - 1"
     assert k <= len(xp) - 1, "Set k smaller than num. samples - 1"
     assert len(x[0]) == len(xp[0]), "Two distributions must have same dim."
@@ -90,6 +91,7 @@ def entropyd(sx, base=2):
     """
     Discrete entropy estimator given a list of samples which can be any hashable object
     """
+
     return entropyfromprobs(hist(sx), base=base)
 
 
@@ -97,6 +99,7 @@ def midd(x, y):
     """
     Discrete mutual information estimator given a list of samples which can be any hashable object
     """
+
     return -entropyd(zip(x, y))+entropyd(x)+entropyd(y)
 
 
@@ -104,6 +107,7 @@ def cmidd(x, y, z):
     """
     Discrete mutual information estimator given a list of samples which can be any hashable object
     """
+
     return entropyd(zip(y, z))+entropyd(zip(x, z))-entropyd(zip(x, y, z))-entropyd(z)
 
 
@@ -132,6 +136,7 @@ def elog(x):
 def micd(x, y, k=3, base=2, warning=True):
     """ If x is continuous and y is discrete, compute mutual information
     """
+
     overallentropy = entropy(x, k, base)
     n = len(y)
     word_dict = dict()
@@ -156,6 +161,7 @@ def vectorize(scalarlist):
     """
     Turn a list of scalars into a list of one-d vectors
     """
+
     return [(x,) for x in scalarlist]
 
 
@@ -166,6 +172,7 @@ def shuffle_test(measure, x, y, z=False, ns=200, ci=0.95, **kwargs):
     Returns the mean and conf. interval ('ci=0.95' default) over 'ns' runs, 'measure' could me mi,cmi,
     e.g. Keyword arguments can be passed. Mutual information and CMI should have a mean near zero.
     """
+
     xp = x[:]   # A copy that we can shuffle
     outputs = []
     for i in range(ns):
@@ -198,7 +205,3 @@ def zip2(*args):
     # zip2(x,y) takes the lists of vectors and makes it a list of vectors in a joint space
     # E.g. zip2([[1],[2],[3]],[[4],[5],[6]]) = [[1,4],[2,5],[3,6]]
     return [sum(sublist, []) for sublist in zip(*args)]
-
-
-if __name__ == "__main__":
-    print "NPEET: Non-parametric entropy estimation toolbox. See readme.pdf for details on usage."

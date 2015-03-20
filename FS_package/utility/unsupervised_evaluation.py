@@ -9,10 +9,11 @@ from sklearn.cluster import KMeans
 
 def best_map(l1, l2):
     """
-    Permute labels of L2 to match L1 as much as possible
+    Permute labels of l2 to match l1 as much as possible
     """
     if len(l1) != len(l2):
-        print >>sys.stderr, "L1.shape must == L2.shape"
+        print "L1.shape must == L2.shape"
+        exit(0)
 
     label1 = np.unique(l1)
     n_class1 = len(label1)
@@ -39,17 +40,19 @@ def best_map(l1, l2):
 
 def evaluation(selected_features, n_clusters, y):
     """
-    Calculate ACC and NMI of the selected features
+    This function calculates ARI, ACC and NMI of clustering results
+
     Input
-    ----------
-        selectedFeatures: {numpy array}, shape (n_samples, n_selectedFeatures}
-            data of the selectedFeatures
-        C: {int}
+    -----
+        selected_features: {numpy array}, shape (n_samples, n_selected_features}
+            input data on the selected features
+        n_clusters: {int}
             number of clusters
-        Y: {numpy array}, shape (n_samples, 1)
-            actual labels
+        y: {numpy array}, shape (n_samples,)
+            true labels
+
     Output
-    ----------
+    ------
         Adjusted Rand Index: {float}
         Normalized Mutual Information: {float}
         Accuracy: {float}

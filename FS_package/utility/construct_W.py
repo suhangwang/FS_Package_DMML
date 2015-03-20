@@ -5,53 +5,55 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 def construct_W(X, **kwargs):
     """
-    Construct the affinity matrix W
-    If kwargs is none, use the default parameter settings
-    If kwargs is not null, construct the affinity matrix according to parameters in kwargs
+    Construct the affinity matrix W through different ways
+
+    Notes
+    -----
+    if kwargs is null, use the default parameter settings;
+    if kwargs is not null, construct the affinity matrix according to parameters in kwargs
 
     Input
-    ----------
-    data: {numpy array}, shape (n_samples, n_features)
-        Input data, guaranteed to be a numpy array
+    -----
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
     kwargs: {dictionary}
-        Parameters to construct different affinity matrix W:
+        parameters to construct different affinity matrix W:
             y: {numpy array}, shape (n_samples, 1)
-                The parameter needed under the 'supervised' neighbor mode
+                the true label information needed under the 'supervised' neighbor mode
             metric: {string}
-                Choices for different distance measure
+                choices for different distance measures
                 'euclidean' - use euclidean distance
                 'cosine' - use cosine distance (default)
             neighbor_mode: {string}
-                Indicates how to construct the graph
-                'knn' - Put an edge between two nodes if and only if they are among the
+                indicates how to construct the graph
+                'knn' - put an edge between two nodes if and only if they are among the
                         k nearest neighbors of each other (default)
-                'supervised' - Put an edge between two nodes if they belong to same class
+                'supervised' - put an edge between two nodes if they belong to same class
                         and they are among the k nearest neighbors of each other
             weight_mode: {string}
-                Indicates how to assign weights for each edge in the graph
+                indicates how to assign weights for each edge in the graph
                 'binary' - 0-1 weighting, every edge receives weight of 1 (default)
-                'heat_kernel' - If nodes i and j are connected, put weight W_ij = exp(-norm(x_i - x_j)/2t^2)
-                                This weight mode can only be used under 'euclidean' metric and you are required
+                'heat_kernel' - if nodes i and j are connected, put weight W_ij = exp(-norm(x_i - x_j)/2t^2)
+                                this weight mode can only be used under 'euclidean' metric and you are required
                                 to provide the parameter t
-                'cosine' - If nodes i and j are connected, put weight cosine(x_i,x_j).
-                            Can only be used under 'cosine' metric
+                'cosine' - if nodes i and j are connected, put weight cosine(x_i,x_j).
+                            this weight mode can only be used under 'cosine' metric
             k: {int}
-                Choices for the number of neighbors (default k = 5)
+                choices for the number of neighbors (default k = 5)
             t: {float}
-                Parameter for the 'heat_kernel' weight_mode
+                parameter for the 'heat_kernel' weight_mode
             fisher_score: {boolean}
-                Indicates whether to build the affinity matrix in a fisher_score way, in which W_ij = 1/n_l
-                if yi = yj = l;
+                indicates whether to build the affinity matrix in a fisher score way, in which W_ij = 1/n_l if yi = yj = l;
                 otherwise W_ij = 0 (default fisher_score = false)
             reliefF: {boolean}
-                Indicates whether to build the affinity matrix in a reliefF way, NH(x) or NM(x,y) denotes a set of
-                k nearest points to x with the same class of x, or a different class (the class y), respectively.
-                W_ij = 1 if i = j; W_ij = -1/k if x_j \in NH(x_i); W_ij = 1/(c-1)k if xj \in NM(x_i, y)
-                (default reliefF = false)
+                indicates whether to build the affinity matrix in a reliefF way, NH(x) and NM(x,y) denotes a set of
+                k nearest points to x with the same class as x, and a different class (the class y), respectively.
+                W_ij = 1 if i = j; W_ij = 1/k if x_j \in NH(x_i); W_ij = -1/(c-1)k if x_j \in NM(x_i, y) (default reliefF = false)
+
     Output
-    -------
+    ------
     W: {sparse matrix}, shape (n_samples, n_samples)
-        Output affinity matrix W, guaranteed to be a numpy array.
+        output affinity matrix W
     """
 
     # default metric is 'cosine'
@@ -102,35 +104,32 @@ def construct_W(X, **kwargs):
                 idx = np.argsort(D, axis=1)
                 # choose the k-nearest neighbors for each instance
                 idx_new = idx[:, 0:k+1]
-                dump_new = dump[:, 0:k+1]
                 G = np.zeros((n_samples*(k+1), 3))
                 G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
                 G[:, 1] = np.ravel(idx_new, order='F')
                 G[:, 2] = 1
-                # build sparse affinity matrix W
+                # build the sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
-                print 'test'
                 return W
 
             elif kwargs['metric'] == 'cosine':
                 # normalize the data first
-                X_norm = np.power(np.sum(X*X, axis=1), 0.5)
+                X_normalized = np.power(np.sum(X*X, axis=1), 0.5)
                 for i in range(n_samples):
-                    X[i, :] = X[i, :]/max(1e-12, X_norm[i])
+                    X[i, :] = X[i, :]/max(1e-12, X_normalized[i])
                 # compute pairwise cosine distances
                 D_cosine = np.dot(X, np.transpose(X))
                 # sort the distance matrix D in descending order
                 dump = np.sort(-D_cosine, axis=1)
                 idx = np.argsort(-D_cosine, axis=1)
                 idx_new = idx[:, 0:k+1]
-                dump_new = -dump[:, 0:k+1]
                 G = np.zeros((n_samples*(k+1), 3))
                 G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
                 G[:, 1] = np.ravel(idx_new, order='F')
                 G[:, 2] = 1
-                # build sparse affinity matrix W
+                # build the sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
@@ -152,7 +151,7 @@ def construct_W(X, **kwargs):
             G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
             G[:, 1] = np.ravel(idx_new, order='F')
             G[:, 2] = np.ravel(dump_heat_kernel, order='F')
-            # build sparse affinity matrix W
+            # build the sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             bigger = np.transpose(W) > W
             W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
@@ -160,9 +159,9 @@ def construct_W(X, **kwargs):
 
         elif kwargs['weight_mode'] == 'cosine':
             # normalize the data first
-            X_norm = np.power(np.sum(X*X, axis=1), 0.5)
+            X_normalized = np.power(np.sum(X*X, axis=1), 0.5)
             for i in range(n_samples):
-                    X[i, :] = X[i, :]/max(1e-12, X_norm[i])
+                    X[i, :] = X[i, :]/max(1e-12, X_normalized[i])
             # compute pairwise cosine distances
             D_cosine = np.dot(X, np.transpose(X))
             # sort the distance matrix D in ascending order
@@ -174,20 +173,20 @@ def construct_W(X, **kwargs):
             G[:, 0] = np.tile(np.arange(n_samples), (k+1, 1)).reshape(-1)
             G[:, 1] = np.ravel(idx_new, order='F')
             G[:, 2] = np.ravel(dump_new, order='F')
-            # build sparse affinity matrix W
+            # build the sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             bigger = np.transpose(W) > W
             W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
             return W
 
-    # Choose supervised neighborMode
+    # choose supervised neighborMode
     elif kwargs['neighbor_mode'] == 'supervised':
         k = kwargs['k']
-        # Get y and the number of classes
+        # get true labels and the number of classes
         y = kwargs['y']
         label = np.unique(y)
         n_classes = np.unique(y).size
-        # Construct the weight matrix W in a fisherScore way, W_ij = 1/n_l if yi = yj = l, otherwise W_ij = 0
+        # construct the weight matrix W in a fisherScore way, W_ij = 1/n_l if yi = yj = l, otherwise W_ij = 0
         if kwargs['fisher_score'] is True:
             W = lil_matrix((n_samples, n_samples))
             for i in range(n_classes):
@@ -196,9 +195,9 @@ def construct_W(X, **kwargs):
                 W[class_idx_all] = 1.0/np.sum(np.sum(class_idx))
             return W
 
-        # Construct the weight matrix W in a reliefF way, NH(x) or NM(x,y) denotes a set of k nearest
-        # points to x with the same class of x, or a different class (the class y), respectively. W_ij = 1 if i = j;
-        # W_ij = -1/k if x_j \in NH(x_i); W_ij = 1/(c-1)k if xj \in NM(x_i, y)
+        # construct the weight matrix W in a reliefF way, NH(x) and NM(x,y) denotes a set of k nearest
+        # points to x with the same class as x, a different class (the class y), respectively. W_ij = 1 if i = j;
+        # W_ij = 1/k if x_j \in NH(x_i); W_ij = -1/(c-1)k if x_j \in NM(x_i, y)
         if kwargs['reliefF'] is True:
             # when xj in NH(xi)
             G = np.zeros((n_samples*(k+1), 3))
@@ -214,13 +213,13 @@ def construct_W(X, **kwargs):
                     k = len(class_idx) - 1
                 G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx, (k+1, 1)).reshape(-1)
                 G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
-                G[id_now:n_smp_class+id_now, 2] = -1.0/k
+                G[id_now:n_smp_class+id_now, 2] = 1.0/k
                 id_now += n_smp_class
             W1 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
-            # when i = j
+            # when i = j, W_ij = 1
             for i in range(n_samples):
                 W1[i, i] = 1
-            # when xj in NM(Xi, y)
+            # when x_j in NM(x_i, y)
             G = np.zeros((n_samples*k*(n_classes - 1), 3))
             id_now = 0
             for i in range(n_classes):
@@ -236,7 +235,7 @@ def construct_W(X, **kwargs):
                         n_smp_class = len(class_idx1)*k
                         G[id_now:n_smp_class+id_now, 0] = np.tile(class_idx1, (k, 1)).reshape(-1)
                         G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx2[idx_new[:]], order='F')
-                        G[id_now:n_smp_class+id_now, 2] = 1.0/((n_classes-1)*k)
+                        G[id_now:n_smp_class+id_now, 2] = -1.0/((n_classes-1)*k)
                         id_now += n_smp_class
             W2 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             bigger = np.transpose(W2) > W2
@@ -249,7 +248,7 @@ def construct_W(X, **kwargs):
                 G = np.zeros((n_samples*(k+1), 3))
                 id_now = 0
                 for i in range(n_classes):
-                    class_idx = np.column_stack(np.where(y==label[i]))[:, 0]
+                    class_idx = np.column_stack(np.where(y == label[i]))[:, 0]
                     # compute pairwise euclidean distances for instances in class i
                     D = pairwise_distances(X[class_idx, :])
                     D **= 2
@@ -261,7 +260,7 @@ def construct_W(X, **kwargs):
                     G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                     G[id_now:n_smp_class+id_now, 2] = 1
                     id_now += n_smp_class
-                # build sparse affinity matrix W
+                # build the sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
@@ -269,9 +268,9 @@ def construct_W(X, **kwargs):
 
             if kwargs['metric'] == 'cosine':
                 # normalize the data first
-                X_norm = np.power(np.sum(X*X, axis=1), 0.5)
+                X_normalized = np.power(np.sum(X*X, axis=1), 0.5)
                 for i in range(n_samples):
-                    X[i, :] = X[i, :]/max(1e-12, X_norm[i])
+                    X[i, :] = X[i, :]/max(1e-12, X_normalized[i])
                 G = np.zeros((n_samples*(k+1), 3))
                 id_now = 0
                 for i in range(n_classes):
@@ -286,7 +285,7 @@ def construct_W(X, **kwargs):
                     G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                     G[id_now:n_smp_class+id_now, 2] = 1
                     id_now += n_smp_class
-                # build sparse affinity matrix W
+                # build the sparse affinity matrix W
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
@@ -313,7 +312,7 @@ def construct_W(X, **kwargs):
                 G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                 G[id_now:n_smp_class+id_now, 2] = np.ravel(dump_heat_kernel, order='F')
                 id_now += n_smp_class
-            # build sparse affinity matrix W
+            # build the sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             bigger = np.transpose(W) > W
             W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
@@ -321,9 +320,9 @@ def construct_W(X, **kwargs):
 
         elif kwargs['weight_mode'] == 'cosine':
             # normalize the data first
-            X_norm = np.power(np.sum(X*X, axis=1), 0.5)
+            X_normalized = np.power(np.sum(X*X, axis=1), 0.5)
             for i in range(n_samples):
-                X[i, :] = X[i, :]/max(1e-12, X_norm[i])
+                X[i, :] = X[i, :]/max(1e-12, X_normalized[i])
             G = np.zeros((n_samples*(k+1), 3))
             id_now = 0
             for i in range(n_classes):
@@ -340,7 +339,7 @@ def construct_W(X, **kwargs):
                 G[id_now:n_smp_class+id_now, 1] = np.ravel(class_idx[idx_new[:]], order='F')
                 G[id_now:n_smp_class+id_now, 2] = np.ravel(dump_new, order='F')
                 id_now += n_smp_class
-            # build sparse affinity matrix W
+            # build the sparse affinity matrix W
             W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
             bigger = np.transpose(W) > W
             W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
