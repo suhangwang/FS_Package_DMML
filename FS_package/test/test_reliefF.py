@@ -1,22 +1,23 @@
 import scipy.io
+from sklearn import preprocessing
+from sklearn import cross_validation
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from FS_package.function.similarity_based import reliefF
-from FS_package.utility import supervised_evaluation
 
 
 def main():
     # load data
-    mat = scipy.io.loadmat('../data/Prostate-GE.mat')
-    X = mat['M']      # data
-    y = mat['L']  # label
+    mat = scipy.io.loadmat('../data/COIL20.mat')
+    X = mat['X']      # data
+    y = mat['Y']  # label
     y = y[:, 0]
     X = X.astype(float)
+    #X = preprocessing.normalize(X, norm='l2', axis=0)
     n_samples, n_features = X.shape
 
     # split data
-    n_iter = 20
-    ss = supervised_evaluation.select_train_split(n_samples, test_size=0.1, n_iter=n_iter)
+    ss = cross_validation.KFold(n_samples, n_folds=10)
 
     # evaluation
     num_fea = 100
@@ -25,13 +26,17 @@ def main():
 
     for train, test in ss:
         score = reliefF.reliefF(X[train], y[train])
+        print (X[test]).shape
+        #print (y[train]).shape
         idx = reliefF.feature_ranking(score)
         selected_features = X[:, idx[0:num_fea]]
+        print selected_features
         neigh.fit(selected_features[train], y[train])
         y_predict = neigh.predict(selected_features[test])
         acc = accuracy_score(y[test], y_predict)
+        print acc
         correct = correct + acc
-    print 'ACC', float(correct)/n_iter
+    print 'ACC', float(correct)/10
 
 
 if __name__ == '__main__':

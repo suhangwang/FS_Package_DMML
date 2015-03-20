@@ -7,16 +7,16 @@ from FS_package.utility import unsupervised_evaluation
 def main():
     # load matlab data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    X = mat['fea']    # data
-    y = mat['gnd']    # label
+    X = mat['X']    # data
+    y = mat['Y']    # label
     y = y[:, 0]
     X = X.astype(float)
     n_samples, n_features = X.shape
 
     # construct affinity matrix
-    kwargs_W = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
+    kwargs_W = {"metric": "euclidean", "neighbor_mode": "supervised", "weight_mode": "cosine", "k": 5, 't': 1, 'y': y}
     W = construct_W.construct_W(X, **kwargs_W)
-
+    print W[0,0:74]
     # feature selection
     score = lap_score.lap_score(X, W = W)
     idx = lap_score.feature_ranking(score)
