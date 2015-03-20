@@ -103,8 +103,7 @@ def construct_label_matrix_pan(label):
 
 def euclidean_projection(V, n_features, n_classes, z, gamma):
     """
-    L2 Norm regularized euclidean projection
-    min  1/2 ||W- V||_2^2 + z * ||W||_2
+    L2 Norm regularized euclidean projection min_W  1/2 ||W- V||_2^2 + z * ||W||_2
     """
     W_projection = np.zeros((n_features, n_classes))
     for i in range(n_features):
@@ -117,10 +116,8 @@ def euclidean_projection(V, n_features, n_classes, z, gamma):
 
 def tree_lasso_projection(v, n_features, idx, n_nodes):
     """
-    This functions solves the following optimization problem
-    min 1/2 ||w-v||_2^2 + \sum z_i||w_{G_{i}}||
-    where w and v are of dimensions of n_features;
-    z_i >=0, and G_{i} follows the tree structure
+    This functions solves the following optimization problem min_w 1/2 ||w-v||_2^2 + \sum z_i||w_{G_{i}}||
+    where w and v are of dimensions of n_features; z_i >=0, and G_{i} follows the tree structure
     """
     # test whether the first node is special
     if idx[0, 0] == -1 and idx[1, 0] == -1:
