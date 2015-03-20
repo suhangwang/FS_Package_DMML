@@ -23,7 +23,7 @@ def main():
     n_samples, n_features = X.shape
 
     # using 10 fold cross validation
-    cv = KFold(n_samples, n_folds=10)
+    cv = KFold(n_samples, n_folds=10, shuffle=True)
 
     # evaluation
     n_features = 100
