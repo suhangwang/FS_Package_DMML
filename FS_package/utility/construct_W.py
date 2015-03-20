@@ -111,6 +111,7 @@ def construct_W(X, **kwargs):
                 W = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
                 bigger = np.transpose(W) > W
                 W = W - W.multiply(bigger) + np.transpose(W).multiply(bigger)
+                print 'test'
                 return W
 
             elif kwargs['metric'] == 'cosine':
@@ -238,6 +239,8 @@ def construct_W(X, **kwargs):
                         G[id_now:n_smp_class+id_now, 2] = 1.0/((n_classes-1)*k)
                         id_now += n_smp_class
             W2 = csc_matrix((G[:, 2], (G[:, 0], G[:, 1])), shape=(n_samples, n_samples))
+            bigger = np.transpose(W2) > W2
+            W2 = W2 - W2.multiply(bigger) + np.transpose(W2).multiply(bigger)
             W = W1 + W2
             return W
 
