@@ -1,37 +1,39 @@
 import numpy as np
-import sys
+
 
 def gini_index(X, y):
     """
-    This function implements the gini index function, only constrained to binary classification problem
+    This function implements the gini index feature selection for binary classification problem
 
     Input
     ----------
-        X: {numpy array}, shape (n_samples, n_features)
-            guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, )
-            guaranteed to be a numpy array
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
+
     Output
     ----------
-        W: {numpy array}, shape (n_features, )
-            contains gini index value of each feature
+    gini: {numpy array}, shape (n_features, )
+        gini index value of each feature
     """
+
     n_samples, n_features = X.shape
 
     # initialize gini_index for all features to be 0.5
-    W = np.ones(n_features) * 0.5
+    gini = np.ones(n_features) * 0.5
 
     # For i-th feature we define fi = x[:,i] ,v include all unique values in fi
     for i in range(n_features):
         v = np.unique(X[:, i])
         for j in range(len(v)):
-            # left_y includes corresponding labels of instances whose i-th feature value less or equal to v[j]
+            # left_y contains labels of instances whose i-th feature value is less than or equal to v[j]
             left_y = y[X[:, i] <= v[j]]
-            # right_y includes corresponding labels of instances whose i-th feature value larger than v[j]
+            # right_y contains labels of instances whose i-th feature value is larger than v[j]
             right_y = y[X[:, i] > v[j]]
 
-            # for v[i], gini_left is sum of square of probability of occurrence of v[i] in left_y
-            # for v[i], gini_right is sum of square of probability of occurrence of v[i] in right_y
+            # gini_left is sum of square of probability of occurrence of v[i] in left_y
+            # gini_right is sum of square of probability of occurrence of v[i] in right_y
             gini_left = 0
             gini_right = 0
 
@@ -51,16 +53,15 @@ def gini_index(X, y):
             gini_left = 1 - gini_left
             gini_right = 1 - gini_right
 
-            # t1_gini is the weighted average of len(left_y) and len(right_y)
+            # weighted average of len(left_y) and len(right_y)
             t1_gini = (len(left_y) * gini_left + len(right_y) * gini_right)
 
             # compute the gini_index for the i-th feature
-            gini = np.true_divide(t1_gini, len(y))
+            value = np.true_divide(t1_gini, len(y))
 
-            # For each feature, gini index can not exceed 0.5
-            if gini < W[i]:
-                W[i] = gini
-    return W
+            if value < gini[i]:
+                gini[i] = value
+    return gini
 
 
 def feature_ranking(W):

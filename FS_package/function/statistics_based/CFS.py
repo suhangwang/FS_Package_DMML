@@ -1,25 +1,27 @@
 import numpy as np
-from ...utility.su_calculation import *
+from ...utility.mutual_information import *
 
 
 def merit_calculation(X, y):
     """
-    This function calculates the merit of set X given the label y
+    This function calculates the merit of X given class labels y, where
+    merits = (k * rcf)/sqrt(k+k*(k-1)*rff)
+    rcf = (1/k)*sum(su(fi,y)) for all fi in X
+    rff = (1/(k*(k-1)))*sum(su(fi,fj)) for all fi and fj in X
 
     Input
     ----------
-        X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a discrete data matrix
-        y : {numpy array}, shape (n_samples, )
-            guaranteed to be a numpy array
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
+
     Output
     ----------
-        merits: {float}
-            merits is the heuristics 'merit' of a feature subset X
+    merits: {float}
+        merit of a feature subset X
     """
-    # merits = (k * rcf)/sqrt(k+k*(k-1)*rff)
-    # rcf = (1/k)*sum(su(fi,y)) for all fi in X
-    # rff = (1/(k*(k-1)))*sum(su(fi,fj)) for all fi and fj in X
+
     n_samples, n_features = X.shape
     rff = 0
     rcf = 0
@@ -37,31 +39,36 @@ def merit_calculation(X, y):
 
 def cfs(X, y):
     """
-    This function uses a correlation based heuristic to evaluate the worth of features which called CFS
+    This function uses a correlation based heuristic to evaluate the worth of features which is called CFS
+
     Input
-    ----------
-        X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a discrete data matrix
-        y : {numpy array}, shape (n_samples, )
-            guaranteed to be a numpy array
+    -----
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
+
     Output
-    ----------
-        F: {numpy array}
-            contains the index of selected features
+    ------
+    F: {numpy array}
+        index of selected features
+
+    Reference
+    ---------
+    Zhao, Zheng et al. "Advancing Feature Selection Research - ASU Feature Selection Repository" 2010.
     """
+
     n_samples, n_features = X.shape
     F = []
-    # M is the list for the merit value
+    # M stores the merit values
     M = []
-    # merit is the maximum merit
-    # idx is the corresponding index of feature with maximum merit
     while True:
         merit = -100000000000
         idx = -1
         for i in range(n_features):
             if i not in F:
                 F.append(i)
-                # t is defined as the merit of F and y
+                # calculate the merit of current selected features
                 t = merit_calculation(X[:, F], y)
                 if t > merit:
                     merit = t
