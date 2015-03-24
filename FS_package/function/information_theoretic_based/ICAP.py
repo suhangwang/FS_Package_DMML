@@ -72,5 +72,5 @@ def icap(X, y, **kwargs):
                     idx = i
         F.append(idx)
         f_select = X[:, idx]
-        
+
     return np.array(F)
