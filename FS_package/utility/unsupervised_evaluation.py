@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 import sklearn.utils.linear_assignment_ as la
 from sklearn.metrics import accuracy_score
