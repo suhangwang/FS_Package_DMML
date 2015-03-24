@@ -3,19 +3,22 @@ import numpy as np
 
 def f_score(X, y):
     """
-    This function implements the function which calculates f_score of each feature in X
-    f_score = sum((ni/(c-1))*(mean_i - mean)^2)/((1/(n_sample - c))*sum((ni-1)*std_i^2))
+    This function calculates f_score for each feature, where
+    f_score = sum((ni/(c-1))*(mean_i - mean)^2)/((1/(n - c))*sum((ni-1)*std_i^2))
+
     Input
-    ----------
-    X: {numpy array}, shape (n_samples, n_features)
-        Input data,guaranteed to be a numpy array
-    y : {numpy array}, shape (n_samples, )
-        guaranteed to be a numpy array
+    -----
+        X: {numpy array}, shape (n_samples, n_features)
+            input data
+        y: {numpy array}, shape (n_samples,)
+            input class labels
+
     Output
-    ----------
-    F: {numpy array}, shape (n_features, )
-        F-score of all features
+    ------
+        F: {numpy array}, shape (n_features,)
+            F-score for each feature
     """
+
     n_samples, n_features = X.shape
     F = np.zeros(n_features)
     c = np.unique(y)
@@ -26,7 +29,7 @@ def f_score(X, y):
         std_list = np.zeros(len(c))
         num_list = np.zeros(len(c))
         for j in range(len(c)):
-            # class_j is a subset of instances belonging to c[j]
+            # class_j is a subset of instances with class label c[j]
             class_j = f[y == c[j]]
             mean_list[j] = np.mean(class_j)
             std_list[j] = np.std(class_j)
@@ -43,9 +46,7 @@ def f_score(X, y):
 
 def feature_ranking(F):
     """
-    Rank features in descending order according to fisher score, the higher the fisher score, the more important the
-    feature is
+    Rank features in descending order according to F-score, the higher the F-score, the more important the feature is
     """
     idx = np.argsort(F)
-    idx = idx[::-1]
-    return idx
+    return idx[::-1]
