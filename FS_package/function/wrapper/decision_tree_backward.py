@@ -6,29 +6,31 @@ from sklearn.metrics import accuracy_score
 
 def decision_tree_backward(X, y, n_selected_features):
     """
-    This function implements the forward feature selection algorithm based on decision tree
+    This function implements the backward feature selection algorithm based on decision tree
 
     Input
-    ----------
+    -----
     X: {numpy array}, shape (n_samples, n_features)
-        input data, guaranteed to be a numpy array
-    y: {numpy array}, shape (n_samples, )
-        input class label, guaranteed to be a numpy array
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
     n_selected_features : {int}
         number of selected features
 
     Output
-    ----------
+    ------
     F: {numpy array}, shape (n_features, )
         index of selected features
     """
+
     n_samples, n_features = X.shape
     # using 10 fold cross validation
     cv = KFold(n_samples, n_folds=10, shuffle=True)
     # choose decision tree as the classifier
     clf = DecisionTreeClassifier()
 
-    F = range(n_features)  # selected feature set, initialized to contain all features
+    # selected feature set, initialized to contain all features
+    F = range(n_features)
     count = n_features
 
     while count > n_selected_features:
@@ -45,11 +47,11 @@ def decision_tree_backward(X, y, n_selected_features):
                     acc += acc_tmp
                 acc = float(acc)/10
                 F.append(i)
-                # record the feature which results in largest accuracy when removed
+                # record the feature which results in the largest accuracy
                 if acc > max_acc:
                     max_acc = acc
                     idx = i
-        # delete the feature which results in largest accuracy when removed
+        # delete the feature which results in the largest accuracy
         F.remove(idx)
         count -= 1
     return np.array(F)

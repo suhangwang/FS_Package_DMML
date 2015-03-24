@@ -9,26 +9,28 @@ def svm_forward(X, y, n_selected_features):
     This function implements the forward feature selection algorithm based on SVM
 
     Input
-    ----------
+    -----
     X: {numpy array}, shape (n_samples, n_features)
-        input data, guaranteed to be a numpy array
-    y: {numpy array}, shape (n_samples, )
-        input class label, guaranteed to be a numpy array
-    n_selected_features : {int}
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
+    n_selected_features: {int}
         number of selected features
 
     Output
-    ----------
+    ------
     F: {numpy array}, shape (n_features, )
         index of selected features
     """
+
     n_samples, n_features = X.shape
     # using 10 fold cross validation
     cv = KFold(n_samples, n_folds=10, shuffle=True)
     # choose SVM as the classifier
     clf = SVC()
 
-    F = []  # selected feature set, initialized to be empty
+    # selected feature set, initialized to be empty
+    F = []
     count = 0
     while count < n_selected_features:
         max_acc = 0
@@ -44,11 +46,11 @@ def svm_forward(X, y, n_selected_features):
                     acc += acc_tmp
                 acc = float(acc)/10
                 F.pop()
-                # record the feature which results in largest accuracy when appended
+                # record the feature which results in the largest accuracy
                 if acc > max_acc:
                     max_acc = acc
                     idx = i
-        # add the feature which results in largest accuracy when appended
+        # add the feature which results in the largest accuracy
         F.append(idx)
         count += 1
     return np.array(F)
