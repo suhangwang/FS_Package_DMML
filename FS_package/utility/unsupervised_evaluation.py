@@ -43,18 +43,21 @@ def evaluation(selected_features, n_clusters, y):
 
     Input
     -----
-        selected_features: {numpy array}, shape (n_samples, n_selected_features}
+    selected_features: {numpy array}, shape (n_samples, n_selected_features}
             input data on the selected features
-        n_clusters: {int}
+    n_clusters: {int}
             number of clusters
-        y: {numpy array}, shape (n_samples,)
+    y: {numpy array}, shape (n_samples,)
             true labels
 
     Output
     ------
-        Adjusted Rand Index: {float}
-        Normalized Mutual Information: {float}
-        Accuracy: {float}
+    ari: {float}
+        Adjusted Rand Index
+    nmi: {float}
+        Normalized Mutual Information
+    acc: {float}
+        Accuracy
     """
     k_means = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10, max_iter=300,
                      tol=0.0001, precompute_distances=True, verbose=0,

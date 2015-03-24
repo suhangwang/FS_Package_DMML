@@ -8,31 +8,31 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        y: {numpy array}, shape (n_samples,)
-            input class labels
-        n_selected_features: {int}
-            number of features to select
-        kwargs: {dictionary}
-            style: {string}
-                style == 'fisher', build between-class matrix and within-class affinity matrix in a fisher score way
-                style == 'laplacian', build between-class matrix and within-class affinity matrix in a laplacian score way
-            verbose: {boolean}
-                True if user want to print out the objective function value in each iteration, False if not
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
+    n_selected_features: {int}
+        number of features to select
+    kwargs: {dictionary}
+        style: {string}
+            style == 'fisher', build between-class matrix and within-class affinity matrix in a fisher score way
+            style == 'laplacian', build between-class matrix and within-class affinity matrix in a laplacian score way
+        verbose: {boolean}
+            True if user want to print out the objective function value in each iteration, False if not
 
     Output
     ------
-        feature_idx: {numpy array}, shape (n_features,)
-            the ranked (descending order) feature index based on subset-level score
-        feature_score: {numpy array}, shape (n_features,)
-            the feature-level score
-        subset_score: {float}
-            the subset-level score
+    feature_idx: {numpy array}, shape (n_features,)
+        the ranked (descending order) feature index based on subset-level score
+    feature_score: {numpy array}, shape (n_features,)
+        the feature-level score
+    subset_score: {float}
+        the subset-level score
 
     Reference
     ---------
-        Feiping Nie et al. "Trace Ratio Criterion for Feature Selection." AAAI 2008.
+    Feiping Nie et al. "Trace Ratio Criterion for Feature Selection." AAAI 2008.
     """
 
     # if 'style' is not specified, use the fisher score way to built two affinity matrix

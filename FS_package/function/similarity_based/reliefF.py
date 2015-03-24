@@ -10,19 +10,19 @@ def reliefF(X, y):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        y: {numpy array}, shape (n_samples,)
-            input class labels
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
 
     Output
     ------
-        score: {numpy array}, shape (n_features,)
-            reliefF score for each feature
+    score: {numpy array}, shape (n_features,)
+        reliefF score for each feature
 
     Reference
     ---------
-        Zhao, Zheng et al. "On Similarity Preserving Feature Selection." TKDE 2013.
+    Zhao, Zheng et al. "On Similarity Preserving Feature Selection." TKDE 2013.
     """
 
     # construct the affinity matrix W

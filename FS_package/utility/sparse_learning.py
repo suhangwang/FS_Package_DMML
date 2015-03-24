@@ -8,13 +8,13 @@ def feature_ranking(W):
 
     Input:
     -----
-        W: {numpy array}, shape (n_features, n_classes)
-            feature weights matrix
+    W: {numpy array}, shape (n_features, n_classes)
+        feature weights matrix
 
     Output:
     ------
-        idx: {numpy array}, shape {n_features,}
-            feature index ranked in descending order by feature importance
+    idx: {numpy array}, shape {n_features,}
+        feature index ranked in descending order by feature importance
     """
     T = (W*W).sum(1)
     idx = np.argsort(T, 0)
@@ -27,11 +27,11 @@ def generate_diagonal_matrix(U):
 
     Input:
     -----
-        U: {numpy array}, shape (n_samples, n_features)
+    U: {numpy array}, shape (n_samples, n_features)
 
     Output:
     ------
-        D: {numpy array}, shape (n_samples, n_samples)
+    D: {numpy array}, shape (n_samples, n_samples)
     """
     temp = np.sqrt(np.multiply(U, U).sum(1))
     temp[temp < 1e-16] = 1e-16
@@ -46,11 +46,11 @@ def calculate_l21_norm(X):
 
     Input:
     -----
-        X: {numpy array}, shape (n_samples, n_features)
+    X: {numpy array}, shape (n_samples, n_features)
 
     Output:
     ------
-        l21_norm: {float}
+    l21_norm: {float}
     """
     return (np.sqrt(np.multiply(X, X).sum(1))).sum()
 
@@ -61,11 +61,11 @@ def construct_label_matrix(label):
 
     Input:
     -----
-        label: {numpy array}, shape(n_samples,)
+    label: {numpy array}, shape(n_samples,)
 
     Output:
     ------
-        label_matrix: {numpy array}, shape(n_samples, n_classes)
+    label_matrix: {numpy array}, shape(n_samples, n_classes)
     """
 
     n_samples = label.shape[0]
@@ -84,11 +84,11 @@ def construct_label_matrix_pan(label):
 
     Input:
     -----
-        label: {numpy array}, shape(n_samples,)
+    label: {numpy array}, shape(n_samples,)
 
     Output:
     ------
-        label_matrix: {numpy array}, shape(n_samples, n_classes)
+    label_matrix: {numpy array}, shape(n_samples, n_classes)
     """
     n_samples = label.shape[0]
     unique_label = np.unique(label)

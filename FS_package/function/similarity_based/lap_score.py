@@ -13,19 +13,20 @@ def lap_score(X, **kwargs):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        kwargs: {dictionary}
-            W: {sparse matrix}, shape (n_samples, n_samples)
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    kwargs: {dictionary}
+        W: {sparse matrix}, shape (n_samples, n_samples)
             input affinity matrix
+
     Output
     ------
-        score: {numpy array}, shape (n_features,)
-            laplacian score for each feature
+    score: {numpy array}, shape (n_features,)
+        laplacian score for each feature
 
     Reference
     ---------
-        He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS 2005.
+    He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS 2005.
     """
 
     # if 'W' is not specified, use the default W

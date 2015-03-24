@@ -7,11 +7,12 @@ def information_gain(f1, f2):
 
     Input
     -----
-        f1: {numpy array}, shape (n_samples,)
-        f2: {numpy array}, shape (n_samples,)
+    f1: {numpy array}, shape (n_samples,)
+    f2: {numpy array}, shape (n_samples,)
+
     Output
     ------
-        ig: {float}
+    ig: {float}
     """
 
     ig = ee.entropyd(f1) - conditional_entropy(f1, f2)
@@ -24,13 +25,13 @@ def conditional_entropy(f1, f2):
 
     Input
     -----
-        f1: {numpy array}, shape (n_samples,)
-        f2: {numpy array}, shape (n_samples,)
+    f1: {numpy array}, shape (n_samples,)
+    f2: {numpy array}, shape (n_samples,)
 
     Output
     ------
-        ce: {float}
-            ce is conditional entropy of f1 and f2
+    ce: {float}
+        ce is conditional entropy of f1 and f2
     """
 
     ce = ee.entropyd(f1) - ee.midd(f1, f2)
@@ -43,13 +44,13 @@ def su_calculation(f1, f2):
 
     Input
     -----
-        f1: {numpy array}, shape (n_samples,)
-        f2: {numpy array}, shape (n_samples,)
+    f1: {numpy array}, shape (n_samples,)
+    f2: {numpy array}, shape (n_samples,)
 
     Output
     ------
-        su: {float}
-            su is the symmetrical uncertainty of f1 and f2
+    su: {float}
+        su is the symmetrical uncertainty of f1 and f2
 
     """
 

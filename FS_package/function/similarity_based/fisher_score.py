@@ -13,15 +13,15 @@ def fisher_score(X, y):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        y: {numpy array}, shape (n_samples,)
-            input class labels
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
 
     Output
     ------
-        score: {numpy array}, shape (n_features,)
-            fisher score for each feature
+    score: {numpy array}, shape (n_features,)
+        fisher score for each feature
     """
 
     # Construct weight matrix W in a fisherScore way

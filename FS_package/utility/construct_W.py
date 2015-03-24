@@ -18,37 +18,37 @@ def construct_W(X, **kwargs):
         input data
     kwargs: {dictionary}
         parameters to construct different affinity matrix W:
-            y: {numpy array}, shape (n_samples, 1)
-                the true label information needed under the 'supervised' neighbor mode
-            metric: {string}
-                choices for different distance measures
-                'euclidean' - use euclidean distance
-                'cosine' - use cosine distance (default)
-            neighbor_mode: {string}
-                indicates how to construct the graph
-                'knn' - put an edge between two nodes if and only if they are among the
-                        k nearest neighbors of each other (default)
-                'supervised' - put an edge between two nodes if they belong to same class
-                        and they are among the k nearest neighbors of each other
-            weight_mode: {string}
-                indicates how to assign weights for each edge in the graph
-                'binary' - 0-1 weighting, every edge receives weight of 1 (default)
-                'heat_kernel' - if nodes i and j are connected, put weight W_ij = exp(-norm(x_i - x_j)/2t^2)
-                                this weight mode can only be used under 'euclidean' metric and you are required
-                                to provide the parameter t
-                'cosine' - if nodes i and j are connected, put weight cosine(x_i,x_j).
-                            this weight mode can only be used under 'cosine' metric
-            k: {int}
-                choices for the number of neighbors (default k = 5)
-            t: {float}
-                parameter for the 'heat_kernel' weight_mode
-            fisher_score: {boolean}
-                indicates whether to build the affinity matrix in a fisher score way, in which W_ij = 1/n_l if yi = yj = l;
-                otherwise W_ij = 0 (default fisher_score = false)
-            reliefF: {boolean}
-                indicates whether to build the affinity matrix in a reliefF way, NH(x) and NM(x,y) denotes a set of
-                k nearest points to x with the same class as x, and a different class (the class y), respectively.
-                W_ij = 1 if i = j; W_ij = 1/k if x_j \in NH(x_i); W_ij = -1/(c-1)k if x_j \in NM(x_i, y) (default reliefF = false)
+        y: {numpy array}, shape (n_samples, 1)
+            the true label information needed under the 'supervised' neighbor mode
+        metric: {string}
+            choices for different distance measures
+            'euclidean' - use euclidean distance
+            'cosine' - use cosine distance (default)
+        neighbor_mode: {string}
+            indicates how to construct the graph
+            'knn' - put an edge between two nodes if and only if they are among the
+                    k nearest neighbors of each other (default)
+            'supervised' - put an edge between two nodes if they belong to same class
+                    and they are among the k nearest neighbors of each other
+        weight_mode: {string}
+            indicates how to assign weights for each edge in the graph
+            'binary' - 0-1 weighting, every edge receives weight of 1 (default)
+            'heat_kernel' - if nodes i and j are connected, put weight W_ij = exp(-norm(x_i - x_j)/2t^2)
+                            this weight mode can only be used under 'euclidean' metric and you are required
+                            to provide the parameter t
+            'cosine' - if nodes i and j are connected, put weight cosine(x_i,x_j).
+                        this weight mode can only be used under 'cosine' metric
+        k: {int}
+            choices for the number of neighbors (default k = 5)
+        t: {float}
+            parameter for the 'heat_kernel' weight_mode
+        fisher_score: {boolean}
+            indicates whether to build the affinity matrix in a fisher score way, in which W_ij = 1/n_l if yi = yj = l;
+            otherwise W_ij = 0 (default fisher_score = false)
+        reliefF: {boolean}
+            indicates whether to build the affinity matrix in a reliefF way, NH(x) and NM(x,y) denotes a set of
+            k nearest points to x with the same class as x, and a different class (the class y), respectively.
+            W_ij = 1 if i = j; W_ij = 1/k if x_j \in NH(x_i); W_ij = -1/(c-1)k if x_j \in NM(x_i, y) (default reliefF = false)
 
     Output
     ------

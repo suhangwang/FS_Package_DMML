@@ -8,15 +8,15 @@ def data_discretization(X, n_bins):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        n_bins: {int}
-            number of bins to be discretized
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    n_bins: {int}
+        number of bins to be discretized
 
     Output
     ------
-        X_discretized: {numpy array}, shape (n_samples, n_features)
-            output discretized data, where features are digitized to n_bins
+    X_discretized: {numpy array}, shape (n_samples, n_features)
+        output discretized data, where features are digitized to n_bins
     """
 
     # normalize each feature

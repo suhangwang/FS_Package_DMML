@@ -8,15 +8,15 @@ def f_score(X, y):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        y: {numpy array}, shape (n_samples,)
-            input class labels
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels
 
     Output
     ------
-        F: {numpy array}, shape (n_features,)
-            F-score for each feature
+    F: {numpy array}, shape (n_features,)
+        F-score for each feature
     """
 
     n_samples, n_features = X.shape

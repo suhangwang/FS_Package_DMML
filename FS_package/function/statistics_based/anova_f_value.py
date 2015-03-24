@@ -8,17 +8,17 @@ def anova_f_value(X, y, n_selected_features):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        y : {numpy array},shape (n_samples,)
-            input class labels
-        n_selected_features : {int}
-            number of features to select
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y : {numpy array},shape (n_samples,)
+        input class labels
+    n_selected_features : {int}
+        number of features to select
 
     Output
     ------
-        X_new: {numpy array},shape (n_samples, n_selected_features)
-            data on selected features
+    X_new: {numpy array},shape (n_samples, n_selected_features)
+        data on selected features
     """
     X_new = SelectKBest(f_classif, k=n_selected_features).fit_transform(X, y)
     return X_new

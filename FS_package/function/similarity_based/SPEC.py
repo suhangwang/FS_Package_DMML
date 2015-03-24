@@ -11,23 +11,24 @@ def spec(X, **kwargs):
 
     Input
     -----
-        X: {numpy array}, shape (n_samples, n_features)
-            input data
-        kwargs: {dictionary}
-            style: {int}
-                style == -1, the first feature ranking function, use all eigenvalues
-                style == 0, the second feature ranking function, use all except the 1st eigenvalue
-                style >= 2, the third feature ranking function, use the first k except 1st eigenvalue
-            W: {sparse matrix}, shape (n_samples, n_samples}
-                input affinity matrix
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    kwargs: {dictionary}
+        style: {int}
+            style == -1, the first feature ranking function, use all eigenvalues
+            style == 0, the second feature ranking function, use all except the 1st eigenvalue
+            style >= 2, the third feature ranking function, use the first k except 1st eigenvalue
+        W: {sparse matrix}, shape (n_samples, n_samples}
+            input affinity matrix
 
     Output
     ------
-        w_fea: {numpy array}, shape (n_features,)
-            SPEC feature score for each feature
+    w_fea: {numpy array}, shape (n_features,)
+        SPEC feature score for each feature
 
-    Reference:
-        Zhao, Zheng and Liu, Huan. "Spectral Feature Selection for Supervised and Unsupervised Learning." ICML 2007.
+    Reference
+    ---------
+    Zhao, Zheng and Liu, Huan. "Spectral Feature Selection for Supervised and Unsupervised Learning." ICML 2007.
     """
 
     if 'style' not in kwargs:
