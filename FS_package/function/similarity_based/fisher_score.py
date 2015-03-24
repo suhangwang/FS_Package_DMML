@@ -5,23 +5,25 @@ from ...utility.construct_W import construct_W
 
 def fisher_score(X, y):
     """
-    This function implements the FisherScore function
-    1. Construct the weight matrix W in fisherScore way
+    This function implements the fisher score feature selection, steps are as follows:
+    1. Construct the affinity matrix W in fisher score way
     2. For the r-th feature, we define fr = X(:,r), D = diag(W*ones), ones = [1,...,1]', L = D - W
     3. Let fr_hat = fr - (fr'*D*ones)*ones/(ones'*D*ones)
-    4. FisherScore for the r-th feature is Lr = (fr_hat'*L*fr_hat)/*(fr_hat'*D*fr_hat)
+    4. Fisher score for the r-th feature is Lr = (fr_hat'*L*fr_hat)/*(fr_hat'*D*fr_hat)
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, )
-            True labels
+            input data
+        y: {numpy array}, shape (n_samples,)
+            input class labels
+
     Output
-    ----------
-        score: {numpy array}, shape (n_features, )
-            fisher_score for each feature
+    ------
+        score: {numpy array}, shape (n_features,)
+            fisher score for each feature
     """
+
     # Construct weight matrix W in a fisherScore way
     kwargs = {"neighbor_mode": "supervised", "fisher_score": True, 'y': y}
     W = construct_W(X, **kwargs)
@@ -42,16 +44,15 @@ def fisher_score(X, y):
     D_prime[D_prime < 1e-12] = 10000
     lap_score = np.array(np.multiply(L_prime, 1/D_prime))[0, :]
 
-    # compute fisher score from lap_score, where fisher_score = 1/lap_score - 1
-    score = lap_score
+    # compute fisher score from laplacian score, where fisher_score = 1/lap_score - 1
     score = 1.0/lap_score - 1
     return np.transpose(score)
 
 
 def feature_ranking(score):
     """
-    Rank features in descending order according to fisher score, the lower the fisher score, the more important the
+    Rank features in ascending order according to fisher score, the lower the fisher score, the more important the
     feature is
     """
-    ind = np.argsort(score, 0)
-    return ind
+    idx = np.argsort(score, 0)
+    return idx

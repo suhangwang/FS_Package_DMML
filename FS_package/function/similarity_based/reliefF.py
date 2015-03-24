@@ -4,21 +4,28 @@ from ...utility.construct_W import construct_W
 
 def reliefF(X, y):
     """
-    This function implement the reliefF function
-    1. Construct the weight matrix W in reliefF way
-    2. For the r-th feature, we define fr = X(:,r), reliefF score for the r-th feature is -1+fr'*K*fr
+    This function implements the reliefF feature selection, steps are as follows:
+    1. Construct the affinity matrix W in reliefF way
+    2. For the r-th feature, we define fr = X(:,r), reliefF score for the r-th feature is -1+fr'*W*fr
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, )
-            true labels, guaranteed to be a numpy array
+            input data
+        y: {numpy array}, shape (n_samples,)
+            input class labels
+
     Output
-    ----------
-        score: {numpy array}, shape (n_features, 1)
+    ------
+        score: {numpy array}, shape (n_features,)
             reliefF score for each feature
+
+    Reference
+    ---------
+        Zhao, Zheng et al. "On Similarity Preserving Feature Selection." TKDE 2013.
     """
+
+    # construct the affinity matrix W
     kwargs = {"neighbor_mode": "supervised", "reliefF": True, 'y': y}
     W = construct_W(X, **kwargs)
     n_samples, n_features = X.shape
@@ -30,9 +37,9 @@ def reliefF(X, y):
 
 def feature_ranking(score):
     """
-    Rank features in descending order according to reliefF score, the higher the fisher score, the more important the
+    Rank features in descending order according to reliefF score, the higher the reliefF score, the more important the
     feature is
     """
-    ind = np.argsort(score, 0)
-    return ind[::-1]
+    idx = np.argsort(score, 0)
+    return idx[::-1]
 

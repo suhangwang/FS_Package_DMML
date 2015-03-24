@@ -7,26 +7,29 @@ from numpy import linalg as LA
 
 def spec(X, **kwargs):
     """
-    This function implement the SPEC function which selects feature using the spectrum information of the graph laplacian
+    This function implementS the SPEC feature selection
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
+            input data
         kwargs: {dictionary}
             style: {int}
                 style == -1, the first feature ranking function, use all eigenvalues
                 style == 0, the second feature ranking function, use all except the 1st eigenvalue
                 style >= 2, the third feature ranking function, use the first k except 1st eigenvalue
             W: {sparse matrix}, shape (n_samples, n_samples}
-                affinity matrix
+                input affinity matrix
+
     Output
-    ----------
-        w_fea: {numpy array}, shape (n_features, )
-            feature score for each feature
+    ------
+        w_fea: {numpy array}, shape (n_features,)
+            SPEC feature score for each feature
+
     Reference:
-        Zhao, Zheng and Liu, Huan. "Spectral Feature Selection for Supervised and Unsupervised Learning." ICML. 2007.
+        Zhao, Zheng and Liu, Huan. "Spectral Feature Selection for Supervised and Unsupervised Learning." ICML 2007.
     """
+
     if 'style' not in kwargs:
         kwargs['style'] = 0
     if 'W' not in kwargs:
@@ -45,7 +48,7 @@ def spec(X, **kwargs):
     for i in range(n_samples):
         D[i, i] = X_sum[i]
 
-    # obtain the laplacian matrix
+    # build the laplacian matrix
     L = D - W
     d1 = np.power(np.array(W.sum(axis=1)), -0.5)
     d1[np.isinf(d1)] = 0
@@ -100,9 +103,9 @@ def feature_ranking(score, **kwargs):
 
     # if style = -1 or 0, ranking features in descending order, the higher the score, the more important the feature is
     if style == -1 or style == 0:
-        ind = np.argsort(score, 0)
-        return ind[::-1]
+        idx = np.argsort(score, 0)
+        return idx[::-1]
     # if style != -1 and 0, ranking features in ascending order, the lower the score, the more important the feature is
     elif style != -1 and style != 0:
-        ind = np.argsort(score, 0)
-        return ind
+        idx = np.argsort(score, 0)
+        return idx

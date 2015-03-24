@@ -5,25 +5,27 @@ from ...utility.construct_W import construct_W
 
 def lap_score(X, **kwargs):
     """
-    This function implement the LapScore function
-    1. Construct the weight matrix W if it is not specified
-    2. For the r-th feature, we define fr = data(:,r), D = diag(W*ones), ones = [1,...,1]', L = D - W
+    This function implements the laplacian score feature selection, steps are as follows:
+    1. Construct the affinity matrix W if it is not specified
+    2. For the r-th feature, we define fr = X(:,r), D = diag(W*ones), ones = [1,...,1]', L = D - W
     3. Let fr_hat = fr - (fr'*D*ones)*ones/(ones'*D*ones)
     4. Laplacian score for the r-th feature is Lr = (fr_hat'*L*fr_hat)/*(fr_hat'*D*fr_hat)
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
+            input data
         kwargs: {dictionary}
-            W: {numpy array}, shape (n_samples, n_samples)
-            Input weight matrix
+            W: {sparse matrix}, shape (n_samples, n_samples)
+            input affinity matrix
     Output
-    ----------
-        score: {numpy array}, shape (n_features, )
+    ------
+        score: {numpy array}, shape (n_features,)
             laplacian score for each feature
-    Reference:
-        He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS. 2005.
+
+    Reference
+    ---------
+        He, Xiaofei et al. "Laplacian Score for Feature Selection." NIPS 2005.
     """
 
     # if 'W' is not specified, use the default W
@@ -53,8 +55,8 @@ def lap_score(X, **kwargs):
 
 def feature_ranking(score):
     """
-    Rank features in descending order according to fisher score, the higher the laplacian score, the more important the
-    feature is
+    Rank features in descending order according to their laplacian scores, the higher the laplacian score is, the more
+    important the feature is
     """
-    ind = np.argsort(score, 0)
-    return ind[::-1]
+    idx = np.argsort(score, 0)
+    return idx[::-1]

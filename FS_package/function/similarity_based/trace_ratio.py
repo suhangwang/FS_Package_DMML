@@ -7,26 +7,31 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
     This function implements the trace ratio criterion for feature selection
 
     Input
-    ----------
+    -----
         X: {numpy array}, shape (n_samples, n_features)
-            Input data, guaranteed to be a numpy array
-        y: {numpy array}, shape (n_samples, )
-            True labels
+            input data
+        y: {numpy array}, shape (n_samples,)
+            input class labels
         n_selected_features: {int}
-            Number of features to select
+            number of features to select
         kwargs: {dictionary}
             style: {string}
                 style == 'fisher', build between-class matrix and within-class affinity matrix in a fisher score way
-                style == 'laplacian', build between-class matrix and within-class affinity matrix in a fisher score way
-    Output
-    ----------
-        feature_idx: {numpy array}, shape (n_features, )
-            the ranked (descending order) feature index based on subset-level score
-        feature_score: {numpy array}, shape (n_features, )
-            the feature-level score
-        subset_score: {float}, the subset-level score
+                style == 'laplacian', build between-class matrix and within-class affinity matrix in a laplacian score way
+            verbose: {boolean}
+                True if user want to print out the objective function value in each iteration, False if not
 
-    Reference:
+    Output
+    ------
+        feature_idx: {numpy array}, shape (n_features,)
+            the ranked (descending order) feature index based on subset-level score
+        feature_score: {numpy array}, shape (n_features,)
+            the feature-level score
+        subset_score: {float}
+            the subset-level score
+
+    Reference
+    ---------
         Feiping Nie et al. "Trace Ratio Criterion for Feature Selection." AAAI 2008.
     """
 
@@ -36,6 +41,11 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
     # get the way to build affinity matrix, 'fisher' or 'laplacian'
     style = kwargs['style']
     n_samples, n_features = X.shape
+
+    # if 'verbose' is not specified, do not output the value of objective function
+    if 'verbose' not in kwargs:
+        kwargs['verbose'] = False
+    verbose = kwargs['verbose']
 
     if style is 'fisher':
         kwargs_within = {"neighbor_mode": "supervised", "fisher_score": True, 'y': y}
@@ -61,15 +71,15 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
     S_within = np.array(np.dot(np.dot(np.transpose(X), L_within), X))
     S_between = np.array(np.dot(np.dot(np.transpose(X), L_between), X))
 
-    # reflects the within-class or local affinity relationship encoded on Graph, Sw = X*Lw*X'
+    # reflect the within-class or local affinity relationship encoded on graph, Sw = X*Lw*X'
     S_within = (np.transpose(S_within) + S_within)/2
-    # reflects the between-class or global affinity relationship encoded on Graph, Sb = X*Lb*X'
+    # reflect the between-class or global affinity relationship encoded on graph, Sb = X*Lb*X'
     S_between = (np.transpose(S_between) + S_between)/2
 
     # take the absolute values of diagonal
     s_within = np.absolute(S_within.diagonal())
     s_between = np.absolute(S_between.diagonal())
-    s_between[s_between == 0] = 1e-14  # this magic number if from authors' code
+    s_between[s_between == 0] = 1e-14  # this number if from authors' code
 
     # preprocessing
     fs_idx = np.argsort(np.divide(s_between, s_within), 0)[::-1]
@@ -78,12 +88,16 @@ def trace_ratio(X, y, n_selected_features, **kwargs):
     s_between = s_between[fs_idx[0:n_selected_features]]
 
     # iterate util converge
+    count = 0
     while True:
         score = np.sort(s_between-k*s_within)[::-1]
         I = np.argsort(s_between-k*s_within)[::-1]
         idx = I[0:n_selected_features]
         old_k = k
         k = np.sum(s_between[idx])/np.sum(s_within[idx])
+        if verbose:
+            print 'obj at iter ' + str(count+1) + ': ' + str(k)
+        count += 1
         if abs(k - old_k) < 1e-3:
             break
 
