@@ -3,20 +3,26 @@ import LCSI
 
 def jmi(X, y, **kwargs):
     """
-    This function implements the jmi function
+    This function implements the JMI feature selection
+
     Input
-    ----------
+    -----
     X: {numpy array}, shape (n_samples, n_features)
-        Input data, guaranteed to be a discrete numpy array
-    y : {numpy array},shape (n_samples, )
-        guaranteed to be a numpy array
+        input data, guaranteed to be discrete
+    y: {numpy array}, shape (n_samples,)
+        input class labels
     kwargs: {dictionary}
-        n_selected_features:{int}
-            indicates the number of features to select
+        n_selected_features: {int}
+            number of features to select
+
     Output
-    ----------
-    F: {numpy array},shape (n_features, )
-        Index of selected features, F(1) is the most important feature.
+    ------
+    F: {numpy array}, shape (n_features,)
+        index of selected features, F[1] is the most important feature
+
+    Reference
+    ---------
+    Brown, Gavin et al. "Conditional Likelihood Maximisation: A Unifying Framework for Information Theoretic Feature Selection." JMLR 2012.
     """
     if 'n_selected_features' in kwargs.keys():
         n_selected_features = kwargs['n_selected_features']
