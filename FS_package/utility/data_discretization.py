@@ -10,7 +10,7 @@ def data_discretization(X, n_bins):
     -----
         X: {numpy array}, shape (n_samples, n_features)
             input data
-        num: {int}
+        n_bins: {int}
             number of bins to be discretized
 
     Output
