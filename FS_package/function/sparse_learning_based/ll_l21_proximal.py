@@ -4,27 +4,29 @@ from ...utility.sparse_learning import *
 
 def proximal_gradient_descent(X, Y, z, **kwargs):
     """
-    This function implements supervised sparse feature selection via l2,1 norm, i.e.
-        min_{W} sum_{i}log(1+exp(-yi*(W'*x+C))) + z*||W||_{2,1}
-    --------------------------
+    This function implements supervised sparse feature selection via l2,1 norm, i.e.,
+    min_{W} sum_{i}log(1+exp(-yi*(W'*x+C))) + z*||W||_{2,1}
+
     Input
-        X: {numpy array}, shape (n_samples, n_features)
-            input data, guaranteed to be a numpy array
-        Y: {numpy array}, shape (n_samples, n_classes)
-            each row is a one-hot-coding class label, guaranteed to be a numpy array
-        z: {float}
-            regularization parameter
-        kwargs : {dictionary}
-            verbose: {boolean} True or False
-                True if user want to print out the objective function value in each iteration, False if not
+    -----
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    Y: {numpy array}, shape (n_samples, n_classes)
+        input class labels, each row is a one-hot-coding class label, guaranteed to be a numpy array
+    z: {float}
+        regularization parameter
+    kwargs: {dictionary}
+        verbose: {boolean}
+            True if user want to print out the objective function value in each iteration, false if not
+
     Output
-    ----------
-        W: {numpy array}, shape (n_features, n_classes)
-            weight matrix
-        obj: {numpy array}, shape (n_iterations, )
-            objective function value during iterations
-        value_gamma: {numpy array}, shape (n_iterations, )
-            suitable step size during iterations
+    ------
+    W: {numpy array}, shape (n_features, n_classes)
+        weight matrix
+    obj: {numpy array}, shape (n_iterations,)
+        objective function value during iterations
+    value_gamma: {numpy array}, shape (n_iterations,s)
+        suitable step size during iterations
 
 
     Reference:
@@ -40,9 +42,12 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
     n_samples, n_features = X.shape
     n_samples, n_classes = Y.shape
 
-    p_flag = (Y == 1)  # the indices of positive samples
-    n_positive_samples = np.sum(p_flag, 0)  # the total number of positive samples
-    n_negative_samples = n_samples - n_positive_samples  # the total number of negative samples
+    # the indices of positive samples
+    p_flag = (Y == 1)
+    # the total number of positive samples
+    n_positive_samples = np.sum(p_flag, 0)
+    # the total number of negative samples
+    n_negative_samples = n_samples - n_positive_samples
     n_positive_samples = n_positive_samples.astype(float)
     n_negative_samples = n_negative_samples.astype(float)
 
@@ -53,14 +58,13 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
     # compute XW = X*W
     XW = np.dot(X, W)
 
-    # Starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
+    # starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
     # the intial guess of the Lipschitz continuous gradient
     gamma = 1.0/(n_samples*n_classes)
+
     # assign Wp with W, and XWp with XW
-    Wp = W
     XWp = XW
     WWp =np.zeros((n_features, n_classes))
-    Cp = C
     CCp = np.zeros((1, n_classes))
 
     alphap = 0
@@ -73,11 +77,11 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
     value_gamma = np.zeros(max_iter)
     obj = np.zeros(max_iter)
     for iter_step in range(max_iter):
-
         # step1: compute search point S based on Wp and W (with beta)
         beta = (alphap-1)/alpha
         S = W + beta*WWp
         SC = C + beta*CCp
+
         # step2: line search for gamma and compute the new approximation solution W
         XS = XW + beta*(XW - XWp)
         aa = -np.multiply(Y, XS+np.tile(SC, (n_samples, 1)))
@@ -134,6 +138,7 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
 
         WWp = W - Wp
         CCp = C - Cp
+
         # calculate obj
         obj[iter_step] = fun_W
         obj[iter_step] += z*calculate_l21_norm(W)
@@ -147,5 +152,4 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
         # determine weather converge
         if iter_step >= 2 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
             break
-
     return W, obj, value_gamma

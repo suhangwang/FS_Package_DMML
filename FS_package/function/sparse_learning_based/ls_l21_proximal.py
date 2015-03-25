@@ -6,60 +6,70 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
     """
     This function implements supervised sparse feature selection via l2,1 norm, i.e.,
     min_{W} ||XW-Y||_F^2 + z*||W||_{2,1}
-    --------------------------
+
     Input
-        X: {numpy array}, shape (n_samples, n_features)
-            input data, guaranteed to be a numpy array
-        Y: {numpy array}, shape (n_samples, n_classes)
-            each row is a one-hot-coding class label, guaranteed to be a numpy array
-        z: {float}
-            regularization parameter
-        kwargs : {dictionary}
-            verbose: {boolean} True or False
-                True if user want to print out the objective function value in each iteration, False if not
-    --------------------------
+    -----
+    X: {numpy array}, shape (n_samples, n_features)
+        input data, guaranteed to be a numpy array
+    Y: {numpy array}, shape (n_samples, n_classes)
+        input class labels, each row is a one-hot-coding class label
+    z: {float}
+        regularization parameter
+    kwargs: {dictionary}
+        verbose: {boolean}
+            True if user want to print out the objective function value in each iteration, false if not
+
     Output
+    ------
         W: {numpy array}, shape (n_features, n_classes)
             weight matrix
-        obj: {numpy array}, shape (n_iterations, )
+        obj: {numpy array}, shape (n_iterations,)
             objective function value during iterations
-        value_gamma: {numpy array}, shape (n_iterations, )
+        value_gamma: {numpy array}, shape (n_iterations,)
             suitable step size during iterations
 
-    Reference:
+    Reference
+    ---------
         Liu, Jun, et al. "Multi-Task Feature Learning Via Efficient l2,1-Norm Minimization." UAI. 2009.
     """
+
     if 'verbose' not in kwargs:
         verbose = False
     else:
         verbose = kwargs['verbose']
 
-    # Starting point initialization #
+    # starting point initialization
     n_samples, n_features = X.shape
     n_samples, n_classes = Y.shape
+
     # compute X'Y
     XtY = np.dot(np.transpose(X), Y)
+
     # initialize a starting point
     W = XtY
+
     # compute XW = X*W
     XW = np.dot(X, W)
+
     # compute l2,1 norm of W
     W_norm = calculate_l21_norm(W)
+
     if W_norm >= 1e-6:
         ratio = init_factor(W_norm, XW, Y, z)
         W = ratio*W
         XW = ratio*XW
-    # Starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
+
+    # starting the main program, the Armijo Goldstein line search scheme + accelerated gradient descent
     # initialize step size gamma = 1
     gamma = 1
 
     # assign Wp with W, and XWp with XW
-    Wp = W
     XWp = XW
     WWp =np.zeros((n_features, n_classes))
     alphap = 0
     alpha = 1
-    # indicates whether the gradient step only changes a little
+
+    # indicate whether the gradient step only changes a little
     flag = False
 
     max_iter = 1000
@@ -69,6 +79,7 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
         # step1: compute search point S based on Wp and W (with beta)
         beta = (alphap-1)/alpha
         S = W + beta*WWp
+
         # step2: line search for gamma and compute the new approximation solution W
         XS = XW + beta*(XW - XWp)
         # compute X'* XS
@@ -109,6 +120,7 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
 
         WWp = W - Wp
         XWY = XW -Y
+
         # calculate obj
         obj[iter_step] = LA.norm(XWY, 'fro')**2/2
         obj[iter_step] += z*calculate_l21_norm(W)
@@ -128,9 +140,6 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
 def init_factor(W_norm, XW, Y, z):
     """
     Initialize the starting point of W, according to the author's code
-
-    Reference:
-        Liu, Jun, et al. "Multi-Task Feature Learning Via Efficient l2,1-Norm Minimization." UAI. 2009.
     """
     n_samples, n_classes = XW.shape
     a = np.inner(np.reshape(XW, n_samples*n_classes), np.reshape(Y, n_samples*n_classes)) - z*W_norm
