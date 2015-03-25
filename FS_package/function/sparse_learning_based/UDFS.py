@@ -35,7 +35,7 @@ def udfs(X, **kwargs):
 
     # default gamma is 0.1
     if 'gamma' not in kwargs:
-        gamma = 1
+        gamma = 0.1
     else:
         gamma = kwargs['gamma']
     # default k is set to be 5
@@ -44,7 +44,7 @@ def udfs(X, **kwargs):
     else:
         k = kwargs['k']
     if 'n_clusters' not in kwargs:
-        n_clusters = 20
+        n_clusters = 5
     else:
         n_clusters = kwargs['n_clusters']
     if 'verbose' not in kwargs:
