@@ -13,7 +13,7 @@ def main():
     y = mat['Y']  # label
     y = y[:, 0]
     X = X.astype(float)
-    #X = preprocessing.normalize(X, norm='l2', axis=0)
+    X = preprocessing.normalize(X, norm='l2', axis=0)
     n_samples, n_features = X.shape
 
     # split data

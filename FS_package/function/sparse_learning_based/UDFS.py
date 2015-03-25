@@ -1,6 +1,7 @@
+import numpy as np
 import scipy
 import math
-from ...utility.sparse_learning import *
+from FS_package.utility.sparse_learning import generate_diagonal_matrix
 from sklearn.metrics.pairwise import pairwise_distances
 
 

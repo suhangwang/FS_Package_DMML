@@ -1,5 +1,5 @@
 import numpy as np
-from ...utility.construct_W import construct_W
+from FS_package.utility.construct_W import construct_W
 
 
 def reliefF(X, y):

@@ -1,6 +1,7 @@
 import scipy.io
-from FS_package.utility.unsupervised_evaluation import evaluation
 from FS_package.function.sparse_learning_based import UDFS
+from FS_package.utility.unsupervised_evaluation import evaluation
+from FS_package.utility.sparse_learning import feature_ranking
 
 
 def main():
@@ -14,7 +15,8 @@ def main():
     # UDFS feature selection
     n_selected_features = 100
     S = UDFS.udfs(X, 0.1, k=5, verbose=False)
-    idx = UDFS.feature_ranking(S)
+    idx = feature_ranking(S)
+    print idx
     X_selected = X[:, idx[0:n_selected_features]]
 
     # evaluation

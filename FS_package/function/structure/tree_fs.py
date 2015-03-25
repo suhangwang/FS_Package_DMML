@@ -1,5 +1,5 @@
 import math
-from ...utility.sparse_learning import *
+from FS_package.utility.sparse_learning import *
 
 
 def tree_fs(X, y, z, idx, **kwargs):

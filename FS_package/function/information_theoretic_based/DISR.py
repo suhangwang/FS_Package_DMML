@@ -1,5 +1,6 @@
-from ...utility.entropy_estimators import *
-from ...utility.mutual_information import *
+from FS_package.utility.entropy_estimators import *
+from FS_package.utility.mutual_information import *
+
 
 def disr(X, y, **kwargs):
     """

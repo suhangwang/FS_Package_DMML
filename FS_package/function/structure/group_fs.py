@@ -1,5 +1,5 @@
 import math
-from ...utility.sparse_learning import *
+from FS_package.utility.sparse_learning import *
 
 
 def group_fs(X, y, z1, z2, idx, **kwargs):

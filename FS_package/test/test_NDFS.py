@@ -20,7 +20,6 @@ def main():
     # feature weight learning / feature selection
     W, obj = NDFS.ndfs(X, n_clusters=40, L=L, verbose=1, max_iter=30)
     idx = NDFS.feature_ranking(W)
-
     # evaluation
     num_fea = 100
     selected_features = X[:, idx[0:num_fea]]

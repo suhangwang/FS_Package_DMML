@@ -1,5 +1,5 @@
 import numpy as np
-from ...utility.mutual_information import *
+from FS_package.utility.mutual_information import *
 
 
 def fcbf(X, y, **kwargs):

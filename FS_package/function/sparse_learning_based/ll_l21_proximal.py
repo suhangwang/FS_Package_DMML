@@ -1,5 +1,5 @@
 import math
-from ...utility.sparse_learning import *
+from FS_package.utility.sparse_learning import *
 
 
 def proximal_gradient_descent(X, Y, z, **kwargs):
