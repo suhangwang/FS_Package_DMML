@@ -1,5 +1,7 @@
 import math
-from FS_package.utility.sparse_learning import *
+import numpy as np
+from numpy import linalg as LA
+from FS_package.utility.sparse_learning import euclidean_projection, calculate_l21_norm
 
 
 def proximal_gradient_descent(X, Y, z, **kwargs):

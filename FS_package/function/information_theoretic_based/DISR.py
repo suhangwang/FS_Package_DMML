@@ -1,5 +1,5 @@
 from FS_package.utility.entropy_estimators import *
-from FS_package.utility.mutual_information import *
+from FS_package.utility.mutual_information import conditional_entropy
 
 
 def disr(X, y, **kwargs):

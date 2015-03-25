@@ -1,5 +1,5 @@
 import numpy as np
-from FS_package.utility.mutual_information import *
+from FS_package.utility.mutual_information import information_gain
 
 
 def igfs(X, y):

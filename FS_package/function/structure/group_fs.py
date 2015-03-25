@@ -1,5 +1,6 @@
 import math
-from FS_package.utility.sparse_learning import *
+import numpy as np
+from FS_package.utility.sparse_learning import tree_lasso_projection, tree_norm
 
 
 def group_fs(X, y, z1, z2, idx, **kwargs):
