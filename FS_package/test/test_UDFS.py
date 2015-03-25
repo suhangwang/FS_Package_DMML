@@ -6,19 +6,19 @@ from FS_package.function.sparse_learning_based import UDFS
 def main():
     # load matlab data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    label = mat['gnd']
-    label = label[:, 0]
-    X = mat['fea']
+    X = mat['X']
     X = X.astype(float)
+    label = mat['Y']
+    label = label[:, 0]
 
     # UDFS feature selection
-    num_fea = 50
-    W = UDFS.udfs(X, max_iter= 50, gamma=0.1, k=5, n_clusters=20, verbose=True)
-    idx = UDFS.feature_ranking(W)
-    selected_features = X[:, idx[0:num_fea]]
+    n_selected_features = 100
+    S = UDFS.udfs(X, 0.1, k=5, verbose=False)
+    idx = UDFS.feature_ranking(S)
+    X_selected = X[:, idx[0:n_selected_features]]
 
     # evaluation
-    ari, nmi, acc = evaluation(selected_features=selected_features, n_clusters=20, y=label)
+    ari, nmi, acc = evaluation(X_selected=X_selected, n_clusters=20, y=label)
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc
