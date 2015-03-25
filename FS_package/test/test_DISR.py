@@ -1,43 +1,42 @@
-import csv
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+import scipy.io
 from sklearn.metrics import accuracy_score
-from FS_package.utility.supervised_evaluation import select_train_leave_one_out
+from sklearn import cross_validation
+from sklearn.svm import SVC
 from FS_package.function.information_theoretic_based import DISR
 
 
 def main():
-    # num_columns is number of columns in file
-    with open('../data/test_lung_s3.csv', 'rb') as f:
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            num_columns = len(row)
-            break
-
-    # load data
-    mat = np.loadtxt('../data/test_lung_s3.csv', delimiter=',', skiprows=1, usecols=range(0, num_columns))
-    y = mat[:, 0]  # label
-    X = mat[:, 1:num_columns]  # data
-    X = X.astype(float)
-    n_samples, n_features = X.shape
-    # split data into train and test sets
-    loo = select_train_leave_one_out(n_samples)
-    neigh = KNeighborsClassifier(n_neighbors=3)
-    num_fea = np.array([5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
-
-    for i in range(len(num_fea)):
-        correct = 0
-        j = 0
-        for train, test in loo:
+    print 'DISR'
+    filename = ['../data/arcene.mat', '../data/gisette.mat', '../data/madelon.mat']
+    for f_num in range(len(filename)):
+        print filename[f_num]
+        mat = scipy.io.loadmat(filename[f_num])
+        X = mat['X']    # data
+        y = mat['Y']    # label
+        y = y[:, 0]
+        X = X.astype(float)
+        n_sample, n_features = X.shape
+        # split data
+        ss = cross_validation.KFold(n_sample, n_folds=10, shuffle=True)
+        # choose SVM as the classifier
+        clf = SVC()
+        num_fea = np.linspace(5, 300, 60)
+        correct = np.zeros(len(num_fea))
+        for train, test in ss:
             # select features
-            F = DISR.disr(X[train], y[train], n_selected_features=num_fea[i])
-            features = X[:, F]
-            neigh.fit(features[train], y[train])
-            y_predict = neigh.predict(features[test])
-            acc = accuracy_score(y[test], y_predict)
-            correct = correct + acc
-            j += 1
-        print 'LOO error rate', num_fea[i], float(1 - (correct/j))
+            F = DISR.disr(X[train], y[train], n_selected_features=300)
+            for n in range(len(num_fea)):
+                fea_idx = F[0:num_fea[n]]
+                features = X[:, fea_idx]
+                clf.fit(features[train], y[train])
+                y_predict = clf.predict(features[test])
+                acc = accuracy_score(y[test], y_predict)
+                correct[n] += acc
+        correct.astype(float)
+        correct /= 10
+        for i in range(len(num_fea)):
+            print num_fea[i], correct[i]
 
 
 if __name__ == '__main__':
