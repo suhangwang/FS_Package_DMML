@@ -4,41 +4,42 @@ from sklearn import linear_model
 from ...utility.construct_W import construct_W
 
 
-def mcfs(X, **kwargs):
+def mcfs(X, n_selected_features, **kwargs):
     """
-    This function implements unsupervised feature selection for multi-cluster data
-    -------------
-    Input
+    This function implements unsupervised feature selection for multi-cluster data.
 
+    Input
+    -----
     X: {numpy array}, shape (n_samples, n_features)
-        Input data, guaranteed to be a numpy array
-    kwargs : {dictionary}
-        W: {numpy array}, shape (n_sample, n_samples)
-            Affinity matrix
-        n_clusters: integer
-            Number of clusters
-        d: integer
-            number of feature to select
-    --------------
+        input data
+    n_selected_features: {int}
+        number of features to select
+    kwargs: {dictionary}
+        W: {sparse matrix}, shape (n_samples, n_samples)
+            affinity matrix
+        n_clusters: {int}
+            number of clusters (default is 5)
+
     Output
-    S: {numpy array}, shape(n_samples, d)
-        selected features
+    ------
+    S: {numpy array}, shape(n_features, n_clusters)
+        coefficient matrix
+
+    Reference
+    ---------
+    Cai, Deng et al. "Unsupervised Feature Selection for Multi-Cluster Data." KDD 2010.
     """
-    # input error checking
+
+    # use the default affinity matrix
     if 'W' not in kwargs:
         W = construct_W(X)
     else:
         W = kwargs['W']
+    # default number of clusters is 5
     if 'n_clusters' not in kwargs:
-        print("error, need number of clusters: n_clusters")
-        raise
+        n_clusters = 5
     else:
         n_clusters = kwargs['n_clusters']
-    if 'd' not in kwargs:
-        print("error, need number of features to be selected: d")
-        raise
-    else:
-        d = kwargs['d']
 
     # solve the generalized eigen-decomposition problem and get the top K
     # eigen-vectors with respect to the smallest eigenvalues
@@ -55,16 +56,17 @@ def mcfs(X, **kwargs):
     n_sample, n_feature = X.shape
     W = np.zeros((n_feature, n_clusters))
     for i in range(n_clusters):
-        clf = linear_model.Lars(n_nonzero_coefs=d)
+        clf = linear_model.Lars(n_nonzero_coefs=n_selected_features)
         clf.fit(X, Y[:, i])
         W[:, i] = clf.coef_
     return W
 
 
 def feature_ranking(W):
-    # compute the MCFS score for each feature
+    """
+    This function computes MCFS score and ranking features according to feature weights matrix W
+    """
     mcfs_score = W.max(1)
-
     idx = np.argsort(mcfs_score, 0)
     idx = idx[::-1]
     return idx
