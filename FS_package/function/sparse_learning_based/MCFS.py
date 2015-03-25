@@ -22,8 +22,8 @@ def mcfs(X, n_selected_features, **kwargs):
 
     Output
     ------
-    S: {numpy array}, shape(n_features, n_clusters)
-        coefficient matrix
+    W: {numpy array}, shape(n_features, n_clusters)
+        feature weight matrix
 
     Reference
     ---------
