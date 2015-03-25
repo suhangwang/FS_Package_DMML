@@ -150,6 +150,6 @@ def proximal_gradient_descent(X, Y, z, **kwargs):
             break
 
         # determine weather converge
-        if iter_step >= 2 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
+        if iter_step >= 1 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:
             break
     return W, obj, value_gamma
