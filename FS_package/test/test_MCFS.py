@@ -22,9 +22,8 @@ def main():
     idx = MCFS.feature_ranking(S)
 
     # evaluation
-    num_fea = 100
-    selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = unsupervised_evaluation.evaluation(selected_features=selected_features, n_clusters=20, y=y)
+    X_selected = X[:, idx[0:n_selected_features]]
+    ari, nmi, acc = unsupervised_evaluation.evaluation(X_selected=X_selected, n_clusters=20, y=y)
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc
