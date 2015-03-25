@@ -26,7 +26,7 @@ def udfs(X, **kwargs):
 
     Output
     ------
-    W: {numpy array}, shape(n_samples, n_features)
+    W: {numpy array}, shape(n_features, n_clusters)
         feature weight matrix
 
     Reference
