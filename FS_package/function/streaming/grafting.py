@@ -3,6 +3,27 @@ from scipy.optimize import minimize
 
 
 def grafting(X, y, gamma):
+    """
+    This function implements streamwise feature selection (SFS) algorithm grafting for binary regression or
+    univariate regression
+
+    Input
+    -----
+    X: {numpy array}, shape (n_samples, n_features)
+        input data
+    y: {numpy array}, shape (n_samples,)
+        input class labels or regression target
+
+    Output
+    ------
+    F: {numpy array}, shape (n_selected_features,)
+        index of selected features in a streamwise way
+
+    Reference
+    ---------
+    Perkins, Simon and Theiler James. "Online Feature Selection using Grafting." ICML 2003.
+    """
+
     w = np.empty(0)
     free = np.empty(0)
     n_samples, n_features = X.shape
