@@ -1,29 +1,30 @@
 import scipy.io
-import numpy as np
-from FS_package.utility import construct_W
 from FS_package.function.sparse_learning_based import NDFS
-from FS_package.utility import unsupervised_evaluation
+from FS_package.utility import construct_W
+from FS_package.utility.sparse_learning import feature_ranking
+from FS_package.utility.unsupervised_evaluation import evaluation
 
 
 def main():
     # load data
     mat = scipy.io.loadmat('../data/COIL20.mat')
-    X = mat['fea']    # data
+    X = mat['X']    # data
     X = X.astype(float)
-    y = mat['gnd']    # label
+    y = mat['Y']    # label
     y = y[:, 0]
 
     kwargs = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W.construct_W(X, **kwargs)
-    L = np.array(W.sum(1))[:, 0] - W - W
 
-    # feature weight learning / feature selection
-    W, obj = NDFS.ndfs(X, n_clusters=40, L=L, verbose=1, max_iter=30)
-    idx = NDFS.feature_ranking(W)
+    # NDFS feature selection
+    W = NDFS.ndfs(X, W=W, n_clusters=20, verbose=False)
+    idx = feature_ranking(W)
+
     # evaluation
-    num_fea = 100
-    selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = unsupervised_evaluation.evaluation(selected_features=selected_features, n_clusters=20, y=y)
+    n_selected_features = 100
+    X_selected = X[:, idx[0:n_selected_features]]
+    ari, nmi, acc = evaluation(X_selected=X_selected, n_clusters=20, y=y)
+
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc

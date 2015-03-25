@@ -1,11 +1,11 @@
 import numpy as np
 import scipy
 import math
-from FS_package.utility.sparse_learning import generate_diagonal_matrix
+from FS_package.utility.sparse_learning import generate_diagonal_matrix, calculate_l21_norm
 from sklearn.metrics.pairwise import pairwise_distances
 
 
-def udfs(X, gamma, **kwargs):
+def udfs(X, **kwargs):
     """
     This function implements l2,1-norm regularized discriminative feature
     selection for unsupervised learning, i.e., min_W Tr(W^T M W) + gamma ||W||_{2,1}, s.t. W^T W = I
@@ -14,9 +14,9 @@ def udfs(X, gamma, **kwargs):
     -----
     X: {numpy array}, shape (n_samples, n_features)
         input data
-    gamma: {float}
-        parameter in the objective function of UDFS
     kwargs: {dictionary}
+        gamma: {float}
+            parameter in the objective function of UDFS (default is 1)
         n_clusters: {int}
             Number of clusters
         k: {int}
@@ -33,13 +33,18 @@ def udfs(X, gamma, **kwargs):
     Yang, Yi et al. "l2,1-Norm Regularized Discriminative Feature Selection for Unsupervised Learning." AAAI 2012.
     """
 
+    # default gamma is 0.1
+    if 'gamma' not in kwargs:
+        gamma = 1
+    else:
+        gamma = kwargs['gamma']
     # default k is set to be 5
     if 'k' not in kwargs:
         k = 5
     else:
         k = kwargs['k']
     if 'n_clusters' not in kwargs:
-        n_clusters = 5
+        n_clusters = 20
     else:
         n_clusters = kwargs['n_clusters']
     if 'verbose' not in kwargs:
@@ -63,8 +68,8 @@ def udfs(X, gamma, **kwargs):
         # update D as D_ii = 1 / 2 / ||W(i,:)||
         D = generate_diagonal_matrix(W)
 
+        obj[iter_step] = calculate_obj(X, W, M, gamma)
         if verbose:
-            obj[iter_step] = calculate_obj(X, W, M, gamma)
             print 'obj at iter ' + str(iter_step+1) + ': ' + str(obj[iter_step])
 
         if iter_step >= 1 and math.fabs(obj[iter_step] - obj[iter_step-1]) < 1e-3:

@@ -14,9 +14,8 @@ def main():
 
     # UDFS feature selection
     n_selected_features = 100
-    S = UDFS.udfs(X, 0.1, k=5, verbose=False)
+    S = UDFS.udfs(X, k=5, verbose=True)
     idx = feature_ranking(S)
-    print idx
     X_selected = X[:, idx[0:n_selected_features]]
 
     # evaluation
