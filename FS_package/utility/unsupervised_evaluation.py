@@ -37,13 +37,13 @@ def best_map(l1, l2):
     return new_l2.astype(int)
 
 
-def evaluation(selected_features, n_clusters, y):
+def evaluation(X_selected, n_clusters, y):
     """
     This function calculates ARI, ACC and NMI of clustering results
 
     Input
     -----
-    selected_features: {numpy array}, shape (n_samples, n_selected_features}
+    X_selected: {numpy array}, shape (n_samples, n_selected_features}
             input data on the selected features
     n_clusters: {int}
             number of clusters
@@ -63,7 +63,7 @@ def evaluation(selected_features, n_clusters, y):
                      tol=0.0001, precompute_distances=True, verbose=0,
                      random_state=None, copy_x=True, n_jobs=1)
 
-    k_means.fit(selected_features)
+    k_means.fit(X_selected)
     y_predict = k_means.labels_
 
     # calculate ARI
