@@ -6,7 +6,7 @@ from scipy import special
 def chi_squared_prob(x2, v):
     """
     This function computes the chi-squared probability.
-    chisquared_prob(X2,v) returns P(X2|v), the probability of observing a chi-squared value <= X2 with v degrees of freedom.
+    It returns P(X2|v), the probability of observing a chi-squared value <= X2 with v degrees of freedom
     """
     return special.gammainc(v/2, float(x2)/2)
 

@@ -10,7 +10,7 @@ def grafting(X, y, gamma):
     Input
     -----
     X: {numpy array}, shape (n_samples, n_features)
-        input data
+        input data, assume feature arrives one at each time step
     y: {numpy array}, shape (n_samples,)
         input class labels or regression target
 
