@@ -42,12 +42,13 @@ def OSFS(X, y):
     -----
     X: {numpy array}, shape (n_samples, n_features)
         input data, assume feature arrives one at each time step
-    y : {numpy array},shape (n_samples, )
-        class label, guaranteed to be a numpy array
+    y: {numpy array},shape (n_samples,)
+        input class labels
+
     Output
-    ----------
-    BCF: {numpy array},shape (n_features, )
-        indexes of the best candidate features so far
+    ------
+    BCF: {numpy array}, shape (n_features,)
+        indexes of the selected features in a streamwise way
     """
     n_samples, n_features = X.shape
     # BCF contains indexes of the best candidate features so far
