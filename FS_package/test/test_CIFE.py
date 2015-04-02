@@ -8,7 +8,8 @@ from FS_package.function.information_theoretic_based import CIFE
 
 def main():
     print 'CIFE'
-    filename = ['../data/arcene.mat', '../data/gisette.mat', '../data/madelon.mat']
+    # filename = ['../data/arcene.mat', '../data/gisette.mat', '../data/madelon.mat']
+    filename = ['../data/gisette.mat']
     for f_num in range(len(filename)):
         print filename[f_num]
         mat = scipy.io.loadmat(filename[f_num])
