@@ -13,6 +13,8 @@ def main():
     y = mat['Y']  # label
     y = y[:, 0]
     X = X.astype(float)
+
+    # normalize data, necessary!
     X = preprocessing.normalize(X, norm='l2', axis=0)
     n_samples, n_features = X.shape
 
@@ -26,8 +28,6 @@ def main():
 
     for train, test in ss:
         score = reliefF.reliefF(X[train], y[train])
-        print (X[test]).shape
-        #print (y[train]).shape
         idx = reliefF.feature_ranking(score)
         selected_features = X[:, idx[0:num_fea]]
         print selected_features

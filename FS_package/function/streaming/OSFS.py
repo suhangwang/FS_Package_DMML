@@ -51,15 +51,15 @@ def OSFS(X, y):
         indexes of the selected features in a streamwise way
     """
     n_samples, n_features = X.shape
-    # BCF contains indexes of the best candidate features so far
+    # indexes of the best candidate features so far
     BCF = []
-    # count is the index of generated feature in the features stream, beginning from 1
     count = 1
     empty = []
     data = y
     while count < n_features:
         # online relevance analysis
-        # If added=1,feature fi is relevance to class label. If added=0, feature fi is not relevant to the class label
+        # If added=1, feature fi is relevance to class label.
+        # Otherwise if added=0, feature fi is not relevant to the class label.
         added = 0
         fi = X[:, count-1]
         data = np.append(data, fi)
@@ -71,11 +71,10 @@ def OSFS(X, y):
         # online redundancy analysis
         if added:
             subset_index = subset_list(len(BCF)-1)
-            num_subset = (2 ** (len(BCF)-1)-1)
-            # delete_list stores indexes of feature in BCF which need to be deleted
+            n_subsets = (2 ** (len(BCF)-1)-1)
+            # indexes of feature in BCF which need to be deleted
             delete_list = []
             num_delete_list_pre = 0
-            # f is the index of feature in BCF
             for f in BCF:
                 if f not in delete_list:
                     if len(delete_list) != 0:
@@ -86,8 +85,8 @@ def OSFS(X, y):
                         if num_delete_list_pre != len(delete_list):
                             num_delete_list_pre = len(delete_list)
                             subset_index = subset_list(len(temp_BCF))
-                            num_subset = 2 ** (len(temp_BCF)) - 1
-                    for i in range(num_subset):
+                            n_subsets = 2 ** (len(temp_BCF)) - 1
+                    for i in range(n_subsets):
                         subset = BCF[subset_index[i, :]]
                         ci = cond_indep_G2.cond_indep_G2(BCF[f], 0, subset, data)
                         if ci == 1:
@@ -99,7 +98,6 @@ def OSFS(X, y):
 
 def main():
     print subset_list(5)
-
 
 
 if __name__ == '__main__':
