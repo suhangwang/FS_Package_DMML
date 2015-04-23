@@ -11,6 +11,7 @@ def main():
     y = y[:, 0]
     X = X.astype(float)
 
+
     # feature selection
     kwargs = {'style': 0}
     score = SPEC.spec(X, **kwargs)
