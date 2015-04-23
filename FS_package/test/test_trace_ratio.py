@@ -7,7 +7,7 @@ from FS_package.function.similarity_based import trace_ratio
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/COIL20.mat')
+    mat = scipy.io.loadmat('../data/USPS.mat')
     X = mat['X']  # data
     y = mat['Y']  # label
     y = y[:, 0]
@@ -16,7 +16,7 @@ def main():
 
     # split data
     #ss = cross_validation.ShuffleSplit(n_samples, n_iter=10, test_size = 0.1)
-    ss = cross_validation.KFold(n_samples, n_folds = 2)
+    ss = cross_validation.KFold(n_samples, n_folds = 10, shuffle = True)
 
     # evaluation
     num_fea = 100
