@@ -1,5 +1,4 @@
 import scipy.io
-from FS_package.utility import construct_W
 from FS_package.function.similarity_based import SPEC
 from FS_package.utility import unsupervised_evaluation
 
@@ -12,12 +11,8 @@ def main():
     y = y[:, 0]
     X = X.astype(float)
 
-    # build affinity matrix
-    kwargs_W = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
-    W = construct_W.construct_W(X, **kwargs_W)
-
     # feature selection
-    kwargs = {'style': 0, 'W': W}
+    kwargs = {'style': 0}
     score = SPEC.spec(X, **kwargs)
     idx = SPEC.feature_ranking(score, **kwargs)
 
