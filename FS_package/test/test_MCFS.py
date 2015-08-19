@@ -13,7 +13,7 @@ def main():
     y = y[:, 0]
 
     # construct W
-    kwargs = {"metric": "euclidean", "neighborMode": "knn", "weightMode": "heatKernel", "k": 5, 't': 0.1}
+    kwargs = {"metric": "euclidean", "neighborMode": "knn", "weightMode": "heatKernel", "k": 5, 't': 1}
     W = construct_W.construct_W(X, **kwargs)
 
     # mcfs feature selection
