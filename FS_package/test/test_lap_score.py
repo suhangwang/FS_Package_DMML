@@ -16,7 +16,7 @@ def main():
     # construct affinity matrix
     kwargs_W = {"metric": "euclidean", "neighbor_mode": "supervised", "weight_mode": "cosine", "k": 5, 't': 1, 'y': y}
     W = construct_W.construct_W(X, **kwargs_W)
-    print W[0,0:74]
+
     # feature selection
     score = lap_score.lap_score(X, W = W)
     idx = lap_score.feature_ranking(score)
@@ -24,7 +24,7 @@ def main():
     # evaluation
     num_fea = 100
     selected_features = X[:, idx[0:num_fea]]
-    ari, nmi, acc = unsupervised_evaluation.evaluation(selected_features=selected_features, n_clusters=20, y=y)
+    ari, nmi, acc = unsupervised_evaluation.evaluation(X_selected=selected_features, n_clusters=20, y=y)
     print 'ARI:', ari
     print 'NMI:', nmi
     print 'ACC:', acc

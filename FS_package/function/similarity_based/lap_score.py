@@ -50,14 +50,14 @@ def lap_score(X, **kwargs):
     D_prime[D_prime < 1e-12] = 10000
 
     # compute laplacian score for all features
-    score = np.array(np.multiply(L_prime, 1/D_prime))[0, :]
+    score = 1 - np.array(np.multiply(L_prime, 1/D_prime))[0, :]
     return np.transpose(score)
 
 
 def feature_ranking(score):
     """
-    Rank features in descending order according to their laplacian scores, the higher the laplacian score is, the more
+    Rank features in ascending order according to their laplacian scores, the smaller the laplacian score is, the more
     important the feature is
     """
     idx = np.argsort(score, 0)
-    return idx[::-1]
+    return idx
