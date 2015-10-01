@@ -21,7 +21,7 @@ def main():
     num_fea = 5
     F = f_score.f_score(X, y)
     idx = f_score.feature_ranking(F)
-    print X[:, idx[0:num_fea]]
+    print idx[0:5]
 
 
 if __name__ == '__main__':

@@ -1,8 +1,8 @@
-from sklearn.feature_selection import SelectKBest
+import numpy as np
 from sklearn.feature_selection import chi2
 
 
-def chi_square(X, y, n_selected_features):
+def chi_square(X, y):
     """
     This function implements the anova f_value feature selection (existing method for classification in scikit-learn)
 
@@ -12,13 +12,19 @@ def chi_square(X, y, n_selected_features):
         input data
     y: {numpy array},shape (n_samples,)
         input class labels
-    n_selected_features: {int}
-        number of features to select
 
     Output
     ------
-    X_new: {numpy array},shape (n_samples, n_selected_features)
-        data on selected features
+    F: {numpy array}, shape (n_features,)
+    f-score for each feature
     """
-    X_new = SelectKBest(chi2, k=n_selected_features).fit_transform(X, y)
-    return X_new
+    F, pval = chi2(X, y)
+    return F
+
+
+def feature_ranking(F):
+    """
+    Rank features in descending order according to chi2-score, the higher the chi2-score, the more important the feature is
+    """
+    idx = np.argsort(F)
+    return idx[::-1]

@@ -1,16 +1,20 @@
-from sklearn.datasets import load_iris
+import scipy.io
 from FS_package.function.statistics_based import chi_square
 
 
 def main():
-    # load data
-    iris = load_iris()
-    X, y = iris.data, iris.target
+    # get number of features
+    mat = scipy.io.loadmat('../data/COIL20.mat')
+    X = mat['X']
+    X = X.astype(float)
+    y = mat['Y']
+    y = y[:, 0]
 
     # feature selection
     num_fea = 2
-    features = chi_square.chi_square(X, y, num_fea)
-    print features.shape
+    F = chi_square.chi_square(X, y)
+    idx = chi_square.feature_ranking(F)
+    print idx[0:num_fea]
 
 
 if __name__ == '__main__':
