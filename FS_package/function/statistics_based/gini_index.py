@@ -3,7 +3,7 @@ import numpy as np
 
 def gini_index(X, y):
     """
-    This function implements the gini index feature selection for binary classification problem
+    This function implements the gini index feature selection.
 
     Input
     ----------
