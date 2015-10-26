@@ -123,33 +123,3 @@ def cond_indep_G2(X, a, b, s):
         ci = (alpha2 >= alpha)
 
     return int(ci), G2
-
-
-def main():
-    # n_bins = 3
-    # num_columns is number of columns in file
-    with open('../data/test.csv', 'rb') as f:
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            num_columns = len(row)
-            break
-    # load data
-    mat = np.loadtxt('../data/test.csv', delimiter=',', skiprows=0, usecols=range(0, num_columns))
-    # y = mat[:, 0]  # label
-    # X = mat[:, 1:num_columns]  # data
-    X = mat
-    X = X.astype(int)
-    # X = data_discretization.data_discretization(X, n_bins)
-    # Data = np.zeros((n_samples, n_features+1))
-    #Data[:, 0] = y
-    #Data[:, 1:] = X
-    x = 0
-    y = 1
-    s = []
-
-    ci = cond_indep_G2(x, y, s, X)
-    print ci
-
-
-if __name__ == '__main__':
-    main()
