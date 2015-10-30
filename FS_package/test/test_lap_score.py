@@ -14,11 +14,12 @@ def main():
     n_samples, n_features = X.shape
 
     # construct affinity matrix
-    kwargs_W = {"metric": "euclidean", "neighbor_mode": "supervised", "weight_mode": "cosine", "k": 5, 't': 1, 'y': y}
+    kwargs_W = {"metric": "euclidean", "neighbor_mode": "knn", "weight_mode": "heat_kernel", "k": 5, 't': 1}
     W = construct_W.construct_W(X, **kwargs_W)
 
     # feature selection
     score = lap_score.lap_score(X, W = W)
+
     idx = lap_score.feature_ranking(score)
 
     # evaluation
