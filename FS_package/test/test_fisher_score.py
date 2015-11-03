@@ -7,7 +7,7 @@ from FS_package.function.similarity_based import fisher_score
 
 def main():
     # load matlab data
-    mat = scipy.io.loadmat('../data/orlraws10P.mat')
+    mat = scipy.io.loadmat('../data/ORL.mat')
     X = mat['X']    # data
     y = mat['Y']    # label
     y = y[:, 0]

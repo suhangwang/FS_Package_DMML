@@ -16,9 +16,7 @@ def main():
     X = X.astype(float)
 
     # split data
-    n_iter = 20
-    test_size = 0.5
-    ss = cross_validation.select_train_split(n_samples, test_size, n_iter)
+    ss = cross_validation.KFold(n_samples, n_folds=10, shuffle=True)
 
     # cross validation
     num_fea = 100
@@ -32,8 +30,9 @@ def main():
         clf.fit(selected_features[train], y[train])
         y_predict = clf.predict(selected_features[test])
         acc = accuracy_score(y[test], y_predict)
+        print acc
         correct = correct + acc
-    print 'ACC', float(correct)/n_iter
+    print 'ACC', float(correct)/10
 
 if __name__ == '__main__':
     main()

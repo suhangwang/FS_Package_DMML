@@ -22,8 +22,8 @@ def main():
     # evaluation
     n_selected_features = 100
     clf = svm.LinearSVC()
+    correct = 0
 
-    mean_acc = 0
     for train, test in cv:
         W = RFS.erfs(X[train, :], Y[train, :], gamma=0.1, verbose=True)
         idx = feature_ranking(W)
@@ -32,9 +32,8 @@ def main():
         y_predict = clf.predict(X_selected[test, :])
         acc = accuracy_score(y[test], y_predict)
         print acc
-        mean_acc = mean_acc + acc
-    mean_acc /= 10
-    print mean_acc
+        correct = correct + acc
+    print 'ACC', float(correct)/10
 
 
 if __name__ == '__main__':

@@ -15,22 +15,22 @@ def main():
     n_samples, n_features = X.shape
 
     # split data
-    ss = cross_validation.KFold(n_samples, n_folds = 10, shuffle = True)
+    ss = cross_validation.KFold(n_samples, n_folds=10, shuffle=True)
 
     # evaluation
     num_fea = 100
-    clf = svm.LinearSVC()
+    clf = svm.SVC(kernel='linear')
     correct = 0
 
     for train, test in ss:
         idx, feature_score, subset_score = trace_ratio.trace_ratio(X[train], y[train], num_fea, style='fisher')
-        selected_features = X[:, idx]
+        selected_features = X[:, idx[0:num_fea]]
         clf.fit(selected_features[train], y[train])
         y_predict = clf.predict(selected_features[test])
         acc = accuracy_score(y[test], y_predict)
         print acc
         correct = correct + acc
-    print 'ACC', float(correct)/2
+    print 'ACC', float(correct)/10
 
 
 if __name__ == '__main__':
